@@ -1,35 +1,33 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiConfig {
   // ============================================
   // CONFIGURACIÓN DE URL DEL BACKEND
   // ============================================
+  // Las configuraciones se cargan desde el archivo .env
   // Para desarrollo local:
   // - Android Emulator: 'http://10.0.2.2:3000'
   // - iOS Simulator: 'http://localhost:3000'
   // - Flutter Web: 'http://localhost:3000'
   // - Dispositivo físico: 'http://TU_IP_LOCAL:3000'
-  //
-  // IMPORTANTE: Para usar en dispositivo físico:
-  // 1. Obtén tu IP local ejecutando: ipconfig (Windows) o ifconfig (Mac/Linux)
-  // 2. Busca la IP de tu adaptador Wi-Fi/Ethernet (ej: 192.168.1.100)
-  // 3. Asegúrate de que tu celular y PC estén en la misma red Wi-Fi
-  // 4. Cambia usePhysicalDevice a true y configura deviceIp con tu IP
   
-  // Cambia esto a true cuando uses un dispositivo físico
-  static const bool usePhysicalDevice = true;
-  
-  // IP de tu máquina para dispositivos físicos
-  // Obtén tu IP con: ipconfig (Windows) o ifconfig (Mac/Linux)
-  // Busca la IP de tu adaptador Wi-Fi (generalmente 192.168.x.x)
-  static const String deviceIp = '192.168.80.20'; // Cambia esto por tu IP local
-  
-  // IP para emuladores Android
+  // IP para emuladores Android (valor fijo, no necesita .env)
   static const String emulatorIp = '10.0.2.2';
   
-  // Puerto del backend
-  static const int backendPort = 3000;
+  // Obtener configuración desde .env o valores por defecto
+  static bool get usePhysicalDevice {
+    return dotenv.get('USE_PHYSICAL_DEVICE', fallback: 'true').toLowerCase() == 'true';
+  }
+  
+  static String get deviceIp {
+    return dotenv.get('BACKEND_IP', fallback: '10.162.35.200');
+  }
+  
+  static int get backendPort {
+    return int.tryParse(dotenv.get('BACKEND_PORT', fallback: '3000')) ?? 3000;
+  }
   
   static String get baseUrl {
     // Detectar plataforma y usar la URL apropiada
@@ -61,31 +59,27 @@ class ApiConfig {
   // ============================================
   // CONFIGURACIÓN DE GEMINI API
   // ============================================
-  // IMPORTANTE: Para producción, considera usar variables de entorno
-  // o almacenar la API key de forma segura (no en el código)
+  // Las configuraciones se cargan desde el archivo .env
   
-  static const String geminiApiKey = 'AIzaSyBv4_k52VxHNTrdkI24y3YlljHwAgEI5L4';
+  static String get geminiApiKey {
+    return dotenv.get('GEMINI_API_KEY', fallback: '');
+  }
   
-  // Modelo de Gemini a usar
-  // El servicio probará automáticamente con modelos alternativos si este no funciona
-  // IMPORTANTE: Algunos modelos antiguos pueden no estar disponibles en v1
-  // Modelos recomendados (orden de preferencia):
-  // - gemini-2.0-flash: Modelo más reciente y potente (recomendado)
-  // - gemini-1.5-flash-latest: Última versión de flash (rápido y económico)
-  // - gemini-1.5-pro-latest: Última versión de pro (más potente)
-  // - gemini-1.5-flash: Versión estándar de flash
-  // - gemini-1.5-pro: Versión estándar de pro
-  static const String geminiModel = 'gemini-2.0-flash';
+  static String get geminiModel {
+    return dotenv.get('GEMINI_MODEL', fallback: 'gemini-2.0-flash');
+  }
 
   // ============================================
   // CONFIGURACIÓN DE SUPABASE
   // ============================================
-  // IMPORTANTE: Reemplaza estas URLs con tus credenciales de Supabase
+  // Las configuraciones se cargan desde el archivo .env
   // Puedes encontrarlas en: https://app.supabase.com/project/_/settings/api
   
-  // TODO: Reemplaza con tu URL de Supabase
-  static const String supabaseUrl = 'https://mhfsljxpccyedteobmbb.supabase.co'; // Ejemplo: 'https://xxxxx.supabase.co'
+  static String get supabaseUrl {
+    return dotenv.get('SUPABASE_URL', fallback: '');
+  }
   
-  // TODO: Reemplaza con tu anon key de Supabase
-  static const String supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1oZnNsanhwY2N5ZWR0ZW9ibWJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk3NzYyOTYsImV4cCI6MjA3NTM1MjI5Nn0.N7-ziu_E9JOumetGTwnbIexCrm78kHQ7K-IiTYBzToU'; // Ejemplo: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+  static String get supabaseAnonKey {
+    return dotenv.get('SUPABASE_KEY', fallback: '');
+  }
 }

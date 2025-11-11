@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'providers/auth_provider.dart';
 import 'providers/horarios_provider.dart';
 import 'providers/examenes_provider.dart';
@@ -14,16 +15,28 @@ import 'config/api_config.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Inicializar Supabase
-  // Verifica que las credenciales estén configuradas en api_config.dart
-  if (ApiConfig.supabaseUrl != 'TU_SUPABASE_URL' && 
-      ApiConfig.supabaseAnonKey != 'TU_SUPABASE_ANON_KEY') {
+  // Cargar variables de entorno desde el archivo .env
+  try {
+    await dotenv.load(fileName: '.env');
+    print('✅ Variables de entorno cargadas correctamente');
+  } catch (e) {
+    print('⚠️ ADVERTENCIA: No se pudo cargar el archivo .env: $e');
+    print('   Asegúrate de que el archivo .env existe en la raíz del proyecto frontend');
+  }
+  
+  // Inicializar Supabase con las variables de entorno
+  final supabaseUrl = ApiConfig.supabaseUrl;
+  final supabaseAnonKey = ApiConfig.supabaseAnonKey;
+  
+  if (supabaseUrl.isNotEmpty && supabaseAnonKey.isNotEmpty) {
     await Supabase.initialize(
-      url: ApiConfig.supabaseUrl,
-      anonKey: ApiConfig.supabaseAnonKey,
+      url: supabaseUrl,
+      anonKey: supabaseAnonKey,
     );
+    print('✅ Supabase inicializado correctamente');
   } else {
-    print('⚠️ ADVERTENCIA: Supabase no está configurado. Configura las credenciales en lib/config/api_config.dart');
+    print('⚠️ ADVERTENCIA: Supabase no está configurado correctamente.');
+    print('   Verifica que SUPABASE_URL y SUPABASE_KEY estén en el archivo .env');
   }
   
   runApp(const MyApp());

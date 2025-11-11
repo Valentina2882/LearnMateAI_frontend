@@ -86,6 +86,7 @@ class ResultadoCuestionario {
   final DateTime fechaCompletado;
   final String? interpretacion;
   final Map<String, int> respuestas; // preguntaId -> valor
+  final String? usuarioId; // usuario_id de la BD (para lectura)
 
   ResultadoCuestionario({
     required this.id,
@@ -94,29 +95,43 @@ class ResultadoCuestionario {
     required this.fechaCompletado,
     this.interpretacion,
     required this.respuestas,
+    this.usuarioId,
   });
 
   factory ResultadoCuestionario.fromJson(Map<String, dynamic> json) {
+    // Mapear desde los nombres de la base de datos
     return ResultadoCuestionario(
       id: json['id'] ?? '',
       tipo: _tipoFromString(json['tipo'] ?? ''),
-      puntuacionTotal: json['puntuacionTotal'] ?? 0,
-      fechaCompletado: json['fechaCompletado'] != null
-          ? DateTime.parse(json['fechaCompletado'])
-          : DateTime.now(),
+      puntuacionTotal: json['puntuacion_total']?.toInt() ?? json['puntuacionTotal']?.toInt() ?? 0,
+      fechaCompletado: json['fecha_completado'] != null
+          ? DateTime.parse(json['fecha_completado'])
+          : json['fechaCompletado'] != null
+              ? DateTime.parse(json['fechaCompletado'])
+              : DateTime.now(),
       interpretacion: json['interpretacion'],
-      respuestas: Map<String, int>.from(json['respuestas'] ?? {}),
+      respuestas: json['respuestas'] != null
+          ? Map<String, int>.from(
+              (json['respuestas'] as Map<dynamic, dynamic>).map(
+                (key, value) => MapEntry(key.toString(), value as int),
+              ),
+            )
+          : {},
+      usuarioId: json['usuario_id'],
     );
   }
 
   Map<String, dynamic> toJson() {
+    // Convertir a los nombres de la base de datos
+    // Nota: usuario_id se maneja en el servicio, no se incluye aquí
     return {
       'id': id,
       'tipo': tipo.name,
-      'puntuacionTotal': puntuacionTotal,
-      'fechaCompletado': fechaCompletado.toIso8601String(),
+      'puntuacion_total': puntuacionTotal, // Nombre de BD
+      'fecha_completado': fechaCompletado.toIso8601String(), // Nombre de BD
       'interpretacion': interpretacion,
       'respuestas': respuestas,
+      if (usuarioId != null) 'usuario_id': usuarioId, // Nombre de BD (solo si existe)
     };
   }
 
@@ -141,6 +156,7 @@ class ContactoEmergencia {
   final String telefono;
   final String? descripcion;
   final bool esNacional; // Si es un contacto nacional predefinido
+  final String? usuarioId; // usuario_id de la BD (nullable)
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -150,35 +166,45 @@ class ContactoEmergencia {
     required this.telefono,
     this.descripcion,
     this.esNacional = false,
+    this.usuarioId,
     required this.createdAt,
     required this.updatedAt,
   });
 
   factory ContactoEmergencia.fromJson(Map<String, dynamic> json) {
+    // Mapear desde los nombres de la base de datos
     return ContactoEmergencia(
       id: json['id'] ?? '',
       nombre: json['nombre'] ?? '',
       telefono: json['telefono'] ?? '',
       descripcion: json['descripcion'],
-      esNacional: json['esNacional'] ?? false,
-      createdAt: json['createdAt'] != null || json['fechaCreacion'] != null
-          ? DateTime.parse(json['createdAt'] ?? json['fechaCreacion'])
-          : DateTime.now(),
-      updatedAt: json['updatedAt'] != null || json['fechaActualizacion'] != null
-          ? DateTime.parse(json['updatedAt'] ?? json['fechaActualizacion'])
-          : DateTime.now(),
+      esNacional: json['es_nacional'] ?? json['esNacional'] ?? false,
+      usuarioId: json['usuario_id'],
+      createdAt: json['fecha_creacion'] != null
+          ? DateTime.parse(json['fecha_creacion'])
+          : json['createdAt'] != null
+              ? DateTime.parse(json['createdAt'])
+              : DateTime.now(),
+      updatedAt: json['fecha_actualizacion'] != null
+          ? DateTime.parse(json['fecha_actualizacion'])
+          : json['updatedAt'] != null
+              ? DateTime.parse(json['updatedAt'])
+              : DateTime.now(),
     );
   }
 
   Map<String, dynamic> toJson() {
+    // Convertir a los nombres de la base de datos
+    // Nota: usuario_id se maneja en el servicio, no se incluye aquí
     return {
       'id': id,
       'nombre': nombre,
       'telefono': telefono,
       'descripcion': descripcion,
-      'esNacional': esNacional,
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
+      'es_nacional': esNacional, // Nombre de BD
+      if (usuarioId != null) 'usuario_id': usuarioId, // Nombre de BD (solo si existe)
+      'fecha_creacion': createdAt.toIso8601String(), // Nombre de BD
+      'fecha_actualizacion': updatedAt.toIso8601String(), // Nombre de BD
     };
   }
 
@@ -188,6 +214,7 @@ class ContactoEmergencia {
     String? telefono,
     String? descripcion,
     bool? esNacional,
+    String? usuarioId,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -197,6 +224,7 @@ class ContactoEmergencia {
       telefono: telefono ?? this.telefono,
       descripcion: descripcion ?? this.descripcion,
       esNacional: esNacional ?? this.esNacional,
+      usuarioId: usuarioId ?? this.usuarioId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

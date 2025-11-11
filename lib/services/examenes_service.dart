@@ -1,15 +1,23 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/examen.dart';
-import '../config/api_config.dart';
-import 'auth_service.dart';
 
 class ExamenesService {
-  final String baseUrl = ApiConfig.baseUrl;
-  final AuthService _authService = AuthService();
+  final SupabaseClient _supabase = Supabase.instance.client;
 
-  ExamenesService() {
-    print('🚀 [ExamenesService] Servicio inicializado - Base URL: $baseUrl');
+  // Obtener todas las materias del usuario (helper method)
+  Future<List<String>> _getMateriasIdsDelUsuario() async {
+    final user = _supabase.auth.currentUser;
+    if (user == null) return [];
+
+    final response = await _supabase
+        .from('materias')
+        .select('id')
+        .eq('usuario_id', user.id);
+
+    if (response.isEmpty) return [];
+    return (response as List<dynamic>)
+        .map((json) => (json as Map<String, dynamic>)['id'] as String)
+        .toList();
   }
 
   // Obtener todos los exámenes con filtros opcionales
@@ -21,86 +29,71 @@ class ExamenesService {
     String? fechaFin,
   }) async {
     try {
-      print('═══════════════════════════════════════════════════════════');
-      print('[ExamenesService] Obteniendo exámenes con filtros:');
-      print('[ExamenesService] - materiaId: $materiaId');
-      print('[ExamenesService] - estadoEval: $estadoEval');
-      print('[ExamenesService] - tipoEval: $tipoEval');
-      print('[ExamenesService] - fechaInicio: $fechaInicio');
-      print('[ExamenesService] - fechaFin: $fechaFin');
-
-      final token = await _authService.getToken();
-      if (token == null) {
-        print('[ExamenesService] ❌ ERROR: No hay sesión activa');
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
         throw Exception('No hay sesión activa');
       }
-      print('[ExamenesService] ✅ Token obtenido correctamente');
 
-      // Construir query parameters
-      final queryParams = <String, String>{};
-      if (materiaId != null && materiaId.isNotEmpty) {
-        queryParams['materiaId'] = materiaId;
+      // Obtener IDs de materias del usuario
+      final materiasIds = await _getMateriasIdsDelUsuario();
+      if (materiasIds.isEmpty) {
+        return [];
+      }
+
+      // Construir query base - usar OR si hay múltiples materias, o eq si solo hay una
+      dynamic queryBuilder = _supabase
+          .from('examenes')
+          .select('''
+            *,
+            materias (*)
+          ''');
+
+      // Aplicar filtro de materias
+      if (materiasIds.length == 1) {
+        queryBuilder = queryBuilder.eq('materiaid', materiasIds[0]);
+      } else if (materiasIds.length > 1) {
+        // Construir condición OR para múltiples materias
+        final orCondition = materiasIds
+            .map((id) => 'materiaid.eq.$id')
+            .join(',');
+        queryBuilder = queryBuilder.or(orCondition);
+      } else {
+        return [];
+      }
+
+      // Si se especifica una materia específica, usar esa en lugar de todas
+      if (materiaId != null && materiaId.isNotEmpty && materiasIds.contains(materiaId)) {
+        queryBuilder = queryBuilder.eq('materiaid', materiaId);
+      }
+
+      // Aplicar otros filtros
+      if (tipoEval != null && tipoEval.isNotEmpty) {
+        queryBuilder = queryBuilder.eq('tipoeval', tipoEval);
       }
       if (estadoEval != null && estadoEval.isNotEmpty) {
-        queryParams['estadoEval'] = estadoEval;
-      }
-      if (tipoEval != null && tipoEval.isNotEmpty) {
-        queryParams['tipoEval'] = tipoEval;
+        queryBuilder = queryBuilder.eq('estadoeval', estadoEval);
       }
       if (fechaInicio != null && fechaInicio.isNotEmpty) {
-        queryParams['fechaInicio'] = fechaInicio;
+        queryBuilder = queryBuilder.gte('fechaeval', fechaInicio);
       }
       if (fechaFin != null && fechaFin.isNotEmpty) {
-        queryParams['fechaFin'] = fechaFin;
+        queryBuilder = queryBuilder.lte('fechaeval', fechaFin);
       }
 
-      final uri = Uri.parse('$baseUrl/examenes').replace(queryParameters: queryParams);
-      print('[ExamenesService] 🌐 URL de petición: $uri');
+      // Ordenar por fecha
+      queryBuilder = queryBuilder.order('fechaeval', ascending: true);
 
-      final response = await http.get(
-        uri,
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      ).timeout(
-        const Duration(seconds: 10),
-        onTimeout: () {
-          print('[ExamenesService] ⏱️ TIMEOUT: La petición tardó más de 10 segundos');
-          throw Exception('Timeout: La petición tardó demasiado');
-        },
-      );
+      final response = await queryBuilder;
 
-      print('[ExamenesService] 📊 Status code: ${response.statusCode}');
-      final bodyPreview = response.body.length > 500 
-          ? '${response.body.substring(0, 500)}...' 
-          : response.body;
-      print('[ExamenesService] 📦 Response body: $bodyPreview');
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        if (responseData['success'] == true && responseData['data'] != null) {
-          final List<dynamic> data = responseData['data'];
-          final examenes = data.map((json) => Examen.fromJson(json)).toList();
-          print('[ExamenesService] ✅ Exámenes obtenidos exitosamente: ${examenes.length} registros');
-          print('═══════════════════════════════════════════════════════════');
-          return examenes;
-        } else {
-          print('[ExamenesService] ❌ ERROR: Respuesta sin datos válidos');
-          print('[ExamenesService] Response data: $responseData');
-          throw Exception(responseData['message'] ?? 'Error al obtener exámenes');
-        }
-      } else {
-        print('[ExamenesService] ❌ ERROR: Status code ${response.statusCode}');
-        final Map<String, dynamic> errorData = json.decode(response.body);
-        print('[ExamenesService] Error data: $errorData');
-        throw Exception(errorData['message'] ?? 'Error al obtener exámenes');
+      if (response.isEmpty) {
+        return [];
       }
-    } catch (e, stackTrace) {
-      print('[ExamenesService] ❌❌❌ ERROR en getExamenes: $e');
-      print('[ExamenesService] Stack trace: $stackTrace');
-      print('═══════════════════════════════════════════════════════════');
-      throw Exception('Error de conexión: ${e.toString()}');
+
+      return (response as List<dynamic>)
+          .map((json) => _examenFromJson(json as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      throw Exception('Error al obtener exámenes: ${e.toString()}');
     }
   }
 
@@ -117,45 +110,35 @@ class ExamenesService {
   // Obtener un examen específico
   Future<Examen> getExamen(String examenId) async {
     try {
-      print('[ExamenesService] 🔍 Obteniendo examen: $examenId');
-      final token = await _authService.getToken();
-      if (token == null) {
-        print('[ExamenesService] ❌ ERROR: No hay sesión activa');
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
         throw Exception('No hay sesión activa');
       }
 
-      final uri = Uri.parse('$baseUrl/examenes/$examenId');
-      print('[ExamenesService] 🌐 URL: $uri');
-
-      final response = await http.get(
-        uri,
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
-
-      print('[ExamenesService] 📊 Status code: ${response.statusCode}');
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        if (responseData['success'] == true && responseData['data'] != null) {
-          print('[ExamenesService] ✅ Examen obtenido exitosamente');
-          return Examen.fromJson(responseData['data']);
-        } else {
-          print('[ExamenesService] ❌ ERROR: Respuesta sin datos válidos');
-          throw Exception(responseData['message'] ?? 'Examen no encontrado');
-        }
-      } else {
-        print('[ExamenesService] ❌ ERROR: Status code ${response.statusCode}');
-        final Map<String, dynamic> errorData = json.decode(response.body);
-        print('[ExamenesService] Error data: $errorData');
-        throw Exception(errorData['message'] ?? 'Error al obtener el examen');
+      // Verificar que el examen pertenece a una materia del usuario
+      final materiasIds = await _getMateriasIdsDelUsuario();
+      if (materiasIds.isEmpty) {
+        throw Exception('Examen no encontrado');
       }
-    } catch (e, stackTrace) {
-      print('[ExamenesService] ❌❌❌ ERROR en getExamen: $e');
-      print('[ExamenesService] Stack trace: $stackTrace');
-      throw Exception('Error de conexión: ${e.toString()}');
+
+      // Construir condición OR para verificar que pertenece a una de las materias del usuario
+      final orCondition = materiasIds
+          .map((id) => 'materiaid.eq.$id')
+          .join(',');
+
+      final response = await _supabase
+          .from('examenes')
+          .select('''
+            *,
+            materias (*)
+          ''')
+          .eq('id', examenId)
+          .or(orCondition)
+          .single();
+
+      return _examenFromJson(Map<String, dynamic>.from(response));
+    } catch (e) {
+      throw Exception('Error al obtener el examen: ${e.toString()}');
     }
   }
 
@@ -169,70 +152,44 @@ class ExamenesService {
     EstadoEvaluacion? estadoEval,
   }) async {
     try {
-      print('═══════════════════════════════════════════════════════════');
-      print('[ExamenesService] ➕ Creando examen:');
-      print('[ExamenesService] - materiaId: $materiaId');
-      print('[ExamenesService] - tipoEval: $tipoEval');
-      print('[ExamenesService] - fechaEval: $fechaEval');
-      print('[ExamenesService] - notaEval: $notaEval');
-      print('[ExamenesService] - ponderacionEval: $ponderacionEval');
-      print('[ExamenesService] - estadoEval: $estadoEval');
-
-      final token = await _authService.getToken();
-      if (token == null) {
-        print('[ExamenesService] ❌ ERROR: No hay sesión activa');
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
         throw Exception('No hay sesión activa');
       }
 
-      final Map<String, dynamic> body = {
-        'materiaId': materiaId,
+      // Verificar que la materia pertenece al usuario
+      try {
+        await _supabase
+            .from('materias')
+            .select('id')
+            .eq('id', materiaId)
+            .eq('usuario_id', user.id)
+            .single();
+      } catch (e) {
+        throw Exception('Materia no encontrada o no pertenece al usuario');
+      }
+
+      final examenData = {
+        'materiaid': materiaId,
+        if (tipoEval != null) 'tipoeval': tipoEval.value,
+        if (fechaEval != null) 'fechaeval': fechaEval.toIso8601String().split('T')[0],
+        if (notaEval != null) 'notaeval': notaEval,
+        if (ponderacionEval != null) 'ponderacioneval': ponderacionEval,
+        if (estadoEval != null) 'estadoeval': estadoEval.value,
       };
 
-      if (tipoEval != null) body['tipoEval'] = tipoEval.value;
-      if (fechaEval != null) body['fechaEval'] = fechaEval.toIso8601String().split('T')[0];
-      if (notaEval != null) body['notaEval'] = notaEval;
-      if (ponderacionEval != null) body['ponderacionEval'] = ponderacionEval;
-      if (estadoEval != null) body['estadoEval'] = estadoEval.value;
+      final response = await _supabase
+          .from('examenes')
+          .insert(examenData)
+          .select('''
+            *,
+            materias (*)
+          ''')
+          .single();
 
-      print('[ExamenesService] 📤 Body: ${json.encode(body)}');
-      print('[ExamenesService] 🌐 URL: $baseUrl/examenes');
-
-      final response = await http.post(
-        Uri.parse('$baseUrl/examenes'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-        body: json.encode(body),
-      );
-
-      print('[ExamenesService] 📊 Status code: ${response.statusCode}');
-      final bodyPreview = response.body.length > 500 
-          ? '${response.body.substring(0, 500)}...' 
-          : response.body;
-      print('[ExamenesService] 📦 Response body: $bodyPreview');
-
-      if (response.statusCode == 201) {
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        if (responseData['success'] == true && responseData['data'] != null) {
-          print('[ExamenesService] ✅ Examen creado exitosamente');
-          print('═══════════════════════════════════════════════════════════');
-          return Examen.fromJson(responseData['data']);
-        } else {
-          print('[ExamenesService] ❌ ERROR: Respuesta sin datos válidos');
-          throw Exception(responseData['message'] ?? 'Error al crear el examen');
-        }
-      } else {
-        print('[ExamenesService] ❌ ERROR: Status code ${response.statusCode}');
-        final Map<String, dynamic> errorData = json.decode(response.body);
-        print('[ExamenesService] Error data: $errorData');
-        throw Exception(errorData['message'] ?? 'Error al crear el examen');
-      }
-    } catch (e, stackTrace) {
-      print('[ExamenesService] ❌❌❌ ERROR en createExamen: $e');
-      print('[ExamenesService] Stack trace: $stackTrace');
-      print('═══════════════════════════════════════════════════════════');
-      throw Exception('Error de conexión: ${e.toString()}');
+      return _examenFromJson(Map<String, dynamic>.from(response));
+    } catch (e) {
+      throw Exception('Error al crear el examen: ${e.toString()}');
     }
   }
 
@@ -246,196 +203,142 @@ class ExamenesService {
     EstadoEvaluacion? estadoEval,
   }) async {
     try {
-      print('[ExamenesService] ✏️ Actualizando examen: $examenId');
-      print('[ExamenesService] - tipoEval: $tipoEval');
-      print('[ExamenesService] - fechaEval: $fechaEval');
-      print('[ExamenesService] - notaEval: $notaEval');
-      print('[ExamenesService] - ponderacionEval: $ponderacionEval');
-      print('[ExamenesService] - estadoEval: $estadoEval');
-
-      final token = await _authService.getToken();
-      if (token == null) {
-        print('[ExamenesService] ❌ ERROR: No hay sesión activa');
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
         throw Exception('No hay sesión activa');
       }
 
-      final Map<String, dynamic> body = {};
-      if (tipoEval != null) body['tipoEval'] = tipoEval.value;
-      if (fechaEval != null) body['fechaEval'] = fechaEval.toIso8601String().split('T')[0];
-      if (notaEval != null) body['notaEval'] = notaEval;
-      if (ponderacionEval != null) body['ponderacionEval'] = ponderacionEval;
-      if (estadoEval != null) body['estadoEval'] = estadoEval.value;
-
-      print('[ExamenesService] 📤 Body: ${json.encode(body)}');
-      print('[ExamenesService] 🌐 URL: $baseUrl/examenes/$examenId');
-
-      final response = await http.patch(
-        Uri.parse('$baseUrl/examenes/$examenId'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-        body: json.encode(body),
-      );
-
-      print('[ExamenesService] 📊 Status code: ${response.statusCode}');
-      final bodyPreview = response.body.length > 500 
-          ? '${response.body.substring(0, 500)}...' 
-          : response.body;
-      print('[ExamenesService] 📦 Response body: $bodyPreview');
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        if (responseData['success'] == true && responseData['data'] != null) {
-          print('[ExamenesService] ✅ Examen actualizado exitosamente');
-          return Examen.fromJson(responseData['data']);
-        } else {
-          print('[ExamenesService] ❌ ERROR: Respuesta sin datos válidos');
-          throw Exception(responseData['message'] ?? 'Error al actualizar el examen');
-        }
-      } else {
-        print('[ExamenesService] ❌ ERROR: Status code ${response.statusCode}');
-        final Map<String, dynamic> errorData = json.decode(response.body);
-        print('[ExamenesService] Error data: $errorData');
-        throw Exception(errorData['message'] ?? 'Error al actualizar el examen');
+      // Verificar que el examen pertenece a una materia del usuario
+      final materiasIds = await _getMateriasIdsDelUsuario();
+      if (materiasIds.isEmpty) {
+        throw Exception('Examen no encontrado');
       }
-    } catch (e, stackTrace) {
-      print('[ExamenesService] ❌❌❌ ERROR en updateExamen: $e');
-      print('[ExamenesService] Stack trace: $stackTrace');
-      throw Exception('Error de conexión: ${e.toString()}');
+
+      final updateData = <String, dynamic>{};
+      if (tipoEval != null) updateData['tipoeval'] = tipoEval.value;
+      if (fechaEval != null) updateData['fechaeval'] = fechaEval.toIso8601String().split('T')[0];
+      if (notaEval != null) updateData['notaeval'] = notaEval;
+      if (ponderacionEval != null) updateData['ponderacioneval'] = ponderacionEval;
+      if (estadoEval != null) updateData['estadoeval'] = estadoEval.value;
+
+      // Construir condición OR para verificar que pertenece a una de las materias del usuario
+      final orCondition = materiasIds
+          .map((id) => 'materiaid.eq.$id')
+          .join(',');
+
+      final response = await _supabase
+          .from('examenes')
+          .update(updateData)
+          .eq('id', examenId)
+          .or(orCondition)
+          .select('''
+            *,
+            materias (*)
+          ''')
+          .single();
+
+      return _examenFromJson(Map<String, dynamic>.from(response));
+    } catch (e) {
+      throw Exception('Error al actualizar el examen: ${e.toString()}');
     }
   }
 
   // Eliminar un examen
   Future<bool> deleteExamen(String examenId) async {
     try {
-      print('[ExamenesService] 🗑️ Eliminando examen: $examenId');
-      final token = await _authService.getToken();
-      if (token == null) {
-        print('[ExamenesService] ❌ ERROR: No hay sesión activa');
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
         throw Exception('No hay sesión activa');
       }
 
-      print('[ExamenesService] 🌐 URL: $baseUrl/examenes/$examenId');
-
-      final response = await http.delete(
-        Uri.parse('$baseUrl/examenes/$examenId'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
-
-      print('[ExamenesService] 📊 Status code: ${response.statusCode}');
-      final bodyPreview = response.body.length > 500 
-          ? '${response.body.substring(0, 500)}...' 
-          : response.body;
-      print('[ExamenesService] 📦 Response body: $bodyPreview');
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        final success = responseData['success'] == true;
-        print('[ExamenesService] ✅ Examen eliminado: $success');
-        return success;
-      } else {
-        print('[ExamenesService] ❌ ERROR: Status code ${response.statusCode}');
-        final Map<String, dynamic> errorData = json.decode(response.body);
-        print('[ExamenesService] Error data: $errorData');
-        throw Exception(errorData['message'] ?? 'Error al eliminar el examen');
+      // Verificar que el examen pertenece a una materia del usuario
+      final materiasIds = await _getMateriasIdsDelUsuario();
+      if (materiasIds.isEmpty) {
+        throw Exception('Examen no encontrado');
       }
-    } catch (e, stackTrace) {
-      print('[ExamenesService] ❌❌❌ ERROR en deleteExamen: $e');
-      print('[ExamenesService] Stack trace: $stackTrace');
-      throw Exception('Error de conexión: ${e.toString()}');
+
+      // Construir condición OR para verificar que pertenece a una de las materias del usuario
+      final orCondition = materiasIds
+          .map((id) => 'materiaid.eq.$id')
+          .join(',');
+
+      await _supabase
+          .from('examenes')
+          .delete()
+          .eq('id', examenId)
+          .or(orCondition);
+
+      return true;
+    } catch (e) {
+      throw Exception('Error al eliminar el examen: ${e.toString()}');
     }
   }
 
   // Obtener estadísticas generales
   Future<EstadisticasExamenes> getEstadisticasGenerales() async {
     try {
-      print('[ExamenesService] 📈 Obteniendo estadísticas generales');
-      final token = await _authService.getToken();
-      if (token == null) {
-        print('[ExamenesService] ❌ ERROR: No hay sesión activa');
-        throw Exception('No hay sesión activa');
-      }
-
-      print('[ExamenesService] 🌐 URL: $baseUrl/examenes/estadisticas/generales');
-
-      final response = await http.get(
-        Uri.parse('$baseUrl/examenes/estadisticas/generales'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
-
-      print('[ExamenesService] 📊 Status code: ${response.statusCode}');
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        if (responseData['success'] == true && responseData['data'] != null) {
-          print('[ExamenesService] ✅ Estadísticas obtenidas exitosamente');
-          return EstadisticasExamenes.fromJson(responseData['data']);
-        } else {
-          print('[ExamenesService] ❌ ERROR: Respuesta sin datos válidos');
-          throw Exception(responseData['message'] ?? 'Error al obtener estadísticas');
-        }
-      } else {
-        print('[ExamenesService] ❌ ERROR: Status code ${response.statusCode}');
-        final Map<String, dynamic> errorData = json.decode(response.body);
-        print('[ExamenesService] Error data: $errorData');
-        throw Exception(errorData['message'] ?? 'Error al obtener estadísticas');
-      }
-    } catch (e, stackTrace) {
-      print('[ExamenesService] ❌❌❌ ERROR en getEstadisticasGenerales: $e');
-      print('[ExamenesService] Stack trace: $stackTrace');
-      throw Exception('Error de conexión: ${e.toString()}');
+      final examenes = await getExamenes();
+      return _calcularEstadisticas(examenes);
+    } catch (e) {
+      throw Exception('Error al obtener estadísticas: ${e.toString()}');
     }
   }
 
   // Obtener estadísticas por materia
   Future<EstadisticasExamenes> getEstadisticasPorMateria(String materiaId) async {
     try {
-      print('[ExamenesService] 📈 Obteniendo estadísticas por materia: $materiaId');
-      final token = await _authService.getToken();
-      if (token == null) {
-        print('[ExamenesService] ❌ ERROR: No hay sesión activa');
-        throw Exception('No hay sesión activa');
-      }
-
-      final url = '$baseUrl/examenes/estadisticas/materia/$materiaId';
-      print('[ExamenesService] 🌐 URL: $url');
-
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
-
-      print('[ExamenesService] 📊 Status code: ${response.statusCode}');
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        if (responseData['success'] == true && responseData['data'] != null) {
-          print('[ExamenesService] ✅ Estadísticas de materia obtenidas exitosamente');
-          return EstadisticasExamenes.fromJson(responseData['data']);
-        } else {
-          print('[ExamenesService] ❌ ERROR: Respuesta sin datos válidos');
-          throw Exception(responseData['message'] ?? 'Error al obtener estadísticas de la materia');
-        }
-      } else {
-        print('[ExamenesService] ❌ ERROR: Status code ${response.statusCode}');
-        final Map<String, dynamic> errorData = json.decode(response.body);
-        print('[ExamenesService] Error data: $errorData');
-        throw Exception(errorData['message'] ?? 'Error al obtener estadísticas de la materia');
-      }
-    } catch (e, stackTrace) {
-      print('[ExamenesService] ❌❌❌ ERROR en getEstadisticasPorMateria: $e');
-      print('[ExamenesService] Stack trace: $stackTrace');
-      throw Exception('Error de conexión: ${e.toString()}');
+      final examenes = await getExamenes(materiaId: materiaId);
+      return _calcularEstadisticas(examenes);
+    } catch (e) {
+      throw Exception('Error al obtener estadísticas: ${e.toString()}');
     }
+  }
+
+  // Calcular estadísticas desde una lista de exámenes
+  EstadisticasExamenes _calcularEstadisticas(List<Examen> examenes) {
+    final total = examenes.length;
+    final porEstado = <EstadoEvaluacion, int>{};
+    final porTipo = <TipoEvaluacion, int>{};
+    double sumaNotas = 0.0;
+    int contarNotas = 0;
+    double sumaPonderacion = 0.0;
+    int contarPonderacion = 0;
+
+    for (final examen in examenes) {
+      // Contar por estado
+      if (examen.estadoEval != null) {
+        porEstado[examen.estadoEval!] = (porEstado[examen.estadoEval!] ?? 0) + 1;
+      }
+
+      // Contar por tipo
+      if (examen.tipoEval != null) {
+        porTipo[examen.tipoEval!] = (porTipo[examen.tipoEval!] ?? 0) + 1;
+      }
+
+      // Calcular promedios
+      if (examen.notaEval != null) {
+        sumaNotas += examen.notaEval!;
+        contarNotas++;
+      }
+
+      if (examen.ponderacionEval != null) {
+        sumaPonderacion += examen.ponderacionEval!;
+        contarPonderacion++;
+      }
+    }
+
+    return EstadisticasExamenes(
+      total: total,
+      porEstado: porEstado,
+      porTipo: porTipo,
+      promedioNotas: contarNotas > 0 ? sumaNotas / contarNotas : 0.0,
+      promedioPonderacion: contarPonderacion > 0 ? sumaPonderacion / contarPonderacion : 0.0,
+    );
+  }
+
+  // Mapear desde JSON de BD a modelo Examen
+  // Usa Examen.fromJson que ya maneja correctamente los nombres de la BD
+  Examen _examenFromJson(Map<String, dynamic> json) {
+    return Examen.fromJson(json);
   }
 }

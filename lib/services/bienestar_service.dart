@@ -1,49 +1,41 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/bienestar.dart';
-import '../config/api_config.dart';
-import 'auth_service.dart';
 
 class BienestarService {
-  final String baseUrl = ApiConfig.baseUrl;
-  final AuthService _authService = AuthService();
+  final SupabaseClient _supabase = Supabase.instance.client;
 
   // Obtener resultados de cuestionarios
   Future<List<ResultadoCuestionario>> obtenerResultadosCuestionarios({
     TipoCuestionario? tipo,
   }) async {
     try {
-      final token = await _authService.getToken();
-      if (token == null) {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
         throw Exception('No hay sesión activa');
       }
 
-      final uri = tipo != null
-          ? Uri.parse('$baseUrl/bienestar/cuestionarios').replace(
-              queryParameters: {'tipo': tipo.name},
-            )
-          : Uri.parse('$baseUrl/bienestar/cuestionarios');
+      dynamic query = _supabase
+          .from('resultados_cuestionarios_bienestar')
+          .select()
+          .eq('usuario_id', user.id);
 
-      final response = await http.get(
-        uri,
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        if (responseData['success'] == true && responseData['data'] != null) {
-          final List<dynamic> data = responseData['data'];
-          return data.map((json) => ResultadoCuestionario.fromJson(json)).toList();
-        }
-        return [];
-      } else {
-        throw Exception('Error al obtener resultados: ${response.statusCode}');
+      if (tipo != null) {
+        query = query.eq('tipo', tipo.name);
       }
+
+      query = query.order('fecha_completado', ascending: false);
+
+      final response = await query;
+
+      if (response.isEmpty) {
+        return [];
+      }
+
+      return (response as List<dynamic>)
+          .map((json) => ResultadoCuestionario.fromJson(json as Map<String, dynamic>))
+          .toList();
     } catch (e) {
-      throw Exception('Error de conexión: ${e.toString()}');
+      throw Exception('Error al obtener resultados: ${e.toString()}');
     }
   }
 
@@ -52,71 +44,55 @@ class BienestarService {
     ResultadoCuestionario resultado,
   ) async {
     try {
-      final token = await _authService.getToken();
-      if (token == null) {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
         throw Exception('No hay sesión activa');
       }
 
-      final body = {
+      final cuestionarioData = {
+        'usuario_id': user.id,
         'tipo': resultado.tipo.name,
-        'puntuacionTotal': resultado.puntuacionTotal,
-        'fechaCompletado': resultado.fechaCompletado.toIso8601String(),
-        'interpretacion': resultado.interpretacion,
+        'puntuacion_total': resultado.puntuacionTotal,
+        'fecha_completado': resultado.fechaCompletado.toIso8601String(),
+        if (resultado.interpretacion != null) 'interpretacion': resultado.interpretacion,
         'respuestas': resultado.respuestas,
       };
 
-      final response = await http.post(
-        Uri.parse('$baseUrl/bienestar/cuestionarios'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-        body: json.encode(body),
-      );
+      final response = await _supabase
+          .from('resultados_cuestionarios_bienestar')
+          .insert(cuestionarioData)
+          .select()
+          .single();
 
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        if (responseData['success'] == true && responseData['data'] != null) {
-          return ResultadoCuestionario.fromJson(responseData['data']);
-        }
-        throw Exception('Error al guardar resultado');
-      } else {
-        final Map<String, dynamic> errorData = json.decode(response.body);
-        throw Exception(errorData['message'] ?? 'Error al guardar resultado');
-      }
+      return ResultadoCuestionario.fromJson(Map<String, dynamic>.from(response));
     } catch (e) {
-      throw Exception('Error de conexión: ${e.toString()}');
+      throw Exception('Error al guardar resultado: ${e.toString()}');
     }
   }
 
   // Obtener contactos de emergencia
   Future<List<ContactoEmergencia>> obtenerContactosEmergencia() async {
     try {
-      final token = await _authService.getToken();
-      if (token == null) {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
         throw Exception('No hay sesión activa');
       }
 
-      final response = await http.get(
-        Uri.parse('$baseUrl/bienestar/contactos'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
+      final response = await _supabase
+          .from('contactos_emergencia')
+          .select()
+          .eq('usuario_id', user.id)
+          .order('nombre', ascending: true);
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        if (responseData['success'] == true && responseData['data'] != null) {
-          final List<dynamic> data = responseData['data'];
-          return data.map((json) => ContactoEmergencia.fromJson(json)).toList();
-        }
+      if (response.isEmpty) {
         return [];
-      } else {
-        throw Exception('Error al obtener contactos: ${response.statusCode}');
       }
+
+      return (response as List<dynamic>)
+          .map((json) => ContactoEmergencia.fromJson(json as Map<String, dynamic>))
+          .toList();
     } catch (e) {
-      throw Exception('Error de conexión: ${e.toString()}');
+      throw Exception('Error al obtener contactos: ${e.toString()}');
     }
   }
 
@@ -128,95 +104,97 @@ class BienestarService {
     bool esNacional = false,
   }) async {
     try {
-      final token = await _authService.getToken();
-      if (token == null) {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
         throw Exception('No hay sesión activa');
       }
 
-      final body = {
+      final contactoData = {
+        'usuario_id': user.id,
         'nombre': nombre,
         'telefono': telefono,
         if (descripcion != null) 'descripcion': descripcion,
-        'esNacional': esNacional,
+        'es_nacional': esNacional,
       };
 
-      final response = await http.post(
-        Uri.parse('$baseUrl/bienestar/contactos'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-        body: json.encode(body),
-      );
+      final response = await _supabase
+          .from('contactos_emergencia')
+          .insert(contactoData)
+          .select()
+          .single();
 
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        if (responseData['success'] == true && responseData['data'] != null) {
-          return ContactoEmergencia.fromJson(responseData['data']);
-        }
-        throw Exception('Error al crear contacto');
-      } else {
-        final Map<String, dynamic> errorData = json.decode(response.body);
-        throw Exception(errorData['message'] ?? 'Error al crear contacto');
-      }
+      return ContactoEmergencia.fromJson(Map<String, dynamic>.from(response));
     } catch (e) {
-      throw Exception('Error de conexión: ${e.toString()}');
+      throw Exception('Error al crear contacto: ${e.toString()}');
     }
   }
 
   // Eliminar contacto de emergencia
   Future<void> eliminarContactoEmergencia(String contactoId) async {
     try {
-      final token = await _authService.getToken();
-      if (token == null) {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
         throw Exception('No hay sesión activa');
       }
 
-      final response = await http.delete(
-        Uri.parse('$baseUrl/bienestar/contactos/$contactoId'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
-
-      if (response.statusCode != 200) {
-        final Map<String, dynamic> errorData = json.decode(response.body);
-        throw Exception(errorData['message'] ?? 'Error al eliminar contacto');
-      }
+      await _supabase
+          .from('contactos_emergencia')
+          .delete()
+          .eq('id', contactoId)
+          .eq('usuario_id', user.id);
     } catch (e) {
-      throw Exception('Error de conexión: ${e.toString()}');
+      throw Exception('Error al eliminar contacto: ${e.toString()}');
     }
   }
 
   // Obtener estadísticas
   Future<Map<String, dynamic>> obtenerEstadisticas() async {
     try {
-      final token = await _authService.getToken();
-      if (token == null) {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
         throw Exception('No hay sesión activa');
       }
 
-      final response = await http.get(
-        Uri.parse('$baseUrl/bienestar/cuestionarios/estadisticas'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
+      // Obtener todos los resultados del usuario
+      final resultados = await obtenerResultadosCuestionarios();
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        if (responseData['success'] == true && responseData['data'] != null) {
-          return responseData['data'] as Map<String, dynamic>;
-        }
-        return {};
-      } else {
-        throw Exception('Error al obtener estadísticas: ${response.statusCode}');
+      // Calcular estadísticas
+      final estadisticas = <String, dynamic>{
+        'total': resultados.length,
+        'porTipo': <String, int>{},
+        'promedioPuntuacion': 0.0,
+        'ultimaFecha': null,
+      };
+
+      if (resultados.isEmpty) {
+        return estadisticas;
       }
+
+      // Calcular por tipo
+      int sumaPuntuaciones = 0;
+      DateTime? ultimaFecha;
+
+      for (final resultado in resultados) {
+        // Contar por tipo
+        final tipoStr = resultado.tipo.name;
+        estadisticas['porTipo'][tipoStr] = (estadisticas['porTipo'][tipoStr] as int? ?? 0) + 1;
+
+        // Sumar puntuaciones
+        sumaPuntuaciones += resultado.puntuacionTotal;
+
+        // Encontrar última fecha
+        if (ultimaFecha == null || resultado.fechaCompletado.isAfter(ultimaFecha)) {
+          ultimaFecha = resultado.fechaCompletado;
+        }
+      }
+
+      estadisticas['promedioPuntuacion'] = sumaPuntuaciones / resultados.length;
+      estadisticas['ultimaFecha'] = ultimaFecha?.toIso8601String();
+
+      return estadisticas;
     } catch (e) {
-      throw Exception('Error de conexión: ${e.toString()}');
+      throw Exception('Error al obtener estadísticas: ${e.toString()}');
     }
   }
-}
 
+}

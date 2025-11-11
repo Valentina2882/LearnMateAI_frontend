@@ -18,26 +18,33 @@ class Horario {
   });
 
   factory Horario.fromJson(Map<String, dynamic> json) {
+    // La tabla horarios NO tiene created_at ni updated_at en la BD
+    // Usamos valores por defecto
     return Horario(
       id: json['id'] ?? '',
       nombrehor: json['nombrehor'],
       descripcionhor: json['descripcionhor'],
       fechainiciosemestre: json['fechainiciosemestre'],
       fechafinsemestre: json['fechafinsemestre'],
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(json['updatedAt'] ?? DateTime.now().toIso8601String()),
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
+          : DateTime.now(), // Valor por defecto ya que no existe en BD
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'])
+          : DateTime.now(), // Valor por defecto ya que no existe en BD
     );
   }
 
   Map<String, dynamic> toJson() {
+    // La tabla horarios NO tiene created_at ni updated_at en la BD
+    // Solo devolvemos los campos que existen en la BD
     return {
       'id': id,
       'nombrehor': nombrehor,
       'descripcionhor': descripcionhor,
       'fechainiciosemestre': fechainiciosemestre,
       'fechafinsemestre': fechafinsemestre,
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
+      // No incluimos createdAt/updatedAt porque no existen en la BD
     };
   }
 

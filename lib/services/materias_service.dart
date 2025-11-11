@@ -1,38 +1,32 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/materia.dart';
-import '../config/api_config.dart';
-import 'auth_service.dart';
 
 class MateriasService {
-  final String baseUrl = ApiConfig.baseUrl;
-  final AuthService _authService = AuthService();
+  final SupabaseClient _supabase = Supabase.instance.client;
 
   // Obtener todas las materias del usuario
   Future<List<Materia>> getMaterias() async {
     try {
-      final token = await _authService.getToken();
-      if (token == null) {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
         throw Exception('No hay sesión activa');
       }
 
-      final response = await http.get(
-        Uri.parse('$baseUrl/materias'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
+      final response = await _supabase
+          .from('materias')
+          .select()
+          .eq('usuario_id', user.id)
+          .order('fechacreacion', ascending: false);
 
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        return data.map((json) => Materia.fromJson(json)).toList();
-      } else {
-        final Map<String, dynamic> errorData = json.decode(response.body);
-        throw Exception(errorData['message'] ?? 'Error al obtener materias');
+      if (response.isEmpty) {
+        return [];
       }
+
+      return (response as List<dynamic>)
+          .map((json) => Materia.fromJson(json as Map<String, dynamic>))
+          .toList();
     } catch (e) {
-      throw Exception('Error de conexión: ${e.toString()}');
+      throw Exception('Error al obtener materias: ${e.toString()}');
     }
   }
 
@@ -48,38 +42,32 @@ class MateriasService {
     String? color,
   }) async {
     try {
-      final token = await _authService.getToken();
-      if (token == null) {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
         throw Exception('No hay sesión activa');
       }
 
-      final response = await http.post(
-        Uri.parse('$baseUrl/materias'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-        body: json.encode({
-          'nombre': nombre,
-          'codigo': codigo,
-          'creditos': creditos,
-          'descripcion': descripcion,
-          'profesor': profesor,
-          'aula': aula,
-          'horario': horario,
-          'color': color ?? '#2196F3',
-        }),
-      );
+      final materiaData = <String, dynamic>{
+        'nombre': nombre,
+        'codigo': codigo,
+        'creditos': creditos,
+        'usuario_id': user.id,
+        if (descripcion != null) 'descripcion': descripcion,
+        if (profesor != null) 'profesor': profesor,
+        if (aula != null) 'aula': aula,
+        if (horario != null) 'horario': horario,
+        'color': color ?? '#2196F3',
+      };
 
-      if (response.statusCode == 201) {
-        final Map<String, dynamic> data = json.decode(response.body);
-        return Materia.fromJson(data);
-      } else {
-        final Map<String, dynamic> errorData = json.decode(response.body);
-        throw Exception(errorData['message'] ?? 'Error al crear la materia');
-      }
+      final response = await _supabase
+          .from('materias')
+          .insert(materiaData)
+          .select()
+          .single();
+
+      return Materia.fromJson(Map<String, dynamic>.from(response));
     } catch (e) {
-      throw Exception('Error de conexión: ${e.toString()}');
+      throw Exception('Error al crear la materia: ${e.toString()}');
     }
   }
 
@@ -96,64 +84,54 @@ class MateriasService {
     String? color,
   }) async {
     try {
-      final token = await _authService.getToken();
-      if (token == null) {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
         throw Exception('No hay sesión activa');
       }
 
-      final Map<String, dynamic> body = {};
-      if (nombre != null) body['nombre'] = nombre;
-      if (codigo != null) body['codigo'] = codigo;
-      if (creditos != null) body['creditos'] = creditos;
-      if (descripcion != null) body['descripcion'] = descripcion;
-      if (profesor != null) body['profesor'] = profesor;
-      if (aula != null) body['aula'] = aula;
-      if (horario != null) body['horario'] = horario;
-      if (color != null) body['color'] = color;
+      final updateData = <String, dynamic>{
+        'fechaactualizacion': DateTime.now().toIso8601String(),
+      };
 
-      final response = await http.patch(
-        Uri.parse('$baseUrl/materias/$materiaId'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-        body: json.encode(body),
-      );
+      if (nombre != null) updateData['nombre'] = nombre;
+      if (codigo != null) updateData['codigo'] = codigo;
+      if (creditos != null) updateData['creditos'] = creditos;
+      if (descripcion != null) updateData['descripcion'] = descripcion;
+      if (profesor != null) updateData['profesor'] = profesor;
+      if (aula != null) updateData['aula'] = aula;
+      if (horario != null) updateData['horario'] = horario;
+      if (color != null) updateData['color'] = color;
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
-        return Materia.fromJson(data);
-      } else {
-        final Map<String, dynamic> errorData = json.decode(response.body);
-        throw Exception(errorData['message'] ?? 'Error al actualizar la materia');
-      }
+      final response = await _supabase
+          .from('materias')
+          .update(updateData)
+          .eq('id', materiaId)
+          .eq('usuario_id', user.id) // Asegurar que solo actualiza sus propias materias
+          .select()
+          .single();
+
+      return Materia.fromJson(Map<String, dynamic>.from(response));
     } catch (e) {
-      throw Exception('Error de conexión: ${e.toString()}');
+      throw Exception('Error al actualizar la materia: ${e.toString()}');
     }
   }
 
   // Eliminar una materia
   Future<void> deleteMateria(String materiaId) async {
     try {
-      final token = await _authService.getToken();
-      if (token == null) {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
         throw Exception('No hay sesión activa');
       }
 
-      final response = await http.delete(
-        Uri.parse('$baseUrl/materias/$materiaId'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
-
-      if (response.statusCode != 200) {
-        final Map<String, dynamic> errorData = json.decode(response.body);
-        throw Exception(errorData['message'] ?? 'Error al eliminar la materia');
-      }
+      await _supabase
+          .from('materias')
+          .delete()
+          .eq('id', materiaId)
+          .eq('usuario_id', user.id); // Asegurar que solo elimina sus propias materias
     } catch (e) {
-      throw Exception('Error de conexión: ${e.toString()}');
+      throw Exception('Error al eliminar la materia: ${e.toString()}');
     }
   }
+
 }

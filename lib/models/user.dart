@@ -28,36 +28,49 @@ class User {
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
+    // Mapear desde los nombres de la base de datos
     return User(
       id: json['id'] ?? '',
       email: json['email'] ?? '',
-      nombre: json['nombre'] ?? '',
+      nombre: json['nombre'] ?? json['nombreusu'] ?? '',
       apellido: json['apellido'],
       telefono: json['telefono'],
-      carrera: json['carrera'],
-      semestre: json['semestre']?.toInt(),
-      sistemaCalificacion: json['sistemaCalificacion']?.toInt() ?? 5,
+      carrera: json['carrerausu'] ?? json['carrera'],
+      semestre: json['semestreusu']?.toInt() ?? json['semestre']?.toInt(),
+      sistemaCalificacion: json['sistemacalificacion']?.toInt() ?? json['sistemaCalificacion']?.toInt() ?? 5,
       avatar: json['avatar'],
-      profileCompleted: json['profileCompleted'] ?? false,
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(json['updatedAt'] ?? DateTime.now().toIso8601String()),
+      profileCompleted: json['profile_completed'] ?? json['profileCompleted'] ?? false,
+      createdAt: json['fechacreacion'] != null
+          ? DateTime.parse(json['fechacreacion'])
+          : json['createdAt'] != null
+              ? DateTime.parse(json['createdAt'])
+              : DateTime.now(),
+      updatedAt: json['fechaactualizacion'] != null
+          ? DateTime.parse(json['fechaactualizacion'])
+          : json['updatedAt'] != null
+              ? DateTime.parse(json['updatedAt'])
+              : DateTime.now(),
     );
   }
 
   Map<String, dynamic> toJson() {
+    // Convertir a los nombres de la base de datos
     return {
       'id': id,
       'email': email,
       'nombre': nombre,
+      'nombreusu': nombre, // Campo requerido en BD
       'apellido': apellido,
       'telefono': telefono,
-      'carrera': carrera,
-      'semestre': semestre,
-      'sistemaCalificacion': sistemaCalificacion,
+      'carrerausu': carrera, // Nombre de BD
+      'carrera': carrera, // Mantener para compatibilidad
+      'semestreusu': semestre, // Nombre de BD
+      'semestre': semestre, // Mantener para compatibilidad
+      'sistemacalificacion': sistemaCalificacion, // Nombre de BD
       'avatar': avatar,
-      'profileCompleted': profileCompleted ?? false,
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
+      'profile_completed': profileCompleted ?? false, // Nombre de BD
+      'fechacreacion': createdAt.toIso8601String(), // Nombre de BD
+      'fechaactualizacion': updatedAt.toIso8601String(), // Nombre de BD
     };
   }
 

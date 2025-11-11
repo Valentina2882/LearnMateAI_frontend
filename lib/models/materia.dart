@@ -10,6 +10,7 @@ class Materia {
   final String? aula;
   final String? horario;
   final String? color; // Color en formato hex para la UI
+  final String? usuarioId; // usuario_id de la BD
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -23,11 +24,13 @@ class Materia {
     this.aula,
     this.horario,
     this.color,
+    this.usuarioId,
     required this.createdAt,
     required this.updatedAt,
   });
 
   factory Materia.fromJson(Map<String, dynamic> json) {
+    // Mapear desde los nombres de la base de datos
     return Materia(
       id: json['id'] ?? '',
       nombre: json['nombre'] ?? '',
@@ -38,12 +41,22 @@ class Materia {
       aula: json['aula'],
       horario: json['horario'],
       color: json['color'],
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(json['updatedAt'] ?? DateTime.now().toIso8601String()),
+      usuarioId: json['usuario_id'],
+      createdAt: json['fechacreacion'] != null
+          ? DateTime.parse(json['fechacreacion'])
+          : json['createdAt'] != null
+              ? DateTime.parse(json['createdAt'])
+              : DateTime.now(),
+      updatedAt: json['fechaactualizacion'] != null
+          ? DateTime.parse(json['fechaactualizacion'])
+          : json['updatedAt'] != null
+              ? DateTime.parse(json['updatedAt'])
+              : DateTime.now(),
     );
   }
 
   Map<String, dynamic> toJson() {
+    // Convertir a los nombres de la base de datos
     return {
       'id': id,
       'nombre': nombre,
@@ -54,8 +67,9 @@ class Materia {
       'aula': aula,
       'horario': horario,
       'color': color,
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
+      'usuario_id': usuarioId, // Nombre de BD
+      'fechacreacion': createdAt.toIso8601String(), // Nombre de BD
+      'fechaactualizacion': updatedAt.toIso8601String(), // Nombre de BD
     };
   }
 
@@ -70,6 +84,7 @@ class Materia {
     String? aula,
     String? horario,
     String? color,
+    String? usuarioId,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -83,6 +98,7 @@ class Materia {
       aula: aula ?? this.aula,
       horario: horario ?? this.horario,
       color: color ?? this.color,
+      usuarioId: usuarioId ?? this.usuarioId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

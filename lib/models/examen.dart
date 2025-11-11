@@ -139,42 +139,50 @@ class Examen {
   });
 
   factory Examen.fromJson(Map<String, dynamic> json) {
-    // El backend devuelve campos en camelCase
+    // Mapear desde los nombres de la base de datos
+    // La BD usa: materiaid, tipoeval, fechaeval, notaeval, ponderacioneval, estadoeval
+    final materiaData = json['materias'] ?? json['materia'];
+    
     return Examen(
       id: json['id'] ?? '',
-      tipoEval: json['tipoEval'] != null 
-          ? TipoEvaluacion.fromString(json['tipoEval']) 
-          : null,
-      materiaId: json['materiaId'] ?? '',
-      fechaEval: json['fechaEval'] != null 
-          ? DateTime.parse(json['fechaEval']) 
-          : null,
-      notaEval: json['notaEval']?.toDouble(),
-      ponderacionEval: json['ponderacionEval']?.toDouble(),
-      estadoEval: json['estadoEval'] != null 
-          ? EstadoEvaluacion.fromString(json['estadoEval']) 
-          : null,
-      createdAt: json['createdAt'] != null 
-          ? DateTime.parse(json['createdAt']) 
-          : DateTime.now(),
-      updatedAt: json['updatedAt'] != null 
-          ? DateTime.parse(json['updatedAt']) 
-          : DateTime.now(),
-      materia: json['materia'] != null 
-          ? Materia.fromJson(json['materia']) 
+      tipoEval: json['tipoeval'] != null 
+          ? TipoEvaluacion.fromString(json['tipoeval']) 
+          : json['tipoEval'] != null 
+              ? TipoEvaluacion.fromString(json['tipoEval']) 
+              : null,
+      materiaId: json['materiaid'] ?? json['materiaId'] ?? '',
+      fechaEval: json['fechaeval'] != null 
+          ? DateTime.parse(json['fechaeval'])
+          : json['fechaEval'] != null 
+              ? DateTime.parse(json['fechaEval']) 
+              : null,
+      notaEval: json['notaeval']?.toDouble() ?? json['notaEval']?.toDouble(),
+      ponderacionEval: json['ponderacioneval']?.toDouble() ?? json['ponderacionEval']?.toDouble(),
+      estadoEval: json['estadoeval'] != null 
+          ? EstadoEvaluacion.fromString(json['estadoeval']) 
+          : json['estadoEval'] != null 
+              ? EstadoEvaluacion.fromString(json['estadoEval']) 
+              : null,
+      createdAt: DateTime.now(), // La tabla examenes no tiene created_at
+      updatedAt: DateTime.now(), // La tabla examenes no tiene updated_at
+      materia: materiaData != null 
+          ? Materia.fromJson(materiaData is Map<String, dynamic> 
+              ? materiaData 
+              : Map<String, dynamic>.from(materiaData))
           : null,
     );
   }
 
   Map<String, dynamic> toJson() {
+    // Convertir a los nombres de la base de datos
     return {
       'id': id,
-      'tipoEval': tipoEval?.value,
-      'materiaId': materiaId,
-      'fechaEval': fechaEval?.toIso8601String().split('T')[0], // Solo fecha
-      'notaEval': notaEval,
-      'ponderacionEval': ponderacionEval,
-      'estadoEval': estadoEval?.value,
+      'tipoeval': tipoEval?.value, // Nombre de BD
+      'materiaid': materiaId, // Nombre de BD
+      'fechaeval': fechaEval?.toIso8601String().split('T')[0], // Solo fecha, nombre de BD
+      'notaeval': notaEval, // Nombre de BD
+      'ponderacioneval': ponderacionEval, // Nombre de BD
+      'estadoeval': estadoEval?.value, // Nombre de BD
     };
   }
 

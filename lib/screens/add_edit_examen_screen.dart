@@ -1089,18 +1089,23 @@ class _AddEditExamenScreenState extends State<AddEditExamenScreen>
               onTap: _isLoading ? null : _saveExamen,
               borderRadius: BorderRadius.circular(20),
               splashColor: Colors.white.withOpacity(0.1),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: _isLoading
-                    ? const SizedBox(
-                        height: 24,
-                        width: 24,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.5,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              child: _isLoading
+                  ? const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      child: Center(
+                        child: SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
                         ),
-                      )
-                    : Row(
+                      ),
+                    )
+                  : Container(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
@@ -1129,7 +1134,7 @@ class _AddEditExamenScreenState extends State<AddEditExamenScreen>
                           ),
                         ],
                       ),
-              ),
+                    ),
             ),
           ),
         ),

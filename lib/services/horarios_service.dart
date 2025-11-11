@@ -1,66 +1,53 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/horario.dart';
-import '../config/api_config.dart';
-import 'auth_service.dart';
 
 class HorariosService {
-  final String baseUrl = ApiConfig.baseUrl;
-  final AuthService _authService = AuthService();
+  final SupabaseClient _supabase = Supabase.instance.client;
 
   // Obtener todos los horarios del usuario
   Future<List<Horario>> getHorarios() async {
     try {
-      final token = await _authService.getToken();
-      if (token == null) {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
         throw Exception('No hay sesión activa');
       }
 
-      final response = await http.get(
-        Uri.parse('$baseUrl/horarios'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
+      final response = await _supabase
+          .from('horarios')
+          .select()
+          .eq('usuario_id', user.id)
+          .order('fechainiciosemestre', ascending: false);
 
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        return data.map((json) => Horario.fromJson(json)).toList();
-      } else {
-        final Map<String, dynamic> errorData = json.decode(response.body);
-        throw Exception(errorData['message'] ?? 'Error al obtener horarios');
+      if (response.isEmpty) {
+        return [];
       }
+
+      return (response as List<dynamic>)
+          .map((json) => Horario.fromJson(json as Map<String, dynamic>))
+          .toList();
     } catch (e) {
-      throw Exception('Error de conexión: ${e.toString()}');
+      throw Exception('Error al obtener horarios: ${e.toString()}');
     }
   }
 
   // Obtener un horario por ID
   Future<Horario> getHorarioById(String id) async {
     try {
-      final token = await _authService.getToken();
-      if (token == null) {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
         throw Exception('No hay sesión activa');
       }
 
-      final response = await http.get(
-        Uri.parse('$baseUrl/horarios/$id'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
+      final response = await _supabase
+          .from('horarios')
+          .select()
+          .eq('id', id)
+          .eq('usuario_id', user.id)
+          .single();
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
-        return Horario.fromJson(data);
-      } else {
-        final Map<String, dynamic> errorData = json.decode(response.body);
-        throw Exception(errorData['message'] ?? 'Error al obtener el horario');
-      }
+      return Horario.fromJson(Map<String, dynamic>.from(response));
     } catch (e) {
-      throw Exception('Error de conexión: ${e.toString()}');
+      throw Exception('Error al obtener el horario: ${e.toString()}');
     }
   }
 
@@ -72,34 +59,28 @@ class HorariosService {
     String? fechafinsemestre,
   }) async {
     try {
-      final token = await _authService.getToken();
-      if (token == null) {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
         throw Exception('No hay sesión activa');
       }
 
-      final response = await http.post(
-        Uri.parse('$baseUrl/horarios'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-        body: json.encode({
-          'nombrehor': nombrehor,
-          'descripcionhor': descripcionhor,
-          'fechainiciosemestre': fechainiciosemestre,
-          'fechafinsemestre': fechafinsemestre,
-        }),
-      );
+      final horarioData = {
+        'usuario_id': user.id,
+        if (nombrehor != null) 'nombrehor': nombrehor,
+        if (descripcionhor != null) 'descripcionhor': descripcionhor,
+        if (fechainiciosemestre != null) 'fechainiciosemestre': fechainiciosemestre,
+        if (fechafinsemestre != null) 'fechafinsemestre': fechafinsemestre,
+      };
 
-      if (response.statusCode == 201) {
-        final Map<String, dynamic> data = json.decode(response.body);
-        return Horario.fromJson(data);
-      } else {
-        final Map<String, dynamic> errorData = json.decode(response.body);
-        throw Exception(errorData['message'] ?? 'Error al crear el horario');
-      }
+      final response = await _supabase
+          .from('horarios')
+          .insert(horarioData)
+          .select()
+          .single();
+
+      return Horario.fromJson(Map<String, dynamic>.from(response));
     } catch (e) {
-      throw Exception('Error de conexión: ${e.toString()}');
+      throw Exception('Error al crear el horario: ${e.toString()}');
     }
   }
 
@@ -112,62 +93,49 @@ class HorariosService {
     String? fechafinsemestre,
   }) async {
     try {
-      final token = await _authService.getToken();
-      if (token == null) {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
         throw Exception('No hay sesión activa');
       }
 
-      final Map<String, dynamic> body = {};
-      if (nombrehor != null) body['nombrehor'] = nombrehor;
-      if (descripcionhor != null) body['descripcionhor'] = descripcionhor;
-      if (fechainiciosemestre != null) body['fechainiciosemestre'] = fechainiciosemestre;
-      if (fechafinsemestre != null) body['fechafinsemestre'] = fechafinsemestre;
+      final updateData = <String, dynamic>{};
+      if (nombrehor != null) updateData['nombrehor'] = nombrehor;
+      if (descripcionhor != null) updateData['descripcionhor'] = descripcionhor;
+      if (fechainiciosemestre != null) updateData['fechainiciosemestre'] = fechainiciosemestre;
+      if (fechafinsemestre != null) updateData['fechafinsemestre'] = fechafinsemestre;
 
-      final response = await http.patch(
-        Uri.parse('$baseUrl/horarios/$id'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-        body: json.encode(body),
-      );
+      final response = await _supabase
+          .from('horarios')
+          .update(updateData)
+          .eq('id', id)
+          .eq('usuario_id', user.id)
+          .select()
+          .single();
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
-        return Horario.fromJson(data);
-      } else {
-        final Map<String, dynamic> errorData = json.decode(response.body);
-        throw Exception(errorData['message'] ?? 'Error al actualizar el horario');
-      }
+      return Horario.fromJson(Map<String, dynamic>.from(response));
     } catch (e) {
-      throw Exception('Error de conexión: ${e.toString()}');
+      throw Exception('Error al actualizar el horario: ${e.toString()}');
     }
   }
 
   // Eliminar un horario
   Future<bool> deleteHorario(String id) async {
     try {
-      final token = await _authService.getToken();
-      if (token == null) {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
         throw Exception('No hay sesión activa');
       }
 
-      final response = await http.delete(
-        Uri.parse('$baseUrl/horarios/$id'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
+      await _supabase
+          .from('horarios')
+          .delete()
+          .eq('id', id)
+          .eq('usuario_id', user.id);
 
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        final Map<String, dynamic> errorData = json.decode(response.body);
-        throw Exception(errorData['message'] ?? 'Error al eliminar el horario');
-      }
+      return true;
     } catch (e) {
-      throw Exception('Error de conexión: ${e.toString()}');
+      throw Exception('Error al eliminar el horario: ${e.toString()}');
     }
   }
+
 }

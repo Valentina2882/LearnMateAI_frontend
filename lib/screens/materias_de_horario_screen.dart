@@ -59,6 +59,23 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
     super.dispose();
   }
 
+  // Función auxiliar para obtener datos de materia desde materiaHorario
+  Map<String, dynamic> _getMateriaData(Map<String, dynamic> materiaHorario) {
+    // Supabase puede devolver 'materias' (plural) o 'materia' (singular) en el join
+    dynamic materiaDataRaw = materiaHorario['materias'] ?? materiaHorario['materia'];
+    Map<String, dynamic> materiaData = {};
+    
+    if (materiaDataRaw != null) {
+      if (materiaDataRaw is Map<String, dynamic>) {
+        materiaData = materiaDataRaw;
+      } else if (materiaDataRaw is Map) {
+        materiaData = Map<String, dynamic>.from(materiaDataRaw);
+      }
+    }
+    
+    return materiaData;
+  }
+
   Future<void> _loadMaterias() async {
     if (!mounted) return;
     
@@ -72,6 +89,9 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
       print('Total materias: ${materias.length}');
       for (var materia in materias) {
         print('Materia completa: $materia');
+        final materiaData = _getMateriaData(materia);
+        print('Materia data extraída: $materiaData');
+        print('Nombre: ${materiaData['nombre']}');
       }
       print('========================');
       
@@ -461,9 +481,9 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: materiasEnCelda.map((materiaHorario) {
-                    final materiaData = materiaHorario['materia'] as Map<String, dynamic>? ?? {};
-                    final nombre = materiaData['nombre'] as String? ?? 'Materia';
-                    final colorHex = materiaData['color'] as String? ?? '#2196F3';
+                    final materiaData = _getMateriaData(materiaHorario);
+                    final nombre = materiaData['nombre']?.toString() ?? 'Materia';
+                    final colorHex = materiaData['color']?.toString() ?? '#2196F3';
                     final aula = materiaHorario['aula'] as String?;
                     
                     return Container(
@@ -545,7 +565,7 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
       final materiaDia = materiaHorario['dia'] as String?;
       final materiaHoraInicio = materiaHorario['hora_inicio'] as String?;
       final materiaHoraFin = materiaHorario['hora_fin'] as String?;
-      final materiaData = materiaHorario['materia'] as Map<String, dynamic>? ?? {};
+      final materiaData = _getMateriaData(materiaHorario);
       final materiaId = materiaData['id'] as String?;
       
       // Ignorar la materia si es la misma que estamos verificando (para edición)
@@ -1039,7 +1059,7 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
     final Map<String, List<Map<String, dynamic>>> materiasAgrupadas = {};
     
     for (var materiaHorario in _materiasHorario) {
-      final materiaData = materiaHorario['materia'] as Map<String, dynamic>? ?? {};
+      final materiaData = _getMateriaData(materiaHorario);
       final materiaId = materiaData['id'] as String?;
       
       if (materiaId != null) {
@@ -1059,9 +1079,9 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
         
         // Usar el primer horario para obtener los datos de la materia
         final materiaHorario = horarios.first;
-        final materiaData = materiaHorario['materia'] as Map<String, dynamic>? ?? {};
-        final nombre = materiaData['nombre'] as String? ?? 'Sin nombre';
-        final colorHex = materiaData['color'] as String? ?? '#2196F3';
+        final materiaData = _getMateriaData(materiaHorario);
+        final nombre = materiaData['nombre']?.toString() ?? 'Sin nombre';
+        final colorHex = materiaData['color']?.toString() ?? '#2196F3';
         final color = Color(int.parse(colorHex.substring(1, 7), radix: 16) + 0xFF000000);
         
         // Construir texto con todos los horarios
@@ -1194,8 +1214,14 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                         
                         try {
                           // Guardar el materia_id antes de eliminar los horarios
-                          final materiaData = materiaHorario['materia'] as Map<String, dynamic>? ?? {};
-                          final materiaId = materiaData['id'] as String;
+                          final materiaData = horarios.isNotEmpty 
+                              ? _getMateriaData(horarios[0])
+                              : _getMateriaData(materiaHorario);
+                          
+                          final materiaId = materiaData['id'] as String?;
+                          if (materiaId == null) {
+                            throw Exception('No se pudo obtener el ID de la materia');
+                          }
                           
                           // Eliminar todos los horarios de esta materia
                           for (var horario in horarios) {
@@ -1241,12 +1267,24 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
   }
 
   void _showEditMateriaModal(Map<String, dynamic> materiaHorario, List<Map<String, dynamic>> horarios) {
-    final materiaData = materiaHorario['materia'] as Map<String, dynamic>? ?? {};
-    final nombre = materiaData['nombre'] as String? ?? '';
-    final codigo = materiaData['codigo'] as String? ?? '';
-    final creditos = materiaData['creditos'] as int? ?? 3;
-    final profesor = materiaData['profesor'] as String? ?? '';
-    final colorHex = materiaData['color'] as String? ?? '#2196F3';
+    // Obtener datos de la materia
+    final materiaData = horarios.isNotEmpty 
+        ? _getMateriaData(horarios[0])
+        : _getMateriaData(materiaHorario);
+    
+    print('=== EDIT MODAL DATA ===');
+    print('Materia data: $materiaData');
+    print('Keys: ${materiaData.keys.toList()}');
+    print('Nombre: ${materiaData['nombre']}');
+    print('=======================');
+    
+    final nombre = materiaData['nombre']?.toString() ?? '';
+    final codigo = materiaData['codigo']?.toString() ?? '';
+    final creditos = (materiaData['creditos'] is int) 
+        ? materiaData['creditos'] as int 
+        : (materiaData['creditos']?.toInt() ?? 3);
+    final profesor = materiaData['profesor']?.toString() ?? '';
+    final colorHex = materiaData['color']?.toString() ?? '#2196F3';
     
     final nombreController = TextEditingController(text: nombre);
     final codigoController = TextEditingController(text: codigo);
@@ -1490,7 +1528,16 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                           );
                                           
                                           try {
-                                            final materiaId = materiaData['id'] as String;
+                                            // Obtener materiaId del primer horario de la lista
+                                            final materiaDataForUpdate = horarios.isNotEmpty 
+                                                ? _getMateriaData(horarios[0])
+                                                : _getMateriaData(materiaHorario);
+                                            
+                                            final materiaId = materiaDataForUpdate['id'] as String?;
+                                            if (materiaId == null) {
+                                              throw Exception('No se pudo obtener el ID de la materia');
+                                            }
+                                            
                                             final creditos = int.tryParse(creditosController.text) ?? 3;
                                             
                                             // Actualizar la materia
@@ -1511,6 +1558,7 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                               await _loadMaterias();
                                             }
                                           } catch (e) {
+                                            print('Error al actualizar materia: $e');
                                             if (mounted && loadingContext != null) {
                                               Navigator.pop(loadingContext!);
                                               _showSnackBar('Error al actualizar: $e');
@@ -1567,17 +1615,28 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
   }
 
   void _showMateriaDetails(Map<String, dynamic> materiaHorario) {
-    final materiaData = materiaHorario['materia'] as Map<String, dynamic>? ?? {};
-    final nombre = materiaData['nombre'] as String? ?? 'Sin nombre';
-    final codigo = materiaData['codigo'] as String? ?? '';
-    final creditos = materiaData['creditos'] as int? ?? 0;
-    final profesor = materiaData['profesor'] as String? ?? '';
-    final colorHex = materiaData['color'] as String? ?? '#2196F3';
-    final dia = materiaHorario['dia'] as String? ?? '';
-    final horaInicio = materiaHorario['hora_inicio'] as String? ?? '';
-    final horaFin = materiaHorario['hora_fin'] as String? ?? '';
-    final aula = materiaHorario['aula'] as String? ?? '';
-    final notas = materiaHorario['notas'] as String? ?? '';
+    // Obtener datos de la materia usando la función auxiliar
+    final materiaData = _getMateriaData(materiaHorario);
+    
+    print('=== MATERIA HORARIO DATA ===');
+    print('Keys: ${materiaHorario.keys.toList()}');
+    print('Materia data: $materiaData');
+    print('Materia keys: ${materiaData.keys.toList()}');
+    print('Nombre: ${materiaData['nombre']}');
+    print('===========================');
+    
+    final nombre = materiaData['nombre']?.toString() ?? 'Sin nombre';
+    final codigo = materiaData['codigo']?.toString() ?? '';
+    final creditos = (materiaData['creditos'] is int) 
+        ? materiaData['creditos'] as int
+        : (materiaData['creditos']?.toInt() ?? 0);
+    final profesor = materiaData['profesor']?.toString() ?? '';
+    final colorHex = materiaData['color']?.toString() ?? '#2196F3';
+    final dia = materiaHorario['dia']?.toString() ?? '';
+    final horaInicio = materiaHorario['hora_inicio']?.toString() ?? '';
+    final horaFin = materiaHorario['hora_fin']?.toString() ?? '';
+    final aula = materiaHorario['aula']?.toString() ?? '';
+    final notas = materiaHorario['notas']?.toString() ?? '';
     
     // Guardar el contexto del widget antes de abrir el modal
     final widgetContext = context;
@@ -1753,13 +1812,13 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                         Navigator.pop(modalContext);
                                         
                                         // Obtener todos los horarios de esta materia
-                                        final materiaData = materiaHorario['materia'] as Map<String, dynamic>? ?? {};
+                                        final materiaData = _getMateriaData(materiaHorario);
                                         final materiaId = materiaData['id'] as String?;
                                         
                                         if (materiaId != null && mounted) {
                                           // Filtrar todos los horarios de esta materia
                                           final horariosDeMateria = _materiasHorario.where((mh) {
-                                            final mData = mh['materia'] as Map<String, dynamic>? ?? {};
+                                            final mData = _getMateriaData(mh);
                                             final mId = mData['id'] as String?;
                                             return mId == materiaId;
                                           }).toList();

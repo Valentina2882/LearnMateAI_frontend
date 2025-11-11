@@ -1,70 +1,92 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-import '../models/user.dart';
-import '../models/auth_response.dart';
-import '../models/login_request.dart';
-import '../config/api_config.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../models/user.dart' as models;
+import '../models/auth_response.dart' as models;
 
 class AuthService {
-  static String get baseUrl => ApiConfig.baseUrl;
-  static const String loginEndpoint = '/auth/login';
-  static const String registerEndpoint = '/auth/register';
-  static const String profileEndpoint = '/auth/profile';
-  static const String completeProfileEndpoint = '/auth/profile/complete';
-  
-  static const String _tokenKey = 'auth_token';
-  static const String _userKey = 'user_data';
+  final SupabaseClient _supabase = Supabase.instance.client;
 
-  // Login
-  Future<AuthResponse> login(String email, String password) async {
+  // Obtener el usuario actual de Supabase Auth
+  User? get currentUser => _supabase.auth.currentUser;
+
+  // Verificar si el usuario está autenticado
+  Future<bool> isAuthenticated() async {
+    return _supabase.auth.currentUser != null;
+  }
+
+  // Obtener token (para compatibilidad con código existente)
+  Future<String?> getToken() async {
+    final session = _supabase.auth.currentSession;
+    return session?.accessToken;
+  }
+
+  // Login con Supabase Auth
+  Future<models.AuthResponse> login(String email, String password) async {
     try {
-      print('🔐 [AuthService] Intentando login');
-      print('🔐 [AuthService] URL: $baseUrl$loginEndpoint');
-      final response = await http.post(
-        Uri.parse('$baseUrl$loginEndpoint'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: json.encode(LoginRequest(
-          email: email,
-          password: password,
-        ).toJson()),
+      print('🔐 [AuthService] Intentando login con Supabase');
+      
+      // Normalizar el email: trim y convertir a minúsculas
+      final normalizedEmail = email.trim().toLowerCase();
+      
+      final response = await _supabase.auth.signInWithPassword(
+        email: normalizedEmail,
+        password: password,
       );
 
-      print('🔐 [AuthService] Status code: ${response.statusCode}');
-      final Map<String, dynamic> data = json.decode(response.body);
-      
-      if (response.statusCode == 200) {
+      if (response.user != null) {
         print('🔐 [AuthService] ✅ Login exitoso');
-        final authResponse = AuthResponse.fromJson(data);
         
-        if (authResponse.success && authResponse.token != null) {
-          // Guardar token y datos del usuario
-          await _saveAuthData(authResponse.token!, authResponse.user!);
+        // Obtener perfil del usuario desde la tabla usuarios
+        final user = await getProfile();
+        
+        if (user != null) {
+          return models.AuthResponse(
+            success: true,
+            token: response.session?.accessToken,
+            user: user,
+          );
+        } else {
+          // Si no tiene perfil, crear uno básico
+          return models.AuthResponse(
+            success: true,
+            token: response.session?.accessToken,
+            user: models.User(
+              id: response.user!.id,
+              email: response.user!.email ?? normalizedEmail,
+              nombre: response.user!.userMetadata?['nombre'] ?? response.user!.email?.split('@')[0] ?? 'Usuario',
+              apellido: response.user!.userMetadata?['apellido'],
+              telefono: response.user!.userMetadata?['telefono'],
+              carrera: response.user!.userMetadata?['carrera'],
+              semestre: response.user!.userMetadata?['semestre'],
+              sistemaCalificacion: response.user!.userMetadata?['sistemaCalificacion'] ?? 5,
+              profileCompleted: false,
+              createdAt: DateTime.now(),
+              updatedAt: DateTime.now(),
+            ),
+          );
         }
-        
-        return authResponse;
       } else {
-        print('🔐 [AuthService] ❌ Login fallido: ${data['message']}');
-        return AuthResponse(
+        return models.AuthResponse(
           success: false,
-          error: data['message'] ?? 'Error en el servidor',
+          error: 'Error al iniciar sesión',
         );
       }
-    } catch (e, stackTrace) {
+    } on AuthException catch (e) {
+      print('🔐 [AuthService] ❌ Error de autenticación: ${e.message}');
+      return models.AuthResponse(
+        success: false,
+        error: e.message,
+      );
+    } catch (e) {
       print('🔐 [AuthService] ❌❌❌ ERROR en login: $e');
-      print('🔐 [AuthService] Stack trace: $stackTrace');
-      print('🔐 [AuthService] URL intentada: $baseUrl$loginEndpoint');
-      return AuthResponse(
+      return models.AuthResponse(
         success: false,
         error: 'Error de conexión: ${e.toString()}',
       );
     }
   }
 
-  // Registro
-  Future<AuthResponse> register({
+  // Registro con Supabase Auth
+  Future<models.AuthResponse> register({
     required String email,
     required String password,
     required String nombre,
@@ -75,80 +97,171 @@ class AuthService {
     int? sistemaCalificacion,
   }) async {
     try {
-      print('🔐 [AuthService] Registrando usuario');
+      print('🔐 [AuthService] Registrando usuario con Supabase');
       
-      // Solo enviar los campos básicos requeridos
-      final body = <String, dynamic>{
-        'email': email,
-        'password': password,
-        'nombre': nombre,
-      };
+      // Normalizar el email: trim y convertir a minúsculas
+      final normalizedEmail = email.trim().toLowerCase();
+      print('🔐 [AuthService] Email original: "$email"');
+      print('🔐 [AuthService] Email normalizado: "$normalizedEmail"');
+      print('🔐 [AuthService] Longitud del email: ${normalizedEmail.length}');
+      print('🔐 [AuthService] Bytes del email: ${normalizedEmail.codeUnits}');
       
-      // Solo agregar campos opcionales si tienen valor
-      if (apellido != null && apellido.isNotEmpty) body['apellido'] = apellido;
-      if (telefono != null && telefono.isNotEmpty) body['telefono'] = telefono;
-      if (carrera != null && carrera.isNotEmpty) body['carrera'] = carrera;
-      if (semestre != null) body['semestre'] = semestre;
-      if (sistemaCalificacion != null) body['sistemaCalificacion'] = sistemaCalificacion;
-      
-      final response = await http.post(
-        Uri.parse('$baseUrl$registerEndpoint'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: json.encode(body),
-      );
-
-      final Map<String, dynamic> data = json.decode(response.body);
-      
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        final authResponse = AuthResponse.fromJson(data);
-        
-        if (authResponse.success && authResponse.token != null) {
-          await _saveAuthData(authResponse.token!, authResponse.user!);
-        }
-        
-        return authResponse;
-      } else {
-        return AuthResponse(
+      // Validar formato de email básico
+      if (!RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(normalizedEmail)) {
+        print('🔐 [AuthService] ❌ Validación local falló');
+        return models.AuthResponse(
           success: false,
-          error: data['message'] ?? 'Error en el servidor',
+          error: 'El formato del email no es válido',
         );
       }
-    } catch (e) {
-      return AuthResponse(
+      
+      print('🔐 [AuthService] ✅ Validación local pasada, intentando registro con Supabase...');
+      
+      // Registrar usuario en Supabase Auth
+      // Nota: El metadata de Auth puede usar 'carrera', pero en la BD usamos 'carrerausu'
+      final response = await _supabase.auth.signUp(
+        email: normalizedEmail,
+        password: password,
+        data: {
+          'nombre': nombre,
+          if (apellido != null) 'apellido': apellido,
+          if (telefono != null) 'telefono': telefono,
+          if (carrera != null) 'carrera': carrera, // Metadata de Auth (puede usar 'carrera')
+          if (semestre != null) 'semestre': semestre, // Metadata de Auth (puede usar 'semestre')
+          if (sistemaCalificacion != null) 'sistemaCalificacion': sistemaCalificacion,
+        },
+      );
+
+      if (response.user != null) {
+        print('🔐 [AuthService] ✅ Usuario registrado en Auth');
+        
+        // Crear perfil en la tabla usuarios
+        // IMPORTANTE: Usar solo los nombres de campos que existen en la BD
+        final userData = {
+          'id': response.user!.id,
+          'email': normalizedEmail,
+          'nombre': nombre,
+          'nombreusu': nombre, // Campo requerido en BD
+          'contrasenausu': '', // No almacenamos contraseña aquí, está en Auth
+          if (apellido != null) 'apellido': apellido,
+          if (telefono != null) 'telefono': telefono,
+          if (carrera != null) 'carrerausu': carrera, // Solo carrerausu (no existe 'carrera' en BD)
+          if (semestre != null) 'semestreusu': semestre, // Solo semestreusu (no existe 'semestre' en BD)
+          if (sistemaCalificacion != null) 'sistemacalificacion': sistemaCalificacion,
+          'profile_completed': false,
+          'fechacreacion': DateTime.now().toIso8601String(),
+          'fechaactualizacion': DateTime.now().toIso8601String(),
+        };
+
+        try {
+          await _supabase
+              .from('usuarios')
+              .insert(userData);
+        } catch (e) {
+          print('🔐 [AuthService] ⚠️ Error al crear perfil: $e');
+          // Continuar de todas formas, el usuario ya está registrado en Auth
+        }
+
+        final user = models.User(
+          id: response.user!.id,
+          email: normalizedEmail,
+          nombre: nombre,
+          apellido: apellido,
+          telefono: telefono,
+          carrera: carrera,
+          semestre: semestre,
+          sistemaCalificacion: sistemaCalificacion ?? 5,
+          profileCompleted: false,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+
+        return models.AuthResponse(
+          success: true,
+          token: response.session?.accessToken,
+          user: user,
+        );
+      } else {
+        return models.AuthResponse(
+          success: false,
+          error: 'Error al registrar usuario',
+        );
+      }
+    } on AuthException catch (e) {
+      print('🔐 [AuthService] ❌ Error de registro (AuthException):');
+      print('   - Mensaje: ${e.message}');
+      print('   - Tipo: ${e.runtimeType}');
+      print('   - Error completo: $e');
+      
+      // Proporcionar mensajes de error más amigables
+      String errorMessage = e.message;
+      final lowerMessage = e.message.toLowerCase();
+      
+      // Verificar si el email ya existe (a veces Supabase dice "invalid" cuando ya existe)
+      if (lowerMessage.contains('already registered') || 
+          lowerMessage.contains('user already exists') ||
+          lowerMessage.contains('already exists') ||
+          lowerMessage.contains('email already registered')) {
+        errorMessage = 'Este email ya está registrado. Intenta iniciar sesión en su lugar.';
+      } else if (lowerMessage.contains('invalid') && 
+                 lowerMessage.contains('email')) {
+        // Error específico: email_address_invalid (código 400)
+        // Causado por: SMTP predeterminado de Supabase solo permite emails a miembros del equipo
+        errorMessage = 'No se pudo registrar el email.\n\n'
+            '🔧 Soluciones (SIN configurar SMTP):\n\n'
+            '1. DESHABILITAR confirmación de email:\n'
+            '   Authentication > Settings > Desactiva "Enable email confirmations"\n\n'
+            '2. Agregar email al equipo:\n'
+            '   Settings > Team > Invite Member > Agrega este email\n\n'
+            '💡 La opción 1 es la más rápida si no necesitas confirmación de email.';
+      } else if (lowerMessage.contains('password')) {
+        errorMessage = 'La contraseña no cumple con los requisitos. Debe tener al menos 6 caracteres.';
+      } else if (lowerMessage.contains('rate limit') || lowerMessage.contains('too many')) {
+        errorMessage = 'Demasiados intentos. Espera un momento e intenta de nuevo.';
+      }
+      
+      return models.AuthResponse(
+        success: false,
+        error: errorMessage,
+      );
+    } catch (e, stackTrace) {
+      print('🔐 [AuthService] ❌❌❌ ERROR en register: $e');
+      print('🔐 [AuthService] Stack trace: $stackTrace');
+      return models.AuthResponse(
         success: false,
         error: 'Error de conexión: ${e.toString()}',
       );
     }
   }
 
-  // Obtener perfil del usuario
-  Future<User?> getProfile() async {
+  // Obtener perfil del usuario desde la tabla usuarios
+  Future<models.User?> getProfile() async {
     try {
-      final token = await getToken();
-      if (token == null) return null;
+      final user = _supabase.auth.currentUser;
+      if (user == null) return null;
 
-      final response = await http.get(
-        Uri.parse('$baseUrl$profileEndpoint'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
+      final response = await _supabase
+          .from('usuarios')
+          .select()
+          .eq('id', user.id)
+          .single();
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
-        return User.fromJson(data);
-      }
-      return null;
+      final data = Map<String, dynamic>.from(response);
+      // Usar User.fromJson que ya maneja correctamente los nombres de la BD
+      return models.User.fromJson(data);
     } catch (e) {
+      print('🔐 [AuthService] Error al obtener perfil: $e');
       return null;
     }
   }
 
+  // Obtener datos del usuario guardados (para compatibilidad)
+  Future<models.User?> getStoredUser() async {
+    return getProfile();
+  }
+
   // Completar perfil del usuario
-  Future<AuthResponse> completeProfile({
+  Future<models.AuthResponse> completeProfile({
     String? nombre,
     String? apellido,
     String? telefono,
@@ -157,75 +270,78 @@ class AuthService {
     int? sistemaCalificacion,
   }) async {
     try {
-      final token = await getToken();
-      if (token == null) {
-        return AuthResponse(
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        return models.AuthResponse(
           success: false,
           error: 'No hay sesión activa',
         );
       }
 
-      // En completeProfile, todos los campos son obligatorios
-      // Ya se validan en el frontend antes de llamar a este método
-      final body = <String, dynamic>{
-        'nombre': nombre,
-        'apellido': apellido,
-        'telefono': telefono,
-        'carrera': carrera,
-        'semestre': semestre,
-        'sistemaCalificacion': sistemaCalificacion,
+      final updateData = <String, dynamic>{
+        'fechaactualizacion': DateTime.now().toIso8601String(),
+        'profile_completed': true,
       };
 
-      final response = await http.patch(
-        Uri.parse('$baseUrl$completeProfileEndpoint'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-        body: json.encode(body),
+      if (nombre != null) {
+        updateData['nombre'] = nombre;
+        updateData['nombreusu'] = nombre;
+      }
+      if (apellido != null) updateData['apellido'] = apellido;
+      if (telefono != null) updateData['telefono'] = telefono;
+      if (carrera != null) {
+        // Solo usar 'carrerausu' en la BD (no existe 'carrera' en la tabla usuarios)
+        updateData['carrerausu'] = carrera;
+      }
+      if (semestre != null) {
+        // Solo usar 'semestreusu' en la BD (no existe 'semestre' en la tabla usuarios)
+        updateData['semestreusu'] = semestre;
+      }
+      if (sistemaCalificacion != null) {
+        updateData['sistemacalificacion'] = sistemaCalificacion;
+      }
+
+      final response = await _supabase
+          .from('usuarios')
+          .update(updateData)
+          .eq('id', user.id)
+          .select()
+          .single();
+
+      final data = Map<String, dynamic>.from(response);
+
+      // Actualizar metadata del usuario en Auth
+      // Nota: El metadata de Auth puede usar 'carrera' y 'semestre' (diferente de la BD)
+      await _supabase.auth.updateUser(
+        UserAttributes(
+          data: {
+            'nombre': nombre ?? data['nombre'],
+            if (apellido != null) 'apellido': apellido,
+            if (telefono != null) 'telefono': telefono,
+            if (carrera != null) 'carrera': carrera, // Metadata de Auth (puede usar 'carrera')
+            if (semestre != null) 'semestre': semestre, // Metadata de Auth (puede usar 'semestre')
+            if (sistemaCalificacion != null) 'sistemaCalificacion': sistemaCalificacion,
+          },
+        ),
       );
 
-      final Map<String, dynamic> data = json.decode(response.body);
-      
-      if (response.statusCode == 200) {
-        final updatedUser = User.fromJson(data);
-        // Actualizar datos del usuario guardados
-        await _saveAuthData(token, updatedUser);
-        return AuthResponse(
-          success: true,
-          user: updatedUser,
-        );
-      } else {
-        // Extraer el mensaje de error del backend
-        String errorMessage = 'Error al completar el perfil';
-        if (data.containsKey('message')) {
-          errorMessage = data['message'];
-        } else if (data.containsKey('error')) {
-          errorMessage = data['error'];
-        }
-        return AuthResponse(
-          success: false,
-          error: errorMessage,
-        );
-      }
+      // Usar User.fromJson que ya maneja correctamente los nombres de la BD
+      final updatedUser = models.User.fromJson(data);
+
+      return models.AuthResponse(
+        success: true,
+        user: updatedUser,
+      );
     } catch (e) {
-      // Capturar errores de formato JSON o de conexión
-      String errorMessage = 'Error de conexión: ${e.toString()}';
-      
-      // Si es un error de formato, intentar parsear el body de la respuesta
-      if (e.toString().contains('FormatException') || e.toString().contains('Bad state')) {
-        errorMessage = 'Error al procesar la respuesta del servidor';
-      }
-      
-      return AuthResponse(
+      return models.AuthResponse(
         success: false,
-        error: errorMessage,
+        error: 'Error de conexión: ${e.toString()}',
       );
     }
   }
 
   // Actualizar perfil del usuario
-  Future<AuthResponse> updateProfile({
+  Future<models.AuthResponse> updateProfile({
     String? nombre,
     String? apellido,
     String? telefono,
@@ -233,115 +349,88 @@ class AuthService {
     int? semestre,
   }) async {
     try {
-      final token = await getToken();
-      if (token == null) {
-        return AuthResponse(
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        return models.AuthResponse(
           success: false,
           error: 'No hay sesión activa',
         );
       }
 
-      final body = <String, dynamic>{};
-      if (nombre != null && nombre.isNotEmpty) body['nombre'] = nombre;
-      if (apellido != null && apellido.isNotEmpty) body['apellido'] = apellido;
-      if (telefono != null && telefono.isNotEmpty) body['telefono'] = telefono;
-      if (carrera != null && carrera.isNotEmpty) body['carrera'] = carrera;
-      if (semestre != null) body['semestre'] = semestre;
+      final updateData = <String, dynamic>{
+        'fechaactualizacion': DateTime.now().toIso8601String(),
+      };
 
-      final response = await http.patch(
-        Uri.parse('$baseUrl$profileEndpoint'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-        body: json.encode(body),
-      );
-
-      final Map<String, dynamic> data = json.decode(response.body);
-      
-      if (response.statusCode == 200) {
-        final updatedUser = User.fromJson(data);
-        // Actualizar datos del usuario guardados
-        await _saveAuthData(token, updatedUser);
-        return AuthResponse(
-          success: true,
-          user: updatedUser,
-        );
-      } else {
-        return AuthResponse(
-          success: false,
-          error: data['message'] ?? 'Error al actualizar el perfil',
-        );
+      if (nombre != null) {
+        updateData['nombre'] = nombre;
+        updateData['nombreusu'] = nombre;
       }
+      if (apellido != null) updateData['apellido'] = apellido;
+      if (telefono != null) updateData['telefono'] = telefono;
+      if (carrera != null) {
+        updateData['carrerausu'] = carrera; // Solo carrerausu (no existe 'carrera' en BD)
+      }
+      if (semestre != null) {
+        updateData['semestreusu'] = semestre; // Solo semestreusu (no existe 'semestre' en BD)
+      }
+
+      final response = await _supabase
+        .from('usuarios')
+        .update(updateData)
+        .eq('id', user.id)
+        .select()
+        .single();
+
+      final data = Map<String, dynamic>.from(response);
+
+      // Usar User.fromJson que ya maneja correctamente los nombres de la BD
+      final updatedUser = models.User.fromJson(data);
+
+      return models.AuthResponse(
+        success: true,
+        user: updatedUser,
+      );
     } catch (e) {
-      return AuthResponse(
+      return models.AuthResponse(
         success: false,
         error: 'Error de conexión: ${e.toString()}',
       );
     }
   }
 
-  // Verificar si el usuario está autenticado
-  Future<bool> isAuthenticated() async {
-    final token = await getToken();
-    return token != null;
-  }
-
-  // Obtener token guardado
-  Future<String?> getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_tokenKey);
-  }
-
-  // Obtener datos del usuario guardados
-  Future<User?> getStoredUser() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userJson = prefs.getString(_userKey);
-    if (userJson != null) {
-      return User.fromJson(json.decode(userJson));
-    }
-    return null;
-  }
-
   // Eliminar perfil
-  Future<AuthResponse> deleteProfile() async {
+  Future<models.AuthResponse> deleteProfile() async {
     try {
-      final token = await getToken();
-      if (token == null) {
-        return AuthResponse(
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        return models.AuthResponse(
           success: false,
           error: 'No hay sesión activa',
         );
       }
 
-      final response = await http.delete(
-        Uri.parse('$baseUrl$profileEndpoint'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
-
-      // Limpiar datos locales primero, antes de verificar la respuesta
-      await logout();
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
-        return AuthResponse(
-          success: data['success'] ?? true,
-          message: data['message'] ?? 'Perfil eliminado exitosamente',
-        );
-      } else {
-        final Map<String, dynamic> data = json.decode(response.body);
-        return AuthResponse(
-          success: false,
-          error: data['message'] ?? 'Error al eliminar el perfil',
-        );
+      // Eliminar perfil de la tabla usuarios
+      // Nota: No podemos eliminar el usuario de Auth desde el cliente
+      // Se debería hacer desde una función edge o marcar como eliminado
+      try {
+        await _supabase
+            .from('usuarios')
+            .delete()
+            .eq('id', user.id);
+      } catch (e) {
+        print('⚠️ Error al eliminar perfil: $e');
       }
-    } catch (e) {
-      // Asegurar que siempre limpiamos los datos locales
+
+      // Cerrar sesión
       await logout();
-      return AuthResponse(
+
+      return models.AuthResponse(
+        success: true,
+        message: 'Perfil eliminado exitosamente',
+      );
+    } catch (e) {
+      await logout(); // Asegurar que siempre cerramos sesión
+      return models.AuthResponse(
         success: false,
         error: 'Error de conexión: ${e.toString()}',
       );
@@ -350,15 +439,6 @@ class AuthService {
 
   // Cerrar sesión
   Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_tokenKey);
-    await prefs.remove(_userKey);
-  }
-
-  // Guardar datos de autenticación
-  Future<void> _saveAuthData(String token, User user) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_tokenKey, token);
-    await prefs.setString(_userKey, json.encode(user.toJson()));
+    await _supabase.auth.signOut();
   }
 }

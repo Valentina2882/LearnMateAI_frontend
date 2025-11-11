@@ -521,10 +521,12 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeOutBack,
       builder: (context, double value, child) {
+        // Asegurar que la opacidad y escala estén en el rango válido
+        final clampedValue = value.clamp(0.0, 1.0);
         return Transform.scale(
-          scale: value,
+          scale: clampedValue,
           child: Opacity(
-            opacity: value,
+            opacity: clampedValue,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
               child: BackdropFilter(

@@ -78,14 +78,14 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
               Expanded(
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 28.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Column(
                     children: [
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 12),
                       _buildHeader(),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 20),
                       _buildRegisterCard(),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 20),
                     ],
                   ),
                 ),
@@ -135,55 +135,55 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
       child: Column(
         children: [
           Container(
-            width: 90,
-            height: 90,
+            width: 65,
+            height: 65,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.purple[400]!,
-                  Colors.deepPurple[600]!,
+                  Colors.purple[300]!,
+                  Colors.deepPurple[400]!,
                 ],
               ),
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(18),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.purple.withOpacity(0.5),
-                  blurRadius: 30,
-                  offset: const Offset(0, 15),
+                  color: Colors.purple.withOpacity(0.2),
+                  blurRadius: 15,
+                  offset: const Offset(0, 6),
                 ),
               ],
             ),
             child: const Icon(
               Icons.person_add_rounded,
               color: Colors.white,
-              size: 45,
+              size: 32,
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 14),
           ShaderMask(
             shaderCallback: (bounds) => LinearGradient(
               colors: [
-                Colors.purple[300]!,
+                Colors.purple[200]!,
                 Colors.white,
               ],
             ).createShader(bounds),
             child: const Text(
               'Crear Cuenta',
               style: TextStyle(
-                fontSize: 36,
-                fontWeight: FontWeight.w900,
+                fontSize: 28,
+                fontWeight: FontWeight.w700,
                 color: Colors.white,
-                letterSpacing: 0.5,
+                letterSpacing: 0.3,
               ),
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 6),
           Text(
             'Únete a la comunidad 🚀',
             style: TextStyle(
-              fontSize: 17,
-              color: Colors.white.withOpacity(0.8),
-              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              color: Colors.white.withOpacity(0.6),
+              fontWeight: FontWeight.w400,
             ),
           ),
         ],
@@ -201,26 +201,26 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
             child: Container(
-              padding: const EdgeInsets.all(28),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Colors.white.withOpacity(0.2),
-                    Colors.white.withOpacity(0.1),
+                    Colors.white.withOpacity(0.15),
+                    Colors.white.withOpacity(0.08),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(32),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.2),
-                  width: 1.5,
+                  color: Colors.white.withOpacity(0.15),
+                  width: 1,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 40,
-                    offset: const Offset(0, 20),
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 30,
+                    offset: const Offset(0, 10),
                   ),
                 ],
               ),
@@ -229,10 +229,6 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Información básica
-                    _buildSectionTitle('Información Básica', Icons.person_rounded, [Colors.cyan[400]!, Colors.blue[600]!]),
-                    const SizedBox(height: 18),
-                    
                     _buildGlassTextField(
                       controller: _nombreController,
                       label: 'Nombre',
@@ -246,7 +242,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                       },
                     ),
                     
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     
                     _buildGlassTextField(
                       controller: _emailController,
@@ -265,11 +261,8 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                       },
                     ),
                     
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 12),
                     
-                    // Seguridad
-                    _buildSectionTitle('Seguridad', Icons.security_rounded, [Colors.purple[400]!, Colors.deepPurple[600]!]),
-                    const SizedBox(height: 18),
                     
                     _buildGlassTextField(
                       controller: _passwordController,
@@ -299,7 +292,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                       },
                     ),
                     
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     
                     _buildGlassTextField(
                       controller: _confirmPasswordController,
@@ -329,7 +322,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                       },
                     ),
                     
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 20),
                     
                     // Botón de registro
                     _buildRegisterButton(),
@@ -360,44 +353,6 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
     );
   }
 
-  Widget _buildSectionTitle(String title, IconData icon, List<Color> gradientColors) {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: gradientColors,
-            ),
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: gradientColors[0].withOpacity(0.4),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Icon(
-            icon,
-            color: Colors.white,
-            size: 20,
-          ),
-        ),
-        const SizedBox(width: 14),
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w800,
-            color: Colors.white,
-            letterSpacing: 0.3,
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildGlassTextField({
     required TextEditingController controller,
     required String label,
@@ -413,7 +368,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
       obscureText: obscureText,
       keyboardType: keyboardType,
       style: const TextStyle(
-        fontSize: 15,
+        fontSize: 14,
         color: Colors.white,
         fontWeight: FontWeight.w500,
       ),
@@ -421,41 +376,44 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
         labelText: label,
         hintText: hint,
         labelStyle: TextStyle(
-          color: Colors.white.withOpacity(0.8),
-          fontWeight: FontWeight.w500,
+          color: Colors.white.withOpacity(0.7),
+          fontWeight: FontWeight.w400,
+          fontSize: 13,
         ),
         hintStyle: TextStyle(
-          color: Colors.white.withOpacity(0.4),
+          color: Colors.white.withOpacity(0.35),
+          fontSize: 13,
         ),
-        prefixIcon: Icon(icon, color: Colors.cyan[300], size: 22),
+        prefixIcon: Icon(icon, color: Colors.cyan[200], size: 20),
         suffixIcon: suffixIcon,
         filled: true,
-        fillColor: Colors.white.withOpacity(0.1),
+        fillColor: Colors.white.withOpacity(0.08),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.2)),
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0.15)),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.2), width: 1.5),
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0.15), width: 1),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Colors.cyan[300]!, width: 2),
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: Colors.cyan[200]!, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Colors.red[300]!, width: 2),
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: Colors.red[200]!, width: 1.5),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Colors.red[300]!, width: 2),
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: Colors.red[200]!, width: 1.5),
         ),
         errorStyle: TextStyle(
           color: Colors.red[300],
           fontWeight: FontWeight.w500,
+          fontSize: 11,
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
       validator: validator,
     );
@@ -465,20 +423,20 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
     return Consumer<AuthProvider>(
       builder: (context, authProvider, child) {
         return Container(
-          height: 60,
+          height: 50,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Colors.purple[400]!,
-                Colors.deepPurple[600]!,
+                Colors.purple[300]!,
+                Colors.deepPurple[400]!,
               ],
             ),
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(14),
             boxShadow: [
               BoxShadow(
-                color: Colors.purple.withOpacity(0.5),
-                blurRadius: 25,
-                offset: const Offset(0, 12),
+                color: Colors.purple.withOpacity(0.25),
+                blurRadius: 15,
+                offset: const Offset(0, 6),
               ),
             ],
           ),
@@ -488,25 +446,25 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
               backgroundColor: Colors.transparent,
               shadowColor: Colors.transparent,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(14),
               ),
             ),
             child: authProvider.isLoading
                 ? const SizedBox(
-                    width: 26,
-                    height: 26,
+                    width: 22,
+                    height: 22,
                     child: CircularProgressIndicator(
-                      strokeWidth: 3,
+                      strokeWidth: 2.5,
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
                   )
                 : const Text(
                     'Crear Cuenta',
                     style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
                       color: Colors.white,
-                      letterSpacing: 1.0,
+                      letterSpacing: 0.5,
                     ),
                   ),
           ),
@@ -516,6 +474,16 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
   }
 
   Widget _buildErrorMessage(String error) {
+    // Determinar el icono según el tipo de error
+    IconData errorIcon = Icons.error_outline_rounded;
+    if (error.contains('internet') || error.contains('conexión') || error.contains('red')) {
+      errorIcon = Icons.wifi_off_rounded;
+    } else if (error.contains('contraseña')) {
+      errorIcon = Icons.lock_outline_rounded;
+    } else if (error.contains('email')) {
+      errorIcon = Icons.email_outlined;
+    }
+    
     return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0, end: 1),
       duration: const Duration(milliseconds: 400),
@@ -528,17 +496,17 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
           child: Opacity(
             opacity: clampedValue,
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(14),
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                 child: Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: Colors.red[400]!.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(16),
+                    color: Colors.red[400]!.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                      color: Colors.red[300]!.withOpacity(0.5),
-                      width: 1.5,
+                      color: Colors.red[200]!.withOpacity(0.3),
+                      width: 1,
                     ),
                   ),
                   child: Row(
@@ -546,23 +514,24 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Colors.red[400]!.withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.red[300]!.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         child: Icon(
-                          Icons.error_outline_rounded,
+                          errorIcon,
                           color: Colors.red[100],
-                          size: 24,
+                          size: 20,
                         ),
                       ),
-                      const SizedBox(width: 14),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: Text(
                           error,
                           style: TextStyle(
                             color: Colors.red[50],
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            height: 1.4,
                           ),
                         ),
                       ),
@@ -581,16 +550,16 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
     return FadeTransition(
       opacity: _fadeAnimation,
       child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             Text(
               '¿Ya tienes cuenta? ',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.8),
-                fontSize: 15,
-                fontWeight: FontWeight.w400,
+                color: Colors.white.withOpacity(0.6),
+                fontSize: 13,
+                fontWeight: FontWeight.w300,
               ),
             ),
             GestureDetector(
@@ -598,11 +567,12 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
               child: Text(
                 'Inicia sesión',
                 style: TextStyle(
-                  color: Colors.purple[300],
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
+                  color: Colors.purple[200],
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
                   decoration: TextDecoration.underline,
-                  decorationColor: Colors.purple[300],
+                  decorationColor: Colors.purple[200]!.withOpacity(0.5),
+                  decorationThickness: 1,
                 ),
               ),
             ),

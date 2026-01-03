@@ -34,6 +34,9 @@ class _ExamenesScreenState extends State<ExamenesScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
+    _tabController.addListener(() {
+      setState(() {});
+    });
     _animController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600),
@@ -118,16 +121,17 @@ class _ExamenesScreenState extends State<ExamenesScreen>
         ),
       ),
       floatingActionButton: Container(
+        height: 44,
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [AppColors.celeste, AppColors.verdeAzulado],
+            colors: [AppColors.examenesPrimary, AppColors.examenesSecondary],
           ),
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(22),
           boxShadow: [
             BoxShadow(
-              color: AppColors.celeste.withOpacity(0.4),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
+              color: AppColors.examenesPrimary.withOpacity(0.3),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -156,12 +160,15 @@ class _ExamenesScreenState extends State<ExamenesScreen>
           },
           backgroundColor: Colors.transparent,
           elevation: 0,
-          icon: const Icon(Icons.add_rounded),
+          extendedPadding: const EdgeInsets.symmetric(horizontal: 16),
+          icon: const Icon(Icons.add_rounded, size: 18, color: Colors.white),
           label: const Text(
             'Nuevo Examen',
             style: TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              fontSize: 13,
+              letterSpacing: 0.2,
+              color: Colors.white,
             ),
           ),
         ),
@@ -171,83 +178,85 @@ class _ExamenesScreenState extends State<ExamenesScreen>
 
   Widget _buildAppBar(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
       child: Row(
         children: [
           ClipOval(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
-                width: 36,
-                height: 36,
+                width: 28,
+                height: 28,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
+                  color: Colors.white.withOpacity(0.08),
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.2),
-                    width: 1.5,
+                    color: Colors.white.withOpacity(0.15),
+                    width: 1,
                   ),
                 ),
                 child: IconButton(
                   padding: EdgeInsets.zero,
-                  icon: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 18),
+                  icon: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 14),
                   onPressed: () => Navigator.pop(context),
                 ),
               ),
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 8),
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.celeste,
-                  AppColors.verdeAzulado,
+                  AppColors.examenesPrimary,
+                  AppColors.examenesSecondary,
                 ],
               ),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.celeste.withOpacity(0.4),
-                  blurRadius: 15,
-                  offset: const Offset(0, 6),
+                  color: AppColors.examenesPrimary.withOpacity(0.2),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
             child: const Icon(
               Icons.quiz_rounded,
               color: Colors.white,
-              size: 24,
+              size: 16,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 8),
           const Expanded(
             child: Text(
               'Exámenes',
               style: TextStyle(
                 color: Colors.white,
-                fontWeight: FontWeight.w800,
-                fontSize: 26,
-                letterSpacing: 0.5,
+                fontWeight: FontWeight.w700,
+                fontSize: 17,
+                letterSpacing: 0.3,
               ),
             ),
           ),
           ClipRRect(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(8),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(14),
+                  color: Colors.white.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.2),
-                    width: 1.5,
+                    color: Colors.white.withOpacity(0.15),
+                    width: 1,
                   ),
                 ),
                 child: IconButton(
-                  icon: const Icon(Icons.bar_chart_rounded, color: Colors.white),
+                  icon: const Icon(Icons.bar_chart_rounded, color: Colors.white, size: 16),
+                  padding: const EdgeInsets.all(6),
+                  constraints: const BoxConstraints(),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -267,48 +276,127 @@ class _ExamenesScreenState extends State<ExamenesScreen>
 
   Widget _buildTabBar() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white.withOpacity(0.2),
-                  Colors.white.withOpacity(0.1),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.2),
-                width: 1.5,
-              ),
-            ),
-            child: TabBar(
-              controller: _tabController,
-              indicator: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [AppColors.celeste, AppColors.verdeAzulado],
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        children: [
+          // Primera fila
+          Row(
+            children: [
+              Expanded(
+                child: _buildTabButton(
+                  'Todos',
+                  Icons.list_rounded,
+                  0,
                 ),
-                borderRadius: BorderRadius.circular(16),
               ),
-              labelColor: Colors.white,
-              unselectedLabelColor: Colors.white.withOpacity(0.7),
-              labelStyle: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
+              const SizedBox(width: 6),
+              Expanded(
+                child: _buildTabButton(
+                  'Próximos',
+                  Icons.schedule_rounded,
+                  1,
+                ),
               ),
-              indicatorSize: TabBarIndicatorSize.tab,
-              dividerColor: Colors.transparent,
-              tabs: const [
-                Tab(text: 'Todos', icon: Icon(Icons.list_rounded, size: 20)),
-                Tab(text: 'Próximos', icon: Icon(Icons.schedule_rounded, size: 20)),
-                Tab(text: 'Pendientes', icon: Icon(Icons.pending_rounded, size: 20)),
-                Tab(text: 'Calificados', icon: Icon(Icons.grade_rounded, size: 20)),
+            ],
+          ),
+          const SizedBox(height: 6),
+          // Segunda fila
+          Row(
+            children: [
+              Expanded(
+                child: _buildTabButton(
+                  'Pendientes',
+                  Icons.pending_rounded,
+                  2,
+                ),
+              ),
+              const SizedBox(width: 6),
+              Expanded(
+                child: _buildTabButton(
+                  'Calificados',
+                  Icons.grade_rounded,
+                  3,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTabButton(String label, IconData icon, int index) {
+    final isSelected = _tabController.index == index;
+    
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _tabController.animateTo(index);
+        });
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+            decoration: BoxDecoration(
+              gradient: isSelected
+                  ? LinearGradient(
+                      colors: [
+                        AppColors.examenesPrimary.withOpacity(0.8),
+                        AppColors.examenesSecondary.withOpacity(0.8),
+                      ],
+                    )
+                  : LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withOpacity(0.1),
+                        Colors.white.withOpacity(0.05),
+                      ],
+                    ),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: isSelected
+                    ? AppColors.examenesPrimary.withOpacity(0.4)
+                    : Colors.white.withOpacity(0.12),
+                width: 1,
+              ),
+              boxShadow: isSelected
+                  ? [
+                      BoxShadow(
+                        color: AppColors.examenesPrimary.withOpacity(0.2),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  size: 16,
+                  color: isSelected ? Colors.white : Colors.white.withOpacity(0.6),
+                ),
+                const SizedBox(width: 6),
+                Flexible(
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                      color: isSelected ? Colors.white : Colors.white.withOpacity(0.6),
+                      letterSpacing: 0.2,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ],
             ),
           ),
@@ -319,40 +407,41 @@ class _ExamenesScreenState extends State<ExamenesScreen>
 
   Widget _buildSearchBar() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(10),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Colors.white.withOpacity(0.2),
                   Colors.white.withOpacity(0.1),
+                  Colors.white.withOpacity(0.05),
                 ],
               ),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                color: Colors.white.withOpacity(0.2),
-                width: 1.5,
+                color: Colors.white.withOpacity(0.12),
+                width: 1,
               ),
             ),
       child: Row(
         children: [
-          const Icon(Icons.search_rounded, color: Colors.white),
-          const SizedBox(width: 12),
+          const Icon(Icons.search_rounded, color: Colors.white, size: 16),
+          const SizedBox(width: 8),
           Expanded(
               child: TextField(
               controller: _searchController,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white, fontSize: 12),
               decoration: InputDecoration(
                 hintText: 'Buscar exámenes...',
-                hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
+                hintStyle: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 12),
                 border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(vertical: 10),
               ),
               onChanged: (value) {
                 setState(() {
@@ -363,7 +452,9 @@ class _ExamenesScreenState extends State<ExamenesScreen>
           ),
           if (_searchQuery.isNotEmpty)
             IconButton(
-              icon: Icon(Icons.clear_rounded, color: Colors.white.withOpacity(0.8)),
+              icon: Icon(Icons.clear_rounded, color: Colors.white.withOpacity(0.7), size: 16),
+              padding: const EdgeInsets.all(6),
+              constraints: const BoxConstraints(),
               onPressed: () {
                 _searchController.clear();
                 setState(() {
@@ -374,15 +465,18 @@ class _ExamenesScreenState extends State<ExamenesScreen>
           Container(
             decoration: BoxDecoration(
               color: _showFilters 
-                ? Colors.white.withOpacity(0.2)
+                ? Colors.white.withOpacity(0.15)
                 : Colors.transparent,
               borderRadius: BorderRadius.circular(8),
             ),
             child: IconButton(
               icon: Icon(
                 Icons.filter_list_rounded,
-                color: _showFilters ? Colors.white : Colors.white.withOpacity(0.7),
+                size: 18,
+                color: _showFilters ? Colors.white : Colors.white.withOpacity(0.6),
               ),
+              padding: const EdgeInsets.all(8),
+              constraints: const BoxConstraints(),
               onPressed: () {
                 setState(() {
                   _showFilters = !_showFilters;
@@ -400,26 +494,26 @@ class _ExamenesScreenState extends State<ExamenesScreen>
 
   Widget _buildFilters() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(14),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
           child: Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Colors.white.withOpacity(0.2),
-                  Colors.white.withOpacity(0.1),
+                  Colors.white.withOpacity(0.15),
+                  Colors.white.withOpacity(0.08),
                 ],
               ),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                color: Colors.white.withOpacity(0.2),
-                width: 1.5,
+                color: Colors.white.withOpacity(0.15),
+                width: 1,
               ),
             ),
       child: Column(
@@ -427,12 +521,12 @@ class _ExamenesScreenState extends State<ExamenesScreen>
         children: [
           Row(
             children: [
-              const Icon(Icons.tune_rounded, color: Colors.white, size: 20),
+              const Icon(Icons.tune_rounded, color: Colors.white, size: 16),
               const SizedBox(width: 8),
               const Text(
                 'Filtros',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
                 ),
@@ -450,20 +544,25 @@ class _ExamenesScreenState extends State<ExamenesScreen>
                     });
                     _applyFilters();
                   },
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
                   child: Text(
                     'Limpiar',
-                    style: TextStyle(color: Colors.white.withOpacity(0.9)),
+                    style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 12),
                   ),
                 ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           _buildMateriaFilter(),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           Row(
             children: [
               Expanded(child: _buildEstadoFilter()),
-              const SizedBox(width: 12),
+              const SizedBox(width: 10),
               Expanded(child: _buildTipoFilter()),
             ],
           ),
@@ -613,7 +712,7 @@ class _ExamenesScreenState extends State<ExamenesScreen>
       builder: (context, provider, child) {
         if (provider.isLoading) {
           return const Center(
-            child: CircularProgressIndicator(color: AppColors.azulOscuro),
+            child: CircularProgressIndicator(color: AppColors.examenesPrimary),
           );
         }
 
@@ -643,7 +742,7 @@ class _ExamenesScreenState extends State<ExamenesScreen>
                   icon: const Icon(Icons.refresh_rounded),
                   label: const Text('Reintentar'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.azulOscuro,
+                    backgroundColor: AppColors.examenesPrimary,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     shape: RoundedRectangleBorder(
@@ -687,7 +786,7 @@ class _ExamenesScreenState extends State<ExamenesScreen>
         }
 
         return ListView.builder(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 8),
           itemCount: examenes.length,
           itemBuilder: (context, index) {
             final examen = examenes[index];
@@ -728,7 +827,7 @@ class _ExamenesScreenState extends State<ExamenesScreen>
         }
 
         return ListView.builder(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 8),
           itemCount: examenesProximos.length,
           itemBuilder: (context, index) {
             final examen = examenesProximos[index];
@@ -769,7 +868,7 @@ class _ExamenesScreenState extends State<ExamenesScreen>
         }
 
         return ListView.builder(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 8),
           itemCount: examenesPendientes.length,
           itemBuilder: (context, index) {
             final examen = examenesPendientes[index];
@@ -810,7 +909,7 @@ class _ExamenesScreenState extends State<ExamenesScreen>
         }
 
         return ListView.builder(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 8),
           itemCount: examenesCalificados.length,
           itemBuilder: (context, index) {
             final examen = examenesCalificados[index];
@@ -823,31 +922,31 @@ class _ExamenesScreenState extends State<ExamenesScreen>
 
   Widget _buildExamenCard(Examen examen) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(12),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Colors.white.withOpacity(0.2),
-                  Colors.white.withOpacity(0.1),
+                  Colors.white.withOpacity(0.12),
+                  Colors.white.withOpacity(0.06),
                 ],
               ),
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: Colors.white.withOpacity(0.2),
-                width: 1.5,
+                color: Colors.white.withOpacity(0.12),
+                width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: examen.colorEstado.withOpacity(0.2),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
+                  color: examen.colorEstado.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
                 ),
               ],
             ),
@@ -855,15 +954,15 @@ class _ExamenesScreenState extends State<ExamenesScreen>
               color: Colors.transparent,
               child: InkWell(
                 onTap: () => _showExamenDetails(examen),
-                borderRadius: BorderRadius.circular(24),
-                splashColor: Colors.white.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+                splashColor: Colors.white.withOpacity(0.08),
                 child: Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(10),
             child: Row(
               children: [
                 Container(
-                  width: 56,
-                  height: 56,
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
@@ -871,15 +970,15 @@ class _ExamenesScreenState extends State<ExamenesScreen>
                         examen.colorEstado,
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
                     examen.iconoEstado,
                     color: Colors.white,
-                    size: 28,
+                    size: 18,
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -891,28 +990,28 @@ class _ExamenesScreenState extends State<ExamenesScreen>
                               examen.tipoEval?.value ?? 'Sin tipo',
                               style: const TextStyle(
                                 fontWeight: FontWeight.w700,
-                                fontSize: 18,
+                                fontSize: 13,
                                 color: Colors.white,
-                                letterSpacing: 0.5,
+                                letterSpacing: 0.2,
                               ),
                             ),
                           ),
                           if (examen.estaProximo)
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
+                                horizontal: 5,
+                                vertical: 2,
                               ),
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
                                   colors: [Color(0xFFFF9800), Color(0xFFFF5722)],
                                 ),
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(6),
                               ),
                               child: const Text(
                                 'Próximo',
                                 style: TextStyle(
-                                  fontSize: 11,
+                                  fontSize: 8,
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -920,53 +1019,53 @@ class _ExamenesScreenState extends State<ExamenesScreen>
                             ),
                         ],
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 2),
                       Text(
                         examen.materia?.nombre ?? 'Materia no disponible',
                         style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.white.withOpacity(0.8),
+                          fontSize: 11,
+                          color: Colors.white.withOpacity(0.7),
                         ),
                       ),
                       if (examen.fechaEval != null) ...[
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 2),
                         Row(
                           children: [
                             Icon(Icons.calendar_today_rounded,
-                              size: 14, color: Colors.grey[500]),
-                            const SizedBox(width: 4),
+                              size: 10, color: Colors.grey[500]),
+                            const SizedBox(width: 3),
                             Text(
                               _formatDate(examen.fechaEval!),
                               style: TextStyle(
-                                fontSize: 13,
-                                color: Colors.white.withOpacity(0.8),
+                                fontSize: 10,
+                                color: Colors.white.withOpacity(0.7),
                               ),
                             ),
                           ],
                         ),
                       ],
                       if (examen.notaEval != null) ...[
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 2),
                         Row(
                           children: [
                             Icon(Icons.grade_rounded,
-                              size: 14, color: Colors.grey[500]),
-                            const SizedBox(width: 4),
+                              size: 10, color: Colors.grey[500]),
+                            const SizedBox(width: 3),
                             Text(
                               'Nota: ${examen.notaFormateada}',
                               style: TextStyle(
-                                fontSize: 13,
-                                color: Colors.white.withOpacity(0.9),
+                                fontSize: 10,
+                                color: Colors.white.withOpacity(0.85),
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
                             if (examen.ponderacionEval != null) ...[
-                              const SizedBox(width: 8),
+                              const SizedBox(width: 4),
                               Text(
                                 '• ${examen.ponderacionFormateada}',
                                 style: TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.white.withOpacity(0.8),
+                                  fontSize: 10,
+                                  color: Colors.white.withOpacity(0.7),
                                 ),
                               ),
                             ],
@@ -976,20 +1075,21 @@ class _ExamenesScreenState extends State<ExamenesScreen>
                     ],
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 8),
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.white.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: PopupMenuButton<String>(
-                    icon: const Icon(Icons.more_vert_rounded, color: Colors.white),
+                    icon: const Icon(Icons.more_vert_rounded, color: Colors.white, size: 18),
+                    padding: const EdgeInsets.all(6),
                     color: const Color(0xFF1A2634),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(14),
                       side: BorderSide(
-                        color: Colors.white.withOpacity(0.2),
-                        width: 1.5,
+                        color: Colors.white.withOpacity(0.15),
+                        width: 1,
                       ),
                     ),
                     elevation: 8,
@@ -1013,11 +1113,11 @@ class _ExamenesScreenState extends State<ExamenesScreen>
                         value: 'edit',
                         child: Row(
                           children: [
-                            Icon(Icons.edit_rounded, color: AppColors.celeste, size: 20),
-                            const SizedBox(width: 12),
+                            Icon(Icons.edit_rounded, color: AppColors.examenesPrimary, size: 18),
+                            const SizedBox(width: 10),
                             const Text(
                               'Editar',
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(color: Colors.white, fontSize: 13),
                             ),
                           ],
                         ),
@@ -1026,11 +1126,11 @@ class _ExamenesScreenState extends State<ExamenesScreen>
                         value: 'delete',
                         child: Row(
                           children: [
-                            const Icon(Icons.delete_rounded, color: Colors.redAccent, size: 20),
-                            const SizedBox(width: 12),
+                            const Icon(Icons.delete_rounded, color: Colors.redAccent, size: 18),
+                            const SizedBox(width: 10),
                             const Text(
                               'Eliminar',
-                              style: TextStyle(color: Colors.redAccent),
+                              style: TextStyle(color: Colors.redAccent, fontSize: 13),
                             ),
                           ],
                         ),
@@ -1055,31 +1155,32 @@ class _ExamenesScreenState extends State<ExamenesScreen>
       barrierColor: Colors.black.withOpacity(0.7),
       builder: (context) => Dialog(
         backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(18),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
             child: Container(
-              constraints: const BoxConstraints(maxWidth: 400),
+              constraints: const BoxConstraints(maxWidth: 360),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Colors.white.withOpacity(0.2),
-                    Colors.white.withOpacity(0.1),
+                    Colors.white.withOpacity(0.15),
+                    Colors.white.withOpacity(0.08),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(18),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.2),
-                  width: 1.5,
+                  color: Colors.white.withOpacity(0.15),
+                  width: 1,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.celeste.withOpacity(0.3),
-                    blurRadius: 30,
-                    offset: const Offset(0, 15),
+                    color: AppColors.examenesPrimary.withOpacity(0.2),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
               ),
                 ],
               ),
@@ -1088,14 +1189,14 @@ class _ExamenesScreenState extends State<ExamenesScreen>
                 children: [
                   // Header con título centrado
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 14),
                     child: Text(
                       examen.tipoEval?.value ?? 'Examen',
                       style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
                         color: Colors.white,
-                        letterSpacing: 0.5,
+                        letterSpacing: 0.3,
         ),
                       textAlign: TextAlign.center,
                     ),
@@ -1104,7 +1205,7 @@ class _ExamenesScreenState extends State<ExamenesScreen>
                   // Contenido
                   Flexible(
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -1130,37 +1231,37 @@ class _ExamenesScreenState extends State<ExamenesScreen>
                   
                   // Botones centrados
                   Padding(
-                    padding: const EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(16),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         // Botón Cerrar
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(12),
                           child: BackdropFilter(
                             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                             child: Container(
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(14),
+                                color: Colors.white.withOpacity(0.08),
+                                borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: Colors.white.withOpacity(0.2),
-                                  width: 1.5,
+                                  color: Colors.white.withOpacity(0.15),
+                                  width: 1,
                                 ),
                               ),
                               child: TextButton(
             onPressed: () => Navigator.pop(context),
                                 style: TextButton.styleFrom(
                                   padding: const EdgeInsets.symmetric(
-                                    horizontal: 24,
-                                    vertical: 12,
+                                    horizontal: 20,
+                                    vertical: 10,
                                   ),
                                 ),
                                 child: const Text(
               'Cerrar',
               style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 16,
+                                    fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -1168,24 +1269,24 @@ class _ExamenesScreenState extends State<ExamenesScreen>
                             ),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 10),
                         // Botón Editar
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(12),
                           child: Container(
                             decoration: BoxDecoration(
-                              gradient: const LinearGradient(
+                              gradient: LinearGradient(
                                 colors: [
-                                  AppColors.celeste,
-                                  AppColors.verdeAzulado,
+                                  AppColors.celeste.withOpacity(0.8),
+                                  AppColors.verdeAzulado.withOpacity(0.8),
                                 ],
                               ),
-                              borderRadius: BorderRadius.circular(14),
+                              borderRadius: BorderRadius.circular(12),
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.celeste.withOpacity(0.4),
-                                  blurRadius: 12,
-                                  offset: const Offset(0, 4),
+                                  color: AppColors.examenesPrimary.withOpacity(0.25),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 3),
                                 ),
                               ],
                             ),
@@ -1199,18 +1300,22 @@ class _ExamenesScreenState extends State<ExamenesScreen>
                 ),
               );
             },
-                              icon: const Icon(Icons.edit_rounded, size: 20),
+                              icon: const Icon(Icons.edit_rounded, size: 18),
             label: const Text('Editar'),
             style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.transparent,
                                 shadowColor: Colors.transparent,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
+                                  borderRadius: BorderRadius.circular(12),
               ),
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 24,
-                                  vertical: 12,
+                                  horizontal: 20,
+                                  vertical: 10,
+                                ),
+                                textStyle: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),
@@ -1250,13 +1355,13 @@ class _ExamenesScreenState extends State<ExamenesScreen>
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-                    color: AppColors.celeste.withOpacity(0.2),
+                    color: AppColors.examenesPrimary.withOpacity(0.2),
               borderRadius: BorderRadius.circular(10),
             ),
                   child: Icon(
                     icon,
                     size: 18,
-                    color: AppColors.celeste,
+                    color: AppColors.examenesPrimary,
                   ),
           ),
           const SizedBox(width: 12),

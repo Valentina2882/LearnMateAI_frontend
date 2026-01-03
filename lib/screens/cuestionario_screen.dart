@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/bienestar.dart';
 import '../providers/bienestar_provider.dart';
+import '../config/app_colors.dart';
 import 'dart:ui';
 
 class CuestionarioScreen extends StatefulWidget {
@@ -205,9 +206,64 @@ class _CuestionarioScreenState extends State<CuestionarioScreen> {
   Future<void> _guardarResultado() async {
     if (_respuestas.length != _getPreguntas().length) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Por favor, responde todas las preguntas'),
-          backgroundColor: Colors.red,
+        SnackBar(
+          content: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.red.withOpacity(0.2),
+                      Colors.red.withOpacity(0.1),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Colors.red.withOpacity(0.3),
+                    width: 1,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.warning_rounded,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Flexible(
+                      child: Text(
+                        'Por favor, responde todas las preguntas',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(16),
+          duration: const Duration(seconds: 3),
         ),
       );
       return;
@@ -294,26 +350,26 @@ class _CuestionarioScreenState extends State<CuestionarioScreen> {
 
   Widget _buildAppBar(BuildContext context, TipoCuestionario tipo) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Row(
         children: [
           ClipOval(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
-                width: 36,
-                height: 36,
+                width: 32,
+                height: 32,
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.1),
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: Colors.white.withOpacity(0.2),
-                    width: 1.5,
+                    width: 1,
                   ),
                 ),
                 child: IconButton(
                   padding: EdgeInsets.zero,
-                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 18),
+                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 16),
                   onPressed: () => Navigator.pop(context),
                 ),
               ),
@@ -322,9 +378,9 @@ class _CuestionarioScreenState extends State<CuestionarioScreen> {
           const SizedBox(width: 8),
           Text(
             tipo.emoji,
-            style: const TextStyle(fontSize: 32),
+            style: const TextStyle(fontSize: 24),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -333,7 +389,7 @@ class _CuestionarioScreenState extends State<CuestionarioScreen> {
                   tipo.nombre,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 24,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -341,7 +397,7 @@ class _CuestionarioScreenState extends State<CuestionarioScreen> {
                   tipo.descripcion,
                   style: const TextStyle(
                     color: Colors.white70,
-                    fontSize: 14,
+                    fontSize: 12,
                   ),
                 ),
               ],
@@ -358,27 +414,42 @@ class _CuestionarioScreenState extends State<CuestionarioScreen> {
     List<String> opciones,
   ) {
     return ListView.builder(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       itemCount: preguntas.length + 1,
       itemBuilder: (context, index) {
         if (index == preguntas.length) {
           return Padding(
-            padding: const EdgeInsets.only(top: 24, bottom: 32),
-            child: ElevatedButton(
-              onPressed: _guardarResultado,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: widget.tipo.color,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 18),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+            padding: const EdgeInsets.only(top: 16, bottom: 20),
+            child: Center(
+              child: Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [AppColors.bienestarPrimary, AppColors.bienestarSecondary],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.bienestarPrimary.withOpacity(0.3),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
-              ),
-              child: const Text(
-                'Completar Cuestionario',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: _guardarResultado,
+                    borderRadius: BorderRadius.circular(28),
+                    child: const Icon(
+                      Icons.check_rounded,
+                      color: Colors.white,
+                      size: 28,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -389,11 +460,11 @@ class _CuestionarioScreenState extends State<CuestionarioScreen> {
         final valorSeleccionado = _respuestas[pregunta.id];
 
         return Container(
-          margin: const EdgeInsets.only(bottom: 20),
-          padding: const EdgeInsets.all(20),
+          margin: const EdgeInsets.only(bottom: 14),
+          padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: Colors.white.withOpacity(0.2),
             ),
@@ -405,18 +476,18 @@ class _CuestionarioScreenState extends State<CuestionarioScreen> {
                 '${index + 1}. ${pregunta.texto}',
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               ...opciones.asMap().entries.map((entry) {
                 final opcionIndex = entry.key;
                 final opcion = entry.value;
                 final isSelected = valorSeleccionado == opcionIndex;
 
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.only(bottom: 6),
                   child: InkWell(
                     onTap: () {
                       setState(() {
@@ -424,12 +495,12 @@ class _CuestionarioScreenState extends State<CuestionarioScreen> {
                       });
                     },
                     child: Container(
-                      padding: const EdgeInsets.all(14),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: isSelected
                             ? widget.tipo.color.withOpacity(0.3)
                             : Colors.white.withOpacity(0.05),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(10),
                         border: Border.all(
                           color: isSelected
                               ? widget.tipo.color
@@ -440,8 +511,8 @@ class _CuestionarioScreenState extends State<CuestionarioScreen> {
                       child: Row(
                         children: [
                           Container(
-                            width: 24,
-                            height: 24,
+                            width: 20,
+                            height: 20,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
@@ -458,16 +529,17 @@ class _CuestionarioScreenState extends State<CuestionarioScreen> {
                                 ? const Icon(
                                     Icons.check,
                                     color: Colors.white,
-                                    size: 16,
+                                    size: 14,
                                   )
                                 : null,
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: Text(
                               opcion,
                               style: TextStyle(
                                 color: Colors.white,
+                                fontSize: 13,
                                 fontWeight: isSelected
                                     ? FontWeight.bold
                                     : FontWeight.normal,
@@ -495,12 +567,12 @@ class _CuestionarioScreenState extends State<CuestionarioScreen> {
 
     return Center(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(32),
+              padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.1),
                 shape: BoxShape.circle,
@@ -508,24 +580,24 @@ class _CuestionarioScreenState extends State<CuestionarioScreen> {
               child: Icon(
                 Icons.check_circle_rounded,
                 color: colorInterpretacion,
-                size: 80,
+                size: 64,
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 18),
             const Text(
               'Cuestionario Completado',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 28,
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 24),
             Container(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: colorInterpretacion.withOpacity(0.5),
                   width: 2,
@@ -537,25 +609,25 @@ class _CuestionarioScreenState extends State<CuestionarioScreen> {
                     'Puntuación: $puntuacionTotal/$maxPuntuacion',
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 32,
+                      fontSize: 26,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
+                      horizontal: 16,
+                      vertical: 10,
                     ),
                     decoration: BoxDecoration(
                       color: colorInterpretacion.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
                       interpretacion,
                       style: TextStyle(
                         color: colorInterpretacion,
-                        fontSize: 20,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
@@ -564,34 +636,34 @@ class _CuestionarioScreenState extends State<CuestionarioScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 24),
             const Text(
               'Recuerda que este cuestionario es solo una herramienta de autoevaluación y no reemplaza el diagnóstico profesional. Si tienes preocupaciones, consulta con un profesional de la salud.',
               style: TextStyle(
                 color: Colors.white70,
-                fontSize: 14,
-                height: 1.5,
+                fontSize: 12,
+                height: 1.4,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () => Navigator.pop(context),
               style: ElevatedButton.styleFrom(
                 backgroundColor: widget.tipo.color,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: 16,
+                  horizontal: 28,
+                  vertical: 14,
                 ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
               child: const Text(
                 'Volver',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.bold,
                 ),
               ),

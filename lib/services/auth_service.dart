@@ -78,9 +78,32 @@ class AuthService {
       );
     } catch (e) {
       print('🔐 [AuthService] ❌❌❌ ERROR en login: $e');
+      
+      // Detectar errores de conexión específicos
+      String errorMessage = 'Error de conexión';
+      final errorStr = e.toString().toLowerCase();
+      
+      if (errorStr.contains('failed host lookup') || 
+          errorStr.contains('no address associated with hostname')) {
+        errorMessage = 'No se puede conectar al servidor.\n\n'
+            '📡 Verifica tu conexión a internet\n'
+            '🔧 Si el problema persiste, verifica la configuración de Supabase';
+      } else if (errorStr.contains('socketexception') || 
+                 errorStr.contains('network')) {
+        errorMessage = 'Error de red. Verifica tu conexión a internet';
+      } else if (errorStr.contains('timeout')) {
+        errorMessage = 'La conexión tardó demasiado. Intenta de nuevo';
+      } else if (errorStr.contains('certificate') || 
+                 errorStr.contains('ssl') || 
+                 errorStr.contains('tls')) {
+        errorMessage = 'Error de seguridad en la conexión. Verifica tu conexión';
+      } else {
+        errorMessage = 'Error inesperado: ${e.toString()}';
+      }
+      
       return models.AuthResponse(
         success: false,
-        error: 'Error de conexión: ${e.toString()}',
+        error: errorMessage,
       );
     }
   }
@@ -227,9 +250,32 @@ class AuthService {
     } catch (e, stackTrace) {
       print('🔐 [AuthService] ❌❌❌ ERROR en register: $e');
       print('🔐 [AuthService] Stack trace: $stackTrace');
+      
+      // Detectar errores de conexión específicos
+      String errorMessage = 'Error de conexión';
+      final errorStr = e.toString().toLowerCase();
+      
+      if (errorStr.contains('failed host lookup') || 
+          errorStr.contains('no address associated with hostname')) {
+        errorMessage = 'No se puede conectar al servidor.\n\n'
+            '📡 Verifica tu conexión a internet\n'
+            '🔧 Si el problema persiste, verifica la configuración de Supabase';
+      } else if (errorStr.contains('socketexception') || 
+                 errorStr.contains('network')) {
+        errorMessage = 'Error de red. Verifica tu conexión a internet';
+      } else if (errorStr.contains('timeout')) {
+        errorMessage = 'La conexión tardó demasiado. Intenta de nuevo';
+      } else if (errorStr.contains('certificate') || 
+                 errorStr.contains('ssl') || 
+                 errorStr.contains('tls')) {
+        errorMessage = 'Error de seguridad en la conexión. Verifica tu conexión';
+      } else {
+        errorMessage = 'Error inesperado: ${e.toString()}';
+      }
+      
       return models.AuthResponse(
         success: false,
-        error: 'Error de conexión: ${e.toString()}',
+        error: errorMessage,
       );
     }
   }

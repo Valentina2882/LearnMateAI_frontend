@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/bienestar_provider.dart';
 import '../providers/auth_provider.dart';
 import '../models/bienestar.dart';
+import '../config/app_colors.dart';
 import 'dart:ui';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -102,7 +103,7 @@ class _ChatBienestarScreenState extends State<ChatBienestarScreen> {
 
                     return ListView.builder(
                       controller: _scrollController,
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(12),
                       itemCount: mensajes.length,
                       itemBuilder: (context, index) {
                         final mensaje = mensajes[index];
@@ -123,7 +124,7 @@ class _ChatBienestarScreenState extends State<ChatBienestarScreen> {
 
   Widget _buildAppBar(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.1),
         border: Border(
@@ -139,19 +140,19 @@ class _ChatBienestarScreenState extends State<ChatBienestarScreen> {
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
-                width: 36,
-                height: 36,
+                width: 32,
+                height: 32,
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.1),
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: Colors.white.withOpacity(0.2),
-                    width: 1.5,
+                    width: 1,
                   ),
                 ),
                 child: IconButton(
                   padding: EdgeInsets.zero,
-                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 18),
+                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 16),
                   onPressed: () => Navigator.pop(context),
                 ),
               ),
@@ -159,18 +160,18 @@ class _ChatBienestarScreenState extends State<ChatBienestarScreen> {
           ),
           const SizedBox(width: 8),
           Container(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.pink.withOpacity(0.3),
-              borderRadius: BorderRadius.circular(12),
+              color: AppColors.bienestarPrimary.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(
               Icons.psychology_rounded,
-              color: Colors.pink,
-              size: 24,
+              color: AppColors.bienestarPrimary,
+              size: 20,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 10),
           const Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,7 +180,7 @@ class _ChatBienestarScreenState extends State<ChatBienestarScreen> {
                   'Asistente de Bienestar',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -187,20 +188,20 @@ class _ChatBienestarScreenState extends State<ChatBienestarScreen> {
                   'Siempre aquí para ti',
                   style: TextStyle(
                     color: Colors.white70,
-                    fontSize: 12,
+                    fontSize: 11,
                   ),
                 ),
               ],
             ),
           ),
           PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert, color: Colors.white),
+            icon: const Icon(Icons.more_vert, color: Colors.white, size: 20),
             color: const Color(0xFF1A2634),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(12),
               side: BorderSide(
                 color: Colors.white.withOpacity(0.2),
-                width: 1.5,
+                width: 1,
               ),
             ),
             elevation: 8,
@@ -218,11 +219,11 @@ class _ChatBienestarScreenState extends State<ChatBienestarScreen> {
                 value: 'limpiar',
                 child: Row(
                   children: [
-                    Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
+                    Icon(Icons.delete_outline, color: Colors.redAccent, size: 18),
                     const SizedBox(width: 8),
                     const Text(
                       'Limpiar chat',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white, fontSize: 13),
                     ),
                   ],
                 ),
@@ -245,7 +246,7 @@ class _ChatBienestarScreenState extends State<ChatBienestarScreen> {
         texto,
         style: const TextStyle(
           color: Colors.white,
-          fontSize: 15,
+          fontSize: 13,
           height: 1.4,
         ),
       );
@@ -253,10 +254,10 @@ class _ChatBienestarScreenState extends State<ChatBienestarScreen> {
 
     final List<TextSpan> spans = [];
     final lineas = texto.split('\n');
-    final defaultStyle = const TextStyle(color: Colors.white, fontSize: 15, height: 1.4);
+    final defaultStyle = const TextStyle(color: Colors.white, fontSize: 13, height: 1.4);
     final boldStyle = const TextStyle(
       color: Colors.white,
-      fontSize: 15,
+      fontSize: 13,
       height: 1.4,
       fontWeight: FontWeight.bold,
     );
@@ -406,7 +407,7 @@ class _ChatBienestarScreenState extends State<ChatBienestarScreen> {
     final isUsuario = mensaje.esUsuario;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         mainAxisAlignment:
             isUsuario ? MainAxisAlignment.end : MainAxisAlignment.start,
@@ -414,16 +415,16 @@ class _ChatBienestarScreenState extends State<ChatBienestarScreen> {
         children: [
           if (!isUsuario) ...[
             Container(
-              width: 36,
-              height: 36,
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
-                color: Colors.pink.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(18),
+                color: AppColors.bienestarPrimary.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(16),
               ),
               child: const Icon(
                 Icons.psychology_rounded,
-                color: Colors.pink,
-                size: 20,
+                color: AppColors.bienestarPrimary,
+                size: 18,
               ),
             ),
             const SizedBox(width: 8),
@@ -431,22 +432,22 @@ class _ChatBienestarScreenState extends State<ChatBienestarScreen> {
           Flexible(
             child: Container(
               padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 12,
+                horizontal: 12,
+                vertical: 10,
               ),
               decoration: BoxDecoration(
                 color: isUsuario
-                    ? Colors.pink.withOpacity(0.3)
+                    ? AppColors.bienestarPrimary.withOpacity(0.3)
                     : Colors.white.withOpacity(0.15),
                 borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(20),
-                  topRight: const Radius.circular(20),
-                  bottomLeft: Radius.circular(isUsuario ? 20 : 4),
-                  bottomRight: Radius.circular(isUsuario ? 4 : 20),
+                  topLeft: const Radius.circular(16),
+                  topRight: const Radius.circular(16),
+                  bottomLeft: Radius.circular(isUsuario ? 16 : 4),
+                  bottomRight: Radius.circular(isUsuario ? 4 : 16),
                 ),
                 border: Border.all(
                   color: isUsuario
-                      ? Colors.pink.withOpacity(0.5)
+                      ? AppColors.bienestarPrimary.withOpacity(0.5)
                       : Colors.white.withOpacity(0.2),
                   width: 1,
                 ),
@@ -457,16 +458,16 @@ class _ChatBienestarScreenState extends State<ChatBienestarScreen> {
           if (isUsuario) ...[
             const SizedBox(width: 8),
             Container(
-              width: 36,
-              height: 36,
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
                 color: Colors.blue.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(16),
               ),
               child: const Icon(
                 Icons.person,
                 color: Colors.blue,
-                size: 20,
+                size: 18,
               ),
             ),
           ],
@@ -477,7 +478,7 @@ class _ChatBienestarScreenState extends State<ChatBienestarScreen> {
 
   Widget _buildInputArea(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.1),
         border: Border(
@@ -491,27 +492,27 @@ class _ChatBienestarScreenState extends State<ChatBienestarScreen> {
         children: [
           Expanded(
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(20),
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: Colors.white.withOpacity(0.3),
                     ),
                   ),
                   child: TextField(
                     controller: _messageController,
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white, fontSize: 13),
                     decoration: const InputDecoration(
                       hintText: 'Escribe tu mensaje...',
-                      hintStyle: TextStyle(color: Colors.white60),
+                      hintStyle: TextStyle(color: Colors.white60, fontSize: 13),
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 12,
+                        horizontal: 14,
+                        vertical: 10,
                       ),
                     ),
                     maxLines: null,
@@ -522,25 +523,25 @@ class _ChatBienestarScreenState extends State<ChatBienestarScreen> {
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 10),
           Container(
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Colors.pink, Colors.purple],
+                colors: [AppColors.bienestarPrimary, AppColors.bienestarSecondary],
               ),
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(20),
             ),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
                 onTap: _enviarMensaje,
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(20),
                 child: Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(10),
                   child: const Icon(
                     Icons.send_rounded,
                     color: Colors.white,
-                    size: 24,
+                    size: 20,
                   ),
                 ),
               ),
@@ -553,78 +554,115 @@ class _ChatBienestarScreenState extends State<ChatBienestarScreen> {
 
   Widget _buildBotonEmergencia(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.red.withOpacity(0.2),
         border: Border(
           top: BorderSide(
-            color: Colors.red.withOpacity(0.3),
+            color: Colors.white.withOpacity(0.1),
             width: 1,
           ),
         ),
       ),
-      child: SizedBox(
-        width: double.infinity,
-        child: OutlinedButton.icon(
-          onPressed: () async {
-            final confirmacion = await showDialog<bool>(
-              context: context,
-              builder: (context) => AlertDialog(
-                backgroundColor: Colors.grey[900],
-                title: const Text(
-                  'Llamar a Emergencias',
-                  style: TextStyle(color: Colors.white),
-                ),
-                content: const Text(
-                  '¿Estás seguro de que deseas llamar al 911?',
-                  style: TextStyle(color: Colors.white70),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, false),
-                    child: const Text('Cancelar'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => Navigator.pop(context, true),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                    ),
-                    child: const Text('Llamar'),
-                  ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.red.withOpacity(0.2),
+                  Colors.red.withOpacity(0.15),
                 ],
               ),
-            );
-
-            if (confirmacion == true) {
-              const url = 'tel:911';
-              if (await canLaunchUrl(Uri.parse(url))) {
-                await launchUrl(Uri.parse(url));
-              } else {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('No se pudo realizar la llamada'),
-                      backgroundColor: Colors.red,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: Colors.red.withOpacity(0.4),
+                width: 1,
+              ),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () async {
+                  final confirmacion = await showDialog<bool>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      backgroundColor: Colors.grey[900],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      title: const Text(
+                        'Llamar a Emergencias',
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                      content: const Text(
+                        '¿Estás seguro de que deseas llamar al 911?',
+                        style: TextStyle(color: Colors.white70, fontSize: 14),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, false),
+                          child: const Text('Cancelar', style: TextStyle(fontSize: 14)),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => Navigator.pop(context, true),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                          ),
+                          child: const Text('Llamar', style: TextStyle(fontSize: 14)),
+                        ),
+                      ],
                     ),
                   );
-                }
-              }
-            }
-          },
-          icon: const Icon(Icons.emergency_rounded),
-          label: const Text(
-            'EMERGENCIA',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
-          style: OutlinedButton.styleFrom(
-            foregroundColor: Colors.red,
-            side: const BorderSide(color: Colors.red, width: 2),
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+
+                  if (confirmacion == true) {
+                    const url = 'tel:911';
+                    if (await canLaunchUrl(Uri.parse(url))) {
+                      await launchUrl(Uri.parse(url));
+                    } else {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('No se pudo realizar la llamada'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    }
+                  }
+                },
+                borderRadius: BorderRadius.circular(10),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(
+                          Icons.emergency_rounded,
+                          size: 16,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      const Text(
+                        'Emergencia',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
         ),

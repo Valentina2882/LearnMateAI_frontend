@@ -14,6 +14,27 @@ class AppColors {
   static const Color grisClaro = Color(0xFF9CA3AF);
   static const Color grisMedio = Color(0xFF6B7280);
   
+  // Colores por sección
+  // HORARIO - MORADO
+  static const Color horarioPrimary = Color(0xFF6366F1);
+  static const Color horarioSecondary = Color(0xFF4F46E5);
+  
+  // EXAMENES - NARANJA
+  static const Color examenesPrimary = Color(0xFFFF7043);
+  static const Color examenesSecondary = Color(0xFFE64A19);
+  
+  // KORA AI - ROJO
+  static const Color koraPrimary = Color(0xFFEF5350);
+  static const Color koraSecondary = Color(0xFFE53935);
+  
+  // BIENESTAR - VERDE
+  static const Color bienestarPrimary = Color(0xFF66BB6A);
+  static const Color bienestarSecondary = Color(0xFF43A047);
+  
+  // PERFIL - CIAN
+  static const Color perfilPrimary = Color(0xFF26C6DA);
+  static const Color perfilSecondary = Color(0xFF00ACC1);
+  
   // Colores para gradientes
   static const List<Color> gradientePrincipal = [
     azulOscuro,
@@ -24,6 +45,31 @@ class AppColors {
   static const List<Color> gradienteSecundario = [
     azulOscuro,
     celeste,
+  ];
+  
+  static const List<Color> gradienteHorario = [
+    horarioPrimary,
+    horarioSecondary,
+  ];
+  
+  static const List<Color> gradienteExamenes = [
+    examenesPrimary,
+    examenesSecondary,
+  ];
+  
+  static const List<Color> gradienteKora = [
+    koraPrimary,
+    koraSecondary,
+  ];
+  
+  static const List<Color> gradienteBienestar = [
+    bienestarPrimary,
+    bienestarSecondary,
+  ];
+  
+  static const List<Color> gradientePerfil = [
+    perfilPrimary,
+    perfilSecondary,
   ];
 
   // Color para texto sobre fondos oscuros

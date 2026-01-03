@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/horarios_provider.dart';
-import '../screens/login_screen.dart';
+import '../providers/examenes_provider.dart';
 import '../screens/profile_settings_screen.dart';
+import '../screens/login_screen.dart';
 import '../screens/horarios_screen.dart';
-import '../screens/add_edit_horario_screen.dart';
 import '../screens/examenes_screen.dart';
 import '../screens/bienestar_screen.dart';
 import '../screens/kora_ia_screen.dart';
-import '../utils/profile_helper.dart';
-import '../config/app_colors.dart';
+import '../screens/complete_profile_screen.dart';
+import '../widgets/smart_insight_card.dart';
+import '../widgets/ai_alert_card.dart';
 import 'dart:ui';
 
 class HomeScreen extends StatefulWidget {
@@ -24,6 +25,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   late AnimationController _animController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+  bool _horariosLoaded = false;
+  bool _examenesLoaded = false;
 
   @override
   void initState() {
@@ -48,6 +51,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     super.dispose();
   }
 
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return 'Buenos días';
+    if (hour < 19) return 'Buenas tardes';
+    return 'Buenas noches';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,8 +76,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           ),
         ),
         child: SafeArea(
-          child: Consumer<AuthProvider>(
-            builder: (context, authProvider, child) {
+          child: Consumer3<AuthProvider, HorariosProvider, ExamenesProvider>(
+            builder: (context, authProvider, horariosProvider, examenesProvider, child) {
               if (authProvider.isLoading) {
                 return Center(
                   child: CircularProgressIndicator(
@@ -79,1057 +89,1116 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
               final user = authProvider.user;
               
-              return CustomScrollView(
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  _buildModernAppBar(context, authProvider, user),
-                  SliverToBoxAdapter(
-                    child: FadeTransition(
-                      opacity: _fadeAnimation,
-                      child: SlideTransition(
-                        position: _slideAnimation,
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 8),
-                            _buildGlassWelcomeCard(context, user),
-                            const SizedBox(height: 32),
-                            _buildModernQuickActions(context),
-                            const SizedBox(height: 40),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildModernAppBar(BuildContext context, AuthProvider authProvider, user) {
-    return SliverAppBar(
-      expandedHeight: 120,
-      collapsedHeight: 80,
-      floating: false,
-      pinned: true,
-      snap: false,
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      leading: const SizedBox.shrink(),
-      leadingWidth: 0,
-      flexibleSpace: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          final isCollapsed = constraints.maxHeight <= 80;
-          
-          return ClipRRect(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Colors.white.withOpacity(0.1),
-                      Colors.white.withOpacity(0.05),
-                    ],
-                  ),
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Colors.white.withOpacity(0.1),
-                      width: 1,
-                    ),
-                  ),
-                ),
-                child: SafeArea(
-                  bottom: false,
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(
-                      24,
-                      isCollapsed ? 12 : 20,
-                      24,
-                      isCollapsed ? 12 : 20,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: isCollapsed ? 40 : 48,
-                              height: isCollapsed ? 40 : 48,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.cyan[400]!,
-                                    Colors.blue[600]!,
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.cyan.withOpacity(0.4),
-                                    blurRadius: 20,
-                                    offset: const Offset(0, 8),
-                                  ),
-                                ],
-                              ),
-                              child: Icon(
-                                Icons.school_rounded,
-                                color: Colors.white,
-                                size: isCollapsed ? 22 : 26,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            ShaderMask(
-                              shaderCallback: (bounds) => LinearGradient(
-                                colors: [
-                                  Colors.cyan[300]!,
-                                  Colors.white,
-                                ],
-                              ).createShader(bounds),
-                              child: Text(
-                                'LearnMate',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: isCollapsed ? 22 : 26,
-                                  letterSpacing: 1.0,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(14),
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(14),
-                                border: Border.all(
-                                  color: Colors.white.withOpacity(0.2),
-                                  width: 1,
-                                ),
-                              ),
-                              child: PopupMenuButton<String>(
-                                icon: const Icon(Icons.more_vert_rounded, color: Colors.white),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                  side: BorderSide(
-                                    color: Colors.white.withOpacity(0.2),
-                                    width: 1.5,
-                                  ),
-                                ),
-                                color: const Color(0xFF1A2634),
-                                elevation: 8,
-                                onSelected: (value) async {
-                                  if (value == 'settings') {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const ProfileSettingsScreen(),
-                                      ),
-                                    );
-                                  } else if (value == 'logout') {
-                                    _showLogoutDialog(context, authProvider);
-                                  }
-                                },
-                                itemBuilder: (context) => [
-                                  PopupMenuItem(
-                                    value: 'settings',
-                                    child: Row(
-                                      children: [
-                                        const Icon(Icons.settings_rounded, color: AppColors.celeste, size: 20),
-                                        const SizedBox(width: 12),
-                                        const Text(
-                                          'Configuración',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  PopupMenuItem(
-                                    value: 'logout',
-                                    child: Row(
-                                      children: [
-                                        const Icon(Icons.logout_rounded, color: Colors.redAccent, size: 20),
-                                        const SizedBox(width: 12),
-                                        const Text(
-                                          'Cerrar Sesión',
-                                          style: TextStyle(color: Colors.redAccent),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+              // Cargar datos si no están cargados (solo una vez)
+              if (user != null) {
+                if (!_horariosLoaded && horariosProvider.horarios.isEmpty && !horariosProvider.isLoading) {
+                  _horariosLoaded = true;
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    horariosProvider.fetchHorarios();
+                  });
+                }
+                if (!_examenesLoaded && examenesProvider.examenes.isEmpty && !examenesProvider.isLoading) {
+                  _examenesLoaded = true;
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    examenesProvider.fetchExamenes();
+                  });
+                }
+              }
+              
+              return Column(
+                children: [
+                  // Header fijo
+                  _buildCognitiveHeader(context, authProvider, user),
+                  // Contenido scrollable
+                  Expanded(
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: FadeTransition(
+                        opacity: _fadeAnimation,
+                        child: SlideTransition(
+                          position: _slideAnimation,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildUserGreeting(context, user),
+                              _buildSmartInsightsSection(context, horariosProvider, examenesProvider, user),
+                              const SizedBox(height: 20),
+                              _buildAiAlertsSection(context, examenesProvider),
+                              const SizedBox(height: 20),
+                              _buildTodayActivitiesSection(context, horariosProvider),
+                            ],
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildGlassWelcomeCard(BuildContext context, user) {
-    final hour = DateTime.now().hour;
-    String greeting = '¡Buenos días!';
-    String emoji = '☀️';
-    
-    if (hour >= 12 && hour < 18) {
-      greeting = '¡Buenas tardes!';
-      emoji = '🌤️';
-    } else if (hour >= 18) {
-      greeting = '¡Buenas noches!';
-      emoji = '🌙';
-    }
-
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(28),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: Container(
-            padding: const EdgeInsets.all(28),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white.withOpacity(0.2),
-                  Colors.white.withOpacity(0.1),
                 ],
-              ),
-              borderRadius: BorderRadius.circular(28),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.2),
-                width: 1.5,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 30,
-                  offset: const Offset(0, 15),
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Flexible(
-                      child: Text(
-                        greeting,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 32,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0.5,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black26,
-                              offset: Offset(0, 2),
-                              blurRadius: 4,
-                            ),
-                          ],
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      emoji,
-                      style: const TextStyle(fontSize: 32),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.cyan[400]!.withOpacity(0.3),
-                        Colors.blue[500]!.withOpacity(0.3),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Text(
-                    () {
-                      final nombre = user?.nombre ?? '';
-                      final apellido = user?.apellido ?? '';
-                      final nombreCompleto = '$nombre $apellido'.trim();
-                      return nombreCompleto.isNotEmpty ? nombreCompleto : 'Usuario';
-                    }(),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(
-                        Icons.auto_awesome,
-                        color: Colors.amber[300],
-                        size: 20,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    const Expanded(
-                      child: Text(
-                        '¿Qué vamos a estudiar hoy?',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+              );
+            },
           ),
         ),
       ),
     );
   }
 
-  Widget _buildModernQuickActions(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Acciones Rápidas',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
-              color: Colors.white,
-              letterSpacing: 0.5,
-            ),
+  // ==================== HEADER COGNITIVO ====================
+  Widget _buildCognitiveHeader(BuildContext context, AuthProvider authProvider, dynamic user) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 11),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF6366F1),
+            Color(0xFF4F46E5),
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF6366F1).withOpacity(0.25),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+            spreadRadius: 0,
           ),
-          const SizedBox(height: 20),
-          
-          // Tarjeta destacada - Horarios
-          _buildGlassMainCard(
-            context,
-            'Mis Horarios',
-            'Organiza tu semana académica',
-            Icons.calendar_today_rounded,
-            [Colors.cyan[400]!, Colors.blue[600]!],
-            () async {
-              final canAccess = await ProfileHelper.checkAndShowCompleteProfile(
-                context,
-                onComplete: () {
-                  _showHorariosModal(context);
-                },
-              );
-              
-              if (canAccess) {
-                _showHorariosModal(context);
-              }
-            },
-          ),
-          
-          const SizedBox(height: 20),
-          
-          // Grid de tarjetas secundarias
-          GridView.count(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisCount: 2,
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 16,
-            childAspectRatio: 1.1,
-            children: [
-              _buildGlassSecondaryCard(
-                context,
-                'Exámenes',
-                Icons.quiz_rounded,
-                [Colors.orange[400]!, Colors.deepOrange[600]!],
-                () async {
-                  final canAccess = await ProfileHelper.checkAndShowCompleteProfile(
-                    context,
-                    onComplete: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ExamenesScreen(),
-                    ),
-                  );
-                    },
-                  );
-                  
-                  if (canAccess) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ExamenesScreen(),
-                      ),
-                    );
-                  }
-                },
+        ],
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Row(
+          children: [
+            // Icono sutil
+            Container(
+              padding: const EdgeInsets.all(7),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(9),
               ),
-              _buildGlassSecondaryCard(
-                context,
-                'Kora AI',
+              child: const Icon(
                 Icons.school_rounded,
-                [Colors.purple[400]!, Colors.deepPurple[600]!],
-                () async {
-                  final canAccess = await ProfileHelper.checkAndShowCompleteProfile(
-                    context,
-                    onComplete: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const KoraIAScreen(),
-                        ),
-                      );
-                    },
-                  );
-                  
-                  if (canAccess) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const KoraIAScreen(),
-                      ),
-                  );
-                  }
-                },
+                color: Colors.white,
+                size: 18,
               ),
-              _buildGlassSecondaryCard(
-                context,
-                'Perfil',
-                Icons.person_rounded,
-                [Colors.blue[400]!, Colors.indigo[600]!],
-                () {
+            ),
+            const SizedBox(width: 11),
+            // Texto sutil
+            const Text(
+              'LearnMate',
+              style: TextStyle(
+                fontSize: 19,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+                letterSpacing: 0.4,
+              ),
+            ),
+            const Spacer(),
+            // Badge decorativo sutil
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.18),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.25),
+                  width: 1,
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.auto_awesome,
+                    color: Colors.white,
+                    size: 13,
+                  ),
+                  const SizedBox(width: 3),
+                  Text(
+                    'AI',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white.withOpacity(0.9),
+                      letterSpacing: 0.4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            // Menú de tres puntos sutil
+            PopupMenuButton<String>(
+              icon: Container(
+                padding: const EdgeInsets.all(7),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(9),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.2),
+                    width: 1,
+                  ),
+                ),
+                child: const Icon(
+                  Icons.more_vert_rounded,
+                  color: Colors.white,
+                  size: 17,
+                ),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              color: const Color(0xFF1E1E1E),
+              onSelected: (value) async {
+                if (value == 'profile') {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const ProfileSettingsScreen(),
                     ),
                   );
-                },
-              ),
-              _buildGlassSecondaryCard(
-                context,
-                'Bienestar',
-                Icons.favorite_rounded,
-                [Colors.pink[400]!, Colors.red[400]!],
-                () async {
-                  final canAccess = await ProfileHelper.checkAndShowCompleteProfile(
-                    context,
-                    onComplete: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const BienestarScreen(),
-                        ),
-                      );
-                    },
-                  );
-                  
-                  if (canAccess) {
-                    Navigator.push(
-                      context,
+                } else if (value == 'logout') {
+                  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                  await authProvider.logout();
+                  if (context.mounted) {
+                    Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
-                        builder: (context) => const BienestarScreen(),
+                        builder: (context) => const LoginScreen(),
                       ),
-                  );
+                      (route) => false,
+                    );
                   }
-                },
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildGlassMainCard(
-    BuildContext context,
-    String title,
-    String subtitle,
-    IconData icon,
-    List<Color> gradientColors,
-    VoidCallback onTap,
-  ) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(24),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.white.withOpacity(0.2),
-                Colors.white.withOpacity(0.1),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.2),
-              width: 1.5,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: gradientColors[0].withOpacity(0.3),
-                blurRadius: 25,
-                offset: const Offset(0, 12),
-              ),
-            ],
-          ),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: onTap,
-              borderRadius: BorderRadius.circular(24),
-              splashColor: Colors.white.withOpacity(0.1),
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(18),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: gradientColors,
-                        ),
-                        borderRadius: BorderRadius.circular(18),
-                        boxShadow: [
-                          BoxShadow(
-                            color: gradientColors[0].withOpacity(0.4),
-                            blurRadius: 15,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
-                      ),
-                      child: Icon(icon, size: 32, color: Colors.white),
-                    ),
-                    const SizedBox(width: 20),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            subtitle,
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        color: Colors.white,
+                }
+              },
+              itemBuilder: (BuildContext context) => [
+                PopupMenuItem<String>(
+                  value: 'profile',
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.person_rounded,
+                        color: Colors.white.withOpacity(0.8),
                         size: 18,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 10),
+                      Text(
+                        'Configurar perfil',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.9),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildGlassSecondaryCard(
-    BuildContext context,
-    String title,
-    IconData icon,
-    List<Color> gradientColors,
-    VoidCallback onTap,
-  ) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(22),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.white.withOpacity(0.15),
-                Colors.white.withOpacity(0.08),
+                PopupMenuItem<String>(
+                  value: 'logout',
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.logout_rounded,
+                        color: Colors.red.withOpacity(0.8),
+                        size: 18,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Cerrar sesión',
+                        style: TextStyle(
+                          color: Colors.red.withOpacity(0.9),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
-            borderRadius: BorderRadius.circular(22),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.2),
-              width: 1.5,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: gradientColors[0].withOpacity(0.2),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
-              ),
-            ],
-          ),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: onTap,
-              borderRadius: BorderRadius.circular(22),
-              splashColor: Colors.white.withOpacity(0.1),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                      child: Container(
-                        padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: gradientColors,
-                        ),
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: gradientColors[0].withOpacity(0.4),
-                            blurRadius: 15,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
-                      ),
-                        child: Icon(icon, size: 28, color: Colors.white),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Flexible(
-                      child: Text(
-                      title,
-                      style: const TextStyle(
-                          fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                        letterSpacing: 0.3,
-                      ),
-                      textAlign: TextAlign.center,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          ],
         ),
       ),
     );
   }
 
-  SnackBar _buildCustomSnackBar(String message) {
-    return SnackBar(
-      content: Text(message),
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      backgroundColor: const Color(0xFF1A2634),
-      margin: const EdgeInsets.all(20),
-    );
-  }
-
-  void _showHorariosModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) => ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+  // ==================== SALUDO DEL USUARIO ====================
+  Widget _buildUserGreeting(BuildContext context, dynamic user) {
+    final firstName = user?.nombre?.split(' ')[0] ?? 'Estudiante';
+    
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
-            padding: const EdgeInsets.all(28),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  const Color(0xFF1A2634).withOpacity(0.95),
-                  const Color(0xFF0F1923).withOpacity(0.98),
+                  Colors.white.withOpacity(0.15),
+                  Colors.white.withOpacity(0.08),
                 ],
               ),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+              borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.white.withOpacity(0.2),
                 width: 1,
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
-            child: Consumer<HorariosProvider>(
-              builder: (context, horariosProvider, child) {
-                final hasHorarios = horariosProvider.horarios.isNotEmpty;
-                
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Handle
-                    Center(
-                      child: Container(
-                        width: 50,
-                        height: 5,
+            child: Row(
+              children: [
+                // Avatar del usuario con gradiente
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0xFF6366F1),
+                        Color(0xFF8B5CF6),
+                      ],
+                    ),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF6366F1).withOpacity(0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Text(
+                      firstName.isNotEmpty ? firstName[0].toUpperCase() : 'E',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 14),
+                // Información del usuario
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Saludo con emoji
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              _getGreeting(),
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.white.withOpacity(0.7),
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.3,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          const Text(
+                            '👋',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      // Nombre del usuario con gradiente
+                      ShaderMask(
+                        shaderCallback: (bounds) => const LinearGradient(
+                          colors: [
+                            Color(0xFF6366F1),
+                            Color(0xFF8B5CF6),
+                          ],
+                        ).createShader(bounds),
+                        child: Text(
+                          firstName,
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.white,
+                            letterSpacing: 0.4,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  // ==================== TARJETAS INTELIGENTES ====================
+  List<Widget> _buildSmartInsightCards(BuildContext context, HorariosProvider horariosProvider, ExamenesProvider examenesProvider, dynamic user) {
+    final cards = <Widget>[];
+    
+    // CARD 1 - Próxima Clase
+    if (horariosProvider.horarios.isEmpty) {
+      // No hay horario cargado
+      cards.add(
+        SmartInsightCard(
+          emoji: '📘',
+          title: 'Próxima Clase',
+          subtitle: 'Aún no tenemos tu horario.',
+          extra: 'Agrega tus clases para comenzar a ayudarte.',
+          buttonText: 'Agregar horario',
+          gradientColors: const [
+            Color(0xFF6366F1),
+            Color(0xFF4F46E5),
+          ],
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const HorariosScreen(),
+              ),
+            );
+          },
+        ),
+      );
+    } else {
+      // Buscar próxima clase de hoy
+      // TODO: Implementar lógica para encontrar próxima clase usando horariosMateriasService
+      cards.add(
+        SmartInsightCard(
+          emoji: '📘',
+          title: 'Próxima Clase',
+          subtitle: 'Hoy no tienes clases programadas.',
+          extra: 'Buen día para adelantar materias 😉',
+          buttonText: 'Ver horario',
+          gradientColors: const [
+            Color(0xFF6366F1),
+            Color(0xFF4F46E5),
+          ],
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const HorariosScreen(),
+              ),
+            );
+          },
+        ),
+      );
+    }
+    
+    // CARD 2 - Examen
+    final examenesProximos = examenesProvider.getExamenesProximos();
+    if (examenesProximos.isEmpty) {
+      if (examenesProvider.examenes.isEmpty) {
+        // Sin exámenes cargados
+        cards.add(
+          SmartInsightCard(
+            emoji: '📝',
+            title: 'Exámenes',
+            subtitle: 'No se detectan exámenes hoy.',
+            extra: 'Aprovecha para repasar.',
+            buttonText: 'Agregar examen',
+            gradientColors: const [
+              Color(0xFFFF7043),
+              Color(0xFFE64A19),
+            ],
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ExamenesScreen(),
+                ),
+              );
+            },
+          ),
+        );
+      } else {
+        // Hay exámenes pero no próximos
+        cards.add(
+          SmartInsightCard(
+            emoji: '📝',
+            title: 'Exámenes',
+            subtitle: 'No se detectan exámenes próximos.',
+            extra: 'Aprovecha para repasar.',
+            buttonText: 'Ver exámenes',
+            gradientColors: const [
+              Color(0xFFFF7043),
+              Color(0xFFE64A19),
+            ],
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ExamenesScreen(),
+                ),
+              );
+            },
+          ),
+        );
+      }
+    } else {
+      // Hay examen próximo
+      final examen = examenesProximos.first;
+      final diasRestantes = examen.fechaEval != null 
+          ? examen.fechaEval!.difference(DateTime.now()).inDays
+          : 0;
+      String riskLevel = '🟢 Bajo';
+      Color riskColor = const Color(0xFF66BB6A);
+      if (diasRestantes <= 2) {
+        riskLevel = '🔴 Alto';
+        riskColor = const Color(0xFFEF5350);
+      } else if (diasRestantes <= 5) {
+        riskLevel = '🟡 Medio';
+        riskColor = const Color(0xFFFFA726);
+      }
+      
+      cards.add(
+        SmartInsightCard(
+          emoji: '📝',
+          title: examen.materia?.nombre ?? 'Examen',
+          subtitle: diasRestantes == 0 
+              ? 'Es hoy'
+              : diasRestantes == 1 
+                  ? 'Es mañana'
+                  : 'Faltan $diasRestantes días',
+          riskLevel: riskLevel,
+          riskColor: riskColor,
+          buttonText: 'Estudiar ahora',
+          gradientColors: const [
+            Color(0xFFFF7043),
+            Color(0xFFE64A19),
+          ],
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ExamenesScreen(),
+              ),
+            );
+          },
+        ),
+      );
+    }
+    
+    // CARD 3 - Kora AI
+    final tieneDatos = horariosProvider.horarios.isNotEmpty || examenesProvider.examenes.isNotEmpty;
+    if (!tieneDatos) {
+      cards.add(
+        SmartInsightCard(
+          emoji: '🤖',
+          title: 'Kora AI',
+          subtitle: 'Aún te estoy conociendo.',
+          extra: 'Cuéntame por dónde empezamos.',
+          buttonText: 'Comenzar',
+          gradientColors: const [
+            Color(0xFFEF5350),
+            Color(0xFFE53935),
+          ],
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const KoraIAScreen(),
+              ),
+            );
+          },
+        ),
+      );
+    } else {
+      cards.add(
+        SmartInsightCard(
+          emoji: '🤖',
+          title: 'Kora AI',
+          subtitle: 'Hoy no necesitas un plan intensivo.',
+          extra: 'Buen trabajo 😌',
+          buttonText: 'Comenzar',
+          gradientColors: const [
+            Color(0xFFEF5350),
+            Color(0xFFE53935),
+          ],
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const KoraIAScreen(),
+              ),
+            );
+          },
+        ),
+      );
+    }
+    
+    // CARD 4 - Bienestar
+    cards.add(
+      SmartInsightCard(
+        emoji: '🧠',
+        title: 'Bienestar',
+        subtitle: 'Aún estamos conociéndote.',
+        extra: 'Estamos aquí para ti.',
+        buttonText: 'Ver estado',
+        gradientColors: const [
+          Color(0xFF66BB6A),
+          Color(0xFF43A047),
+        ],
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const BienestarScreen(),
+            ),
+          );
+        },
+      ),
+    );
+    
+    // CARD 5 - Perfil
+    final isProfileCompleted = user?.isProfileCompleted ?? false;
+    if (!isProfileCompleted) {
+      // Calcular porcentaje de completitud
+      int camposCompletados = 0;
+      int totalCampos = 6;
+      if (user?.nombre != null && user!.nombre.isNotEmpty) camposCompletados++;
+      if (user?.apellido != null && user!.apellido!.isNotEmpty) camposCompletados++;
+      if (user?.telefono != null && user!.telefono!.isNotEmpty) camposCompletados++;
+      if (user?.carrera != null && user!.carrera!.isNotEmpty) camposCompletados++;
+      if (user?.semestre != null) camposCompletados++;
+      if (user?.sistemaCalificacion != null) camposCompletados++;
+      
+      final porcentaje = camposCompletados / totalCampos;
+      
+      String mensaje = 'Completa tu perfil para personalizar tu experiencia.';
+      if (porcentaje >= 0.5) {
+        mensaje = 'Vas muy bien, solo falta un poco más ✨';
+      }
+      
+      cards.add(
+        SmartInsightCard(
+          emoji: '👤',
+          title: 'Perfil',
+          subtitle: mensaje,
+          progressValue: porcentaje,
+          buttonText: 'Completar',
+          gradientColors: const [
+            Color(0xFF26C6DA),
+            Color(0xFF00ACC1),
+          ],
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (context) => const CompleteProfileScreen(),
+            );
+          },
+        ),
+      );
+    } else {
+      cards.add(
+        SmartInsightCard(
+          emoji: '👤',
+          title: 'Perfil',
+          subtitle: 'Perfil completo. ',
+          extra: 'Gracias por confiar en LearnMate.',
+          progressValue: 1.0,
+          buttonText: 'Ver perfil',
+          gradientColors: const [
+            Color(0xFF26C6DA),
+            Color(0xFF00ACC1),
+          ],
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ProfileSettingsScreen(),
+              ),
+            );
+          },
+        ),
+      );
+    }
+    
+    return cards;
+  }
+
+  Widget _buildSmartInsightsSection(BuildContext context, HorariosProvider horariosProvider, ExamenesProvider examenesProvider, dynamic user) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFFFB74D), Color(0xFFFF9800)],
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.auto_awesome,
+                  color: Colors.white,
+                  size: 16,
+                ),
+              ),
+              const SizedBox(width: 8),
+              const Text(
+                'Insights Inteligentes',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white,
+                  letterSpacing: 0.2,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 220,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            physics: const BouncingScrollPhysics(),
+            children: _buildSmartInsightCards(context, horariosProvider, examenesProvider, user),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ==================== ALERTAS IA ====================
+  Widget _buildAiAlertsSection(BuildContext context, ExamenesProvider examenesProvider) {
+    // Verificar si hay alertas reales
+    final examenesProximos = examenesProvider.getExamenesProximos();
+    final tieneAlertas = examenesProximos.isNotEmpty && 
+        examenesProximos.any((e) => e.fechaEval != null && 
+            e.fechaEval!.difference(DateTime.now()).inDays <= 3);
+    
+    if (!tieneAlertas) {
+      // Sin alertas
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF66BB6A), Color(0xFF43A047)],
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.check_circle_rounded,
+                    color: Colors.white,
+                    size: 16,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                const Text(
+                  'Alertas IA',
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                    letterSpacing: 0.2,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.green.withOpacity(0.15),
+                        Colors.green.withOpacity(0.08),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: Colors.green.withOpacity(0.3),
+                      width: 1,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.green.withOpacity(0.2),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(3),
+                          color: const Color(0xFF66BB6A).withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(
+                          Icons.check_circle_rounded,
+                          color: Color(0xFF66BB6A),
+                          size: 16,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          'No se detectan riesgos hoy. Buena suerte 💚',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.white.withOpacity(0.9),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    
+    // Hay alertas
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFEF5350), Color(0xFFE53935)],
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.warning_rounded,
+                  color: Colors.white,
+                  size: 16,
+                ),
+              ),
+              const SizedBox(width: 8),
+              const Text(
+                'Alertas IA',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white,
+                  letterSpacing: 0.2,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ...examenesProximos
+              .where((e) => e.fechaEval != null && 
+                  e.fechaEval!.difference(DateTime.now()).inDays <= 3)
+              .take(2)
+              .map((examen) {
+                final diasRestantes = examen.fechaEval!.difference(DateTime.now()).inDays;
+                return AiAlertCard(
+                  type: diasRestantes <= 1 ? AlertType.danger : AlertType.warning,
+                  title: 'Examen próximo: ${examen.materia?.nombre ?? 'Examen'}',
+                  message: diasRestantes == 0 
+                      ? '¡Tu examen es hoy! Asegúrate de repasar los puntos clave.'
+                      : diasRestantes == 1
+                          ? 'Tu examen es mañana. Te sugiero hacer un repaso final.'
+                          : 'Tienes un examen en $diasRestantes días. Es buen momento para estudiar.',
+                  actionText: 'Ver detalles',
+                  onAction: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ExamenesScreen(),
+                      ),
+                    );
+                  },
+                );
+              }),
+        ],
+      ),
+    );
+  }
+
+  // ==================== ACTIVIDAD DE HOY ====================
+  Widget _buildTodayActivitiesSection(BuildContext context, HorariosProvider horariosProvider) {
+    final actividades = <Widget>[];
+    
+    // Verificar si hay horarios
+    if (horariosProvider.horarios.isEmpty) {
+      // No hay horario cargado
+      actividades.add(
+        ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.white.withOpacity(0.15),
+                    Colors.white.withOpacity(0.08),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.2),
+                  width: 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF6366F1), Color(0xFF4F46E5)],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF6366F1).withOpacity(0.3),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      Icons.calendar_today_rounded,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Aún no tenemos tu horario.',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.white.withOpacity(0.9),
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.2,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    'Agrega tus clases para comenzar.',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.white.withOpacity(0.6),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 10),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HorariosScreen(),
+                          ),
+                        );
+                      },
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF6366F1), Color(0xFF4F46E5)],
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF6366F1).withOpacity(0.3),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: const Text(
+                          'Agregar horario',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                            letterSpacing: 0.2,
+                          ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 28),
-                    
-                    // Header
-                    Row(
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    } else {
+      // TODO: Implementar lógica para obtener clases de hoy usando HorariosMaterialsService
+      // Por ahora mostrar mensaje de que no hay clases hoy
+      actividades.add(
+        ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.white.withOpacity(0.15),
+                    Colors.white.withOpacity(0.08),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.2),
+                  width: 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF6366F1), Color(0xFF4F46E5)],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF6366F1).withOpacity(0.3),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      Icons.event_available_rounded,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.all(14),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Colors.cyan[400]!, Colors.blue[600]!],
-                            ),
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.cyan.withOpacity(0.3),
-                                blurRadius: 15,
-                                offset: const Offset(0, 6),
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.calendar_today_rounded,
-                            color: Colors.white,
-                            size: 28,
+                        Text(
+                          'Hoy no tienes clases programadas.',
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white.withOpacity(0.9),
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.2,
                           ),
                         ),
-                        const SizedBox(width: 18),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Mis Horarios',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w800,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Text(
-                                hasHorarios 
-                                  ? 'Tienes ${horariosProvider.horarios.length} horario${horariosProvider.horarios.length > 1 ? 's' : ''}'
-                                  : 'Aún no tienes horarios',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white.withOpacity(0.6),
-                                ),
-                              ),
-                            ],
+                        const SizedBox(height: 3),
+                        Text(
+                          'Buen día para adelantar materias 😉',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.white.withOpacity(0.6),
                           ),
                         ),
                       ],
                     ),
-                    
-                    const SizedBox(height: 32),
-                    
-                    if (hasHorarios) ...[
-                      _buildModalButton(
-                        context,
-                        'Ver Mis Horarios',
-                        'Gestiona tus horarios existentes',
-                        Icons.list_rounded,
-                        [Colors.cyan[400]!, Colors.blue[600]!],
-                        () async {
-                          Navigator.pop(context);
-                          final canAccess = await ProfileHelper.checkAndShowCompleteProfile(
-                            context,
-                            onComplete: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const HorariosScreen(),
-                            ),
-                          );
-                            },
-                          );
-                          
-                          if (canAccess) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const HorariosScreen(),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                    ],
-                    
-                    _buildModalButton(
-                      context,
-                      hasHorarios ? 'Agregar Nuevo Horario' : 'Crear Mi Primer Horario',
-                      hasHorarios 
-                        ? 'Agrega una nueva clase a tu horario'
-                        : 'Comienza organizando tu semana académica',
-                      Icons.add_rounded,
-                      hasHorarios 
-                        ? [Colors.green[400]!, Colors.teal[600]!]
-                        : [Colors.cyan[400]!, Colors.blue[600]!],
-                      () async {
-                        Navigator.pop(context);
-                        final canAccess = await ProfileHelper.checkAndShowCompleteProfile(
-                          context,
-                          onComplete: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const AddEditHorarioScreen(),
-                          ),
-                        );
-                          },
-                        );
-                        
-                        if (canAccess) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const AddEditHorarioScreen(),
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                    
-                    const SizedBox(height: 28),
-                  ],
-                );
-              },
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildModalButton(
-    BuildContext context,
-    String title,
-    String subtitle,
-    IconData icon,
-    List<Color> gradientColors,
-    VoidCallback onTap,
-  ) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.white.withOpacity(0.15),
-                Colors.white.withOpacity(0.08),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.2),
-              width: 1.5,
-            ),
-          ),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: onTap,
-              borderRadius: BorderRadius.circular(20),
-              splashColor: Colors.white.withOpacity(0.1),
-              child: Padding(
-                padding: const EdgeInsets.all(22),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: gradientColors,
-                        ),
-                        borderRadius: BorderRadius.circular(14),
-                        boxShadow: [
-                          BoxShadow(
-                            color: gradientColors[0].withOpacity(0.4),
-                            blurRadius: 15,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
-                      ),
-                      child: Icon(icon, color: Colors.white, size: 26),
-                    ),
-                    const SizedBox(width: 18),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            style: const TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            subtitle,
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.white.withOpacity(0.6),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        color: Colors.white,
-                        size: 16,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  void _showLogoutDialog(BuildContext context, AuthProvider authProvider) {
-    showDialog(
-      context: context,
-      builder: (context) => BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-        child: AlertDialog(
-          backgroundColor: const Color(0xFF1A2634),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-          title: Row(
+      );
+    }
+    
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(12),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF6366F1), Color(0xFF4F46E5)],
+                  ),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(Icons.logout_rounded, color: Colors.red, size: 24),
+                child: const Icon(
+                  Icons.calendar_today_rounded,
+                  color: Colors.white,
+                  size: 16,
+                ),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: 8),
               const Text(
-                'Cerrar Sesión',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                'Actividad de Hoy',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white,
+                  letterSpacing: 0.2,
+                ),
               ),
             ],
           ),
-          content: Text(
-            '¿Estás seguro que deseas cerrar sesión?',
-            style: TextStyle(color: Colors.white.withOpacity(0.8)),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(
-                'Cancelar',
-                style: TextStyle(color: Colors.white.withOpacity(0.7)),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                Navigator.pop(context);
-                await authProvider.logout();
-                if (context.mounted) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const LoginScreen(),
-                    ),
-                  );
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                elevation: 0,
-              ),
-              child: const Text('Cerrar Sesión', style: TextStyle(fontWeight: FontWeight.w600)),
-            ),
-          ],
-        ),
+          const SizedBox(height: 12),
+          ...actividades,
+        ],
       ),
     );
   }

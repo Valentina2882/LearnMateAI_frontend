@@ -73,7 +73,7 @@ class _EstadisticasExamenesScreenState extends State<EstadisticasExamenesScreen>
                     if (provider.isLoading) {
                       return const Center(
                         child: CircularProgressIndicator(
-                          color: AppColors.celeste,
+                          color: AppColors.examenesPrimary,
                           strokeWidth: 3,
                         ),
                       );
@@ -155,8 +155,8 @@ class _EstadisticasExamenesScreenState extends State<EstadisticasExamenesScreen>
                                                 decoration: BoxDecoration(
                                                   gradient: const LinearGradient(
                                                     colors: [
-                                                      AppColors.celeste,
-                                                      AppColors.verdeAzulado,
+                                                      AppColors.examenesPrimary,
+                                                      AppColors.examenesSecondary,
                                                     ],
                                                   ),
                                                   borderRadius: BorderRadius.circular(12),
@@ -226,65 +226,65 @@ class _EstadisticasExamenesScreenState extends State<EstadisticasExamenesScreen>
 
   Widget _buildAppBar(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
       child: Row(
         children: [
           ClipOval(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
-                width: 36,
-                height: 36,
+                width: 28,
+                height: 28,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
+                  color: Colors.white.withOpacity(0.08),
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.2),
-                    width: 1.5,
+                    color: Colors.white.withOpacity(0.15),
+                    width: 1,
                   ),
                 ),
                 child: IconButton(
                   padding: EdgeInsets.zero,
-                  icon: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 18),
+                  icon: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 14),
                   onPressed: () => Navigator.pop(context),
                 ),
               ),
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 8),
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.celeste,
-                  AppColors.verdeAzulado,
+                  AppColors.examenesPrimary,
+                  AppColors.examenesSecondary,
                 ],
               ),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.celeste.withOpacity(0.4),
-                  blurRadius: 15,
-                  offset: const Offset(0, 6),
+                  color: AppColors.examenesPrimary.withOpacity(0.2),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
             child: const Icon(
               Icons.bar_chart_rounded,
               color: Colors.white,
-              size: 24,
+              size: 16,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 8),
           const Expanded(
             child: Text(
               'Estadísticas',
               style: TextStyle(
                 color: Colors.white,
-                fontWeight: FontWeight.w800,
-                fontSize: 26,
-                letterSpacing: 0.5,
+                fontWeight: FontWeight.w700,
+                fontSize: 17,
+                letterSpacing: 0.3,
               ),
             ),
           ),
@@ -295,30 +295,30 @@ class _EstadisticasExamenesScreenState extends State<EstadisticasExamenesScreen>
 
   Widget _buildResumenCard(Map<String, dynamic> estadisticas) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: BorderRadius.circular(14),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withOpacity(0.2),
-                Colors.white.withOpacity(0.1),
+                Colors.white.withOpacity(0.15),
+                Colors.white.withOpacity(0.08),
               ],
             ),
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: Colors.white.withOpacity(0.2),
-              width: 1.5,
+              color: Colors.white.withOpacity(0.15),
+              width: 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.celeste.withOpacity(0.2),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
+                color: AppColors.examenesPrimary.withOpacity(0.15),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
@@ -328,42 +328,46 @@ class _EstadisticasExamenesScreenState extends State<EstadisticasExamenesScreen>
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
                     colors: [
-                      AppColors.celeste,
-                      AppColors.verdeAzulado,
+                      AppColors.examenesPrimary,
+                      AppColors.examenesSecondary,
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.celeste.withOpacity(0.4),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
+                      color: AppColors.examenesPrimary.withOpacity(0.2),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
                 child: const Icon(
                   Icons.assessment_rounded,
                   color: Colors.white,
-                  size: 24,
+                  size: 16,
                 ),
               ),
-              const SizedBox(width: 12),
-              const Text(
-                'Resumen General',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                  letterSpacing: 0.3,
+              const SizedBox(width: 8),
+              const Expanded(
+                child: Text(
+                  'Resumen General',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    letterSpacing: 0.2,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 12),
           Row(
             children: [
               Expanded(
@@ -374,7 +378,7 @@ class _EstadisticasExamenesScreenState extends State<EstadisticasExamenesScreen>
                   const Color(0xFFFF9800), // Naranja
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
               Expanded(
                 child: _buildStatItem(
                   'Calificados',
@@ -385,7 +389,7 @@ class _EstadisticasExamenesScreenState extends State<EstadisticasExamenesScreen>
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           Row(
             children: [
               Expanded(
@@ -393,10 +397,10 @@ class _EstadisticasExamenesScreenState extends State<EstadisticasExamenesScreen>
                   'Promedio',
                   estadisticas['promedioGeneral'].toStringAsFixed(2),
                   Icons.trending_up_rounded,
-                  AppColors.celeste, // Celeste
+                  AppColors.examenesPrimary, // Celeste
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
               Expanded(
                 child: _buildStatItem(
                   'Aprobación',
@@ -421,23 +425,23 @@ class _EstadisticasExamenesScreenState extends State<EstadisticasExamenesScreen>
     Color iconColor,
   ) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(10),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
+            color: Colors.white.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: Colors.white.withOpacity(0.2),
-              width: 1.5,
+              color: Colors.white.withOpacity(0.15),
+              width: 1,
             ),
       ),
       child: Column(
         children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
@@ -447,39 +451,41 @@ class _EstadisticasExamenesScreenState extends State<EstadisticasExamenesScreen>
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(7),
                   boxShadow: [
                     BoxShadow(
-                      color: iconColor.withOpacity(0.2),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
+                      color: iconColor.withOpacity(0.15),
+                      blurRadius: 4,
+                      offset: const Offset(0, 1),
                     ),
                   ],
                 ),
                 child: Icon(
             icon,
                   color: iconColor,
-                  size: 24,
+                  size: 16,
           ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 6),
           Text(
             value,
                 style: const TextStyle(
-              fontSize: 24,
+              fontSize: 16,
               fontWeight: FontWeight.w700,
                   color: Colors.white,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           Text(
             label,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 10,
                   color: Colors.white.withOpacity(0.8),
               fontWeight: FontWeight.w500,
             ),
             textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
           ),
@@ -499,30 +505,30 @@ class _EstadisticasExamenesScreenState extends State<EstadisticasExamenesScreen>
 
     if (examenesCalificados.isEmpty) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: BorderRadius.circular(14),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withOpacity(0.2),
-                Colors.white.withOpacity(0.1),
+                Colors.white.withOpacity(0.15),
+                Colors.white.withOpacity(0.08),
               ],
             ),
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: Colors.white.withOpacity(0.2),
-              width: 1.5,
+              color: Colors.white.withOpacity(0.15),
+              width: 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.celeste.withOpacity(0.2),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
+                color: AppColors.examenesPrimary.withOpacity(0.15),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
@@ -531,7 +537,7 @@ class _EstadisticasExamenesScreenState extends State<EstadisticasExamenesScreen>
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                         gradient: const LinearGradient(
                           colors: [
@@ -539,36 +545,40 @@ class _EstadisticasExamenesScreenState extends State<EstadisticasExamenesScreen>
                             Color(0xFF9C27B0), // Púrpura
                           ],
                         ),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(8),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFE91E63).withOpacity(0.4),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
+                            color: const Color(0xFFE91E63).withOpacity(0.2),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
                           ),
                         ],
                 ),
                 child: const Icon(
                         Icons.show_chart_rounded,
                         color: Colors.white,
-                  size: 24,
+                  size: 16,
                 ),
               ),
-              const SizedBox(width: 12),
-              const Text(
-                      'Gráfica de Rendimiento',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                  letterSpacing: 0.3,
+              const SizedBox(width: 8),
+              const Expanded(
+                child: Text(
+                        'Gráfica de Rendimiento',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    letterSpacing: 0.2,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
           ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 20),
           Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
                     gradient: const LinearGradient(
                 colors: [
@@ -579,9 +589,9 @@ class _EstadisticasExamenesScreenState extends State<EstadisticasExamenesScreen>
                     shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                        color: const Color(0xFFE91E63).withOpacity(0.3),
-                        blurRadius: 15,
-                        offset: const Offset(0, 5),
+                        color: const Color(0xFFE91E63).withOpacity(0.2),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
               ),
             ],
                 ),
@@ -658,7 +668,7 @@ class _EstadisticasExamenesScreenState extends State<EstadisticasExamenesScreen>
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.celeste.withOpacity(0.2),
+                color: AppColors.examenesPrimary.withOpacity(0.2),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               ),
@@ -789,8 +799,8 @@ class _EstadisticasExamenesScreenState extends State<EstadisticasExamenesScreen>
                         isStrokeCapRound: true,
                         gradient: const LinearGradient(
                           colors: [
-                            AppColors.celeste,
-                            AppColors.verdeAzulado,
+                            AppColors.examenesPrimary,
+                            AppColors.examenesSecondary,
                           ],
                         ),
                         dotData: FlDotData(
@@ -798,7 +808,7 @@ class _EstadisticasExamenesScreenState extends State<EstadisticasExamenesScreen>
                           getDotPainter: (spot, percent, barData, index) {
                             return FlDotCirclePainter(
                               radius: 5,
-                              color: AppColors.celeste,
+                              color: AppColors.examenesPrimary,
                               strokeWidth: 2,
                               strokeColor: Colors.white,
                             );
@@ -808,8 +818,8 @@ class _EstadisticasExamenesScreenState extends State<EstadisticasExamenesScreen>
                           show: true,
                           gradient: LinearGradient(
                             colors: [
-                              AppColors.verdeAzulado.withOpacity(0.3),
-                              AppColors.verdeAzulado.withOpacity(0.05),
+                              AppColors.examenesSecondary.withOpacity(0.3),
+                              AppColors.examenesSecondary.withOpacity(0.05),
                             ],
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
@@ -877,8 +887,8 @@ class _EstadisticasExamenesScreenState extends State<EstadisticasExamenesScreen>
             decoration: BoxDecoration(
                                 gradient: const LinearGradient(
                                   colors: [
-                                    AppColors.celeste,
-                                    AppColors.verdeAzulado,
+                                    AppColors.examenesPrimary,
+                                    AppColors.examenesSecondary,
                                   ],
                                 ),
                                 shape: BoxShape.circle,

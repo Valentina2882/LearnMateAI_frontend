@@ -76,7 +76,7 @@ class _CarreraSearchDropdownState extends State<CarreraSearchDropdown> {
         TextFormField(
           controller: _searchController,
           style: const TextStyle(
-            fontSize: 15,
+            fontSize: 12,
             color: Colors.white,
             fontWeight: FontWeight.w500,
           ),
@@ -86,21 +86,25 @@ class _CarreraSearchDropdownState extends State<CarreraSearchDropdown> {
             labelStyle: const TextStyle(
               color: Colors.white70,
               fontWeight: FontWeight.w500,
+              fontSize: 11,
             ),
             hintStyle: TextStyle(
               color: Colors.white.withOpacity(0.4),
+              fontSize: 11,
             ),
             prefixIcon: Icon(
               widget.prefixIcon ?? Icons.school_rounded,
               color: Colors.white70,
-              size: 22,
+              size: 16,
             ),
             suffixIcon: IconButton(
               icon: Icon(
                 _isOpen ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
                 color: Colors.white70,
-                size: 22,
+                size: 18,
               ),
+              padding: const EdgeInsets.all(8),
+              constraints: const BoxConstraints(),
               onPressed: () {
                 setState(() {
                   _isOpen = !_isOpen;
@@ -108,52 +112,52 @@ class _CarreraSearchDropdownState extends State<CarreraSearchDropdown> {
               },
             ),
             filled: true,
-            fillColor: Colors.white.withOpacity(0.1),
+            fillColor: Colors.white.withOpacity(0.06),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(9),
               borderSide: BorderSide(
                 color: widget.hasError 
                     ? const Color.fromARGB(255, 255, 100, 88)
-                    : Colors.white.withOpacity(0.3),
+                    : Colors.white.withOpacity(0.15),
               ),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(9),
               borderSide: BorderSide(
                 color: widget.hasError 
                     ? const Color.fromARGB(255, 255, 100, 88)
-                    : Colors.white.withOpacity(0.3), 
-                width: 1.5,
+                    : Colors.white.withOpacity(0.15), 
+                width: 1,
               ),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(9),
               borderSide: BorderSide(
                 color: widget.hasError 
                     ? const Color.fromARGB(255, 255, 100, 88)
                     : Colors.purple, 
-                width: 2,
+                width: 1.5,
               ),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(9),
+              borderSide: const BorderSide(
+                color: Color.fromARGB(255, 255, 100, 88),
+                width: 1,
+              ),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(9),
               borderSide: const BorderSide(
                 color: Color.fromARGB(255, 255, 100, 88),
                 width: 1.5,
               ),
             ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                color: Color.fromARGB(255, 255, 100, 88),
-                width: 2,
-              ),
-            ),
             errorStyle: const TextStyle(
               color: Color.fromARGB(255, 255, 100, 88),
-              fontSize: 12,
+              fontSize: 9,
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           ),
           onChanged: (value) {
             _filterCarreras(value);
@@ -172,41 +176,44 @@ class _CarreraSearchDropdownState extends State<CarreraSearchDropdown> {
             margin: const EdgeInsets.only(top: 4),
             decoration: BoxDecoration(
               color: const Color(0xFF1A2634),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: Colors.white.withOpacity(0.2),
-                width: 1.5,
+                color: Colors.white.withOpacity(0.15),
+                width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 15,
+                  offset: const Offset(0, 6),
                 ),
               ],
             ),
-            constraints: const BoxConstraints(maxHeight: 200),
+            constraints: const BoxConstraints(maxHeight: 150),
             child: ListView.builder(
               shrinkWrap: true,
+              padding: EdgeInsets.zero,
               itemCount: _filteredCarreras.length,
               itemBuilder: (context, index) {
                 final carrera = _filteredCarreras[index];
                 return Container(
                   decoration: BoxDecoration(
                     border: index < _filteredCarreras.length - 1 
-                        ? Border(bottom: BorderSide(color: Colors.white.withOpacity(0.1)))
+                        ? Border(bottom: BorderSide(color: Colors.white.withOpacity(0.08)))
                         : null,
                   ),
                   child: ListTile(
+                    dense: true,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                     title: Text(
                       carrera,
                       style: const TextStyle(
-                        fontSize: 14,
+                        fontSize: 12,
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    hoverColor: Colors.white.withOpacity(0.1),
+                    hoverColor: Colors.white.withOpacity(0.08),
                     onTap: () {
                       setState(() {
                         _searchController.text = carrera;

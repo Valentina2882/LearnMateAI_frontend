@@ -81,16 +81,16 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
                       child: SlideTransition(
                         position: _slideAnimation,
                         child: Padding(
-                          padding: const EdgeInsets.all(24.0),
+                          padding: const EdgeInsets.all(16.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 4),
                               
                               // Información del usuario
                               _buildProfileInfoCard(context, user),
                               
-                              const SizedBox(height: 28),
+                              const SizedBox(height: 16),
                               
                               // Botón de editar perfil
                               _buildGlassActionCard(
@@ -102,47 +102,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
                                 () => _showEditProfileModal(context, authProvider, user),
                               ),
                               
-                              const SizedBox(height: 28),
-                              
-                              // Título de sección
-                              Padding(
-                                padding: const EdgeInsets.only(left: 4, bottom: 18),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [Colors.red[400]!, Colors.red[600]!],
-                                        ),
-                                        borderRadius: BorderRadius.circular(10),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.red.withOpacity(0.3),
-                                            blurRadius: 12,
-                                            offset: const Offset(0, 4),
-                                          ),
-                                        ],
-                                      ),
-                                      child: const Icon(
-                                        Icons.warning_rounded,
-                                        color: Colors.white,
-                                        size: 18,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    const Text(
-                                      'Zona Peligrosa',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w800,
-                                        color: Colors.white,
-                                        letterSpacing: 0.5,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              const SizedBox(height: 16),
                               
                               // Botón de eliminar cuenta
                               _buildGlassActionCard(
@@ -178,8 +138,8 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
 
   Widget _buildModernAppBar(BuildContext context) {
     return SliverAppBar(
-      expandedHeight: 120,
-      collapsedHeight: 80,
+      expandedHeight: 90,
+      collapsedHeight: 65,
       floating: false,
       pinned: true,
       snap: false,
@@ -189,7 +149,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
       leadingWidth: 0,
       flexibleSpace: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          final isCollapsed = constraints.maxHeight <= 80;
+          final isCollapsed = constraints.maxHeight <= 65;
           
           return ClipRRect(
             child: BackdropFilter(
@@ -200,14 +160,14 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Colors.white.withOpacity(0.1),
-                      Colors.white.withOpacity(0.05),
+                      Colors.white.withOpacity(0.08),
+                      Colors.white.withOpacity(0.04),
                     ],
                   ),
                   border: Border(
                     bottom: BorderSide(
-                      color: Colors.white.withOpacity(0.1),
-                      width: 1,
+                      color: Colors.white.withOpacity(0.08),
+                      width: 0.5,
                     ),
                   ),
                 ),
@@ -216,9 +176,9 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(
                       20,
-                      isCollapsed ? 12 : 20,
-                      24,
-                      isCollapsed ? 12 : 20,
+                      isCollapsed ? 10 : 16,
+                      20,
+                      isCollapsed ? 10 : 16,
                     ),
                     child: Row(
                       children: [
@@ -229,11 +189,11 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
                               width: 36,
                               height: 36,
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.1),
+                                color: Colors.white.withOpacity(0.08),
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: Colors.white.withOpacity(0.2),
-                                  width: 1.5,
+                                  color: Colors.white.withOpacity(0.15),
+                                  width: 1,
                                 ),
                               ),
                               child: IconButton(
@@ -250,38 +210,38 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
                         ),
                         SizedBox(width: isCollapsed ? 12 : 16),
                         Container(
-                          padding: EdgeInsets.all(isCollapsed ? 10 : 12),
+                          padding: EdgeInsets.all(isCollapsed ? 8 : 10),
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
-                                Colors.indigo[400]!,
-                                Colors.blue[600]!,
+                                Colors.indigo[300]!,
+                                Colors.blue[400]!,
                               ],
                             ),
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(12),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.indigo.withOpacity(0.4),
-                                blurRadius: 15,
-                                offset: const Offset(0, 6),
+                                color: Colors.indigo.withOpacity(0.2),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
                               ),
                             ],
                           ),
                           child: Icon(
                             Icons.settings_rounded,
                             color: Colors.white,
-                            size: isCollapsed ? 20 : 24,
+                            size: isCollapsed ? 18 : 22,
                           ),
                         ),
-                        SizedBox(width: isCollapsed ? 12 : 16),
+                        SizedBox(width: isCollapsed ? 10 : 12),
                         Flexible(
                           child: Text(
                             'Configuración',
                             style: TextStyle(
                               color: Colors.white,
-                              fontWeight: FontWeight.w800,
-                              fontSize: isCollapsed ? 20 : 24,
-                              letterSpacing: 0.5,
+                              fontWeight: FontWeight.w700,
+                              fontSize: isCollapsed ? 18 : 22,
+                              letterSpacing: 0.3,
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -302,30 +262,30 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
     if (user == null) return const SizedBox.shrink();
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(28),
+      borderRadius: BorderRadius.circular(18),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
         child: Container(
-          padding: const EdgeInsets.all(28),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withOpacity(0.2),
-                Colors.white.withOpacity(0.1),
+                Colors.white.withOpacity(0.15),
+                Colors.white.withOpacity(0.08),
               ],
             ),
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(18),
             border: Border.all(
-              color: Colors.white.withOpacity(0.2),
-              width: 1.5,
+              color: Colors.white.withOpacity(0.15),
+              width: 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 30,
-                offset: const Offset(0, 15),
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
               ),
             ],
           ),
@@ -335,41 +295,41 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(14),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Colors.indigo[400]!, Colors.blue[600]!],
+                        colors: [Colors.indigo[300]!, Colors.blue[400]!],
                       ),
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.indigo.withOpacity(0.4),
-                          blurRadius: 15,
-                          offset: const Offset(0, 6),
+                          color: Colors.indigo.withOpacity(0.2),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
                         ),
                       ],
                     ),
                     child: const Icon(
                       Icons.person_rounded,
                       color: Colors.white,
-                      size: 28,
+                      size: 20,
                     ),
                   ),
-                  const SizedBox(width: 18),
+                  const SizedBox(width: 12),
                   const Expanded(
                     child: Text(
                       'Información del Perfil',
                       style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
                         color: Colors.white,
-                        letterSpacing: 0.3,
+                        letterSpacing: 0.2,
                       ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 28),
+              const SizedBox(height: 16),
               
               _buildGlassInfoRow(Icons.email_rounded, 'Email', user.email, [Colors.cyan[400]!, Colors.blue[500]!]),
               _buildGlassInfoRow(Icons.badge_rounded, 'Nombre', user.nombreCompleto, [Colors.green[400]!, Colors.teal[500]!]),
@@ -404,39 +364,42 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
 
   Widget _buildGlassInfoRow(IconData icon, String label, String value, List<Color> gradientColors, {bool isLast = false}) {
     return Padding(
-      padding: EdgeInsets.only(bottom: isLast ? 0 : 20),
+      padding: EdgeInsets.only(bottom: isLast ? 0 : 10),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
           child: Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.08),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: Colors.white.withOpacity(0.15),
+                color: Colors.white.withOpacity(0.12),
                 width: 1,
               ),
             ),
             child: Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(7),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: gradientColors),
-                    borderRadius: BorderRadius.circular(12),
+                    gradient: LinearGradient(colors: [
+                      gradientColors[0].withOpacity(0.9),
+                      gradientColors[1].withOpacity(0.9),
+                    ]),
+                    borderRadius: BorderRadius.circular(9),
                     boxShadow: [
                       BoxShadow(
-                        color: gradientColors[0].withOpacity(0.3),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
+                        color: gradientColors[0].withOpacity(0.2),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
                       ),
                     ],
                   ),
-                  child: Icon(icon, size: 20, color: Colors.white),
+                  child: Icon(icon, size: 16, color: Colors.white),
                 ),
-                const SizedBox(width: 14),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -444,17 +407,17 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
                       Text(
                         label,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 10,
                           color: Colors.white.withOpacity(0.6),
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.5,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.2,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 2),
                       Text(
                         value,
                         style: const TextStyle(
-                          fontSize: 15,
+                          fontSize: 13,
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
                         ),
@@ -479,7 +442,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
     VoidCallback onTap,
   ) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(22),
+      borderRadius: BorderRadius.circular(16),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
         child: Container(
@@ -488,20 +451,20 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withOpacity(0.15),
-                Colors.white.withOpacity(0.08),
+                Colors.white.withOpacity(0.12),
+                Colors.white.withOpacity(0.06),
               ],
             ),
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: Colors.white.withOpacity(0.2),
-              width: 1.5,
+              color: Colors.white.withOpacity(0.15),
+              width: 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: gradientColors[0].withOpacity(0.2),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
+                color: gradientColors[0].withOpacity(0.12),
+                blurRadius: 12,
+                offset: const Offset(0, 5),
               ),
             ],
           ),
@@ -509,28 +472,31 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
             color: Colors.transparent,
             child: InkWell(
               onTap: onTap,
-              borderRadius: BorderRadius.circular(22),
+              borderRadius: BorderRadius.circular(16),
               splashColor: Colors.white.withOpacity(0.1),
               child: Padding(
-                padding: const EdgeInsets.all(22),
+                padding: const EdgeInsets.all(14),
                 child: Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(14),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(colors: gradientColors),
-                        borderRadius: BorderRadius.circular(14),
+                        gradient: LinearGradient(colors: [
+                          gradientColors[0].withOpacity(0.9),
+                          gradientColors[1].withOpacity(0.9),
+                        ]),
+                        borderRadius: BorderRadius.circular(11),
                         boxShadow: [
                           BoxShadow(
-                            color: gradientColors[0].withOpacity(0.4),
-                            blurRadius: 15,
-                            offset: const Offset(0, 6),
+                            color: gradientColors[0].withOpacity(0.2),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
                           ),
                         ],
                       ),
-                      child: Icon(icon, size: 24, color: Colors.white),
+                      child: Icon(icon, size: 20, color: Colors.white),
                     ),
-                    const SizedBox(width: 18),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -538,16 +504,16 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
                           Text(
                             title,
                             style: const TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
                               color: Colors.white,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 2),
                           Text(
                             subtitle,
                             style: TextStyle(
-                              fontSize: 13,
+                              fontSize: 11,
                               color: Colors.white.withOpacity(0.7),
                             ),
                           ),
@@ -555,15 +521,15 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(7),
                       ),
                       child: const Icon(
                         Icons.arrow_forward_ios_rounded,
                         color: Colors.white,
-                        size: 16,
+                        size: 13,
                       ),
                     ),
                   ],
@@ -629,66 +595,94 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
       builder: (BuildContext context) {
         return BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-          child: AlertDialog(
+          child: Dialog(
             backgroundColor: const Color(0xFF1A2634),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-            title: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.red.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(12),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+            insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Icon(
+                          Icons.warning_rounded,
+                          color: Colors.red,
+                          size: 20,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      const Expanded(
+                        child: Text(
+                          'Eliminar Cuenta',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  child: const Icon(
-                    Icons.warning_rounded,
-                    color: Colors.red,
-                    size: 24,
+                  const SizedBox(height: 16),
+                  Text(
+                    '¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer y se perderán todos tus datos.',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.8),
+                      fontSize: 13,
+                      height: 1.4,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 14),
-                const Text(
-                  'Eliminar Cuenta',
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-                ),
-              ],
-            ),
-            content: Text(
-              '¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer y se perderán todos tus datos.',
-              style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 15),
-            ),
-            actionsAlignment: MainAxisAlignment.center,
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(
-                  'Cancelar',
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
-                    fontWeight: FontWeight.w600,
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        ),
+                        child: Text(
+                          'Cancelar',
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.7),
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          _confirmDeleteAccount(context, authProvider);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          elevation: 0,
+                        ),
+                        child: const Text(
+                          'Eliminar',
+                          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
+                ],
               ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  _confirmDeleteAccount(context, authProvider);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  elevation: 0,
-                ),
-                child: const Text(
-                  'Eliminar',
-                  style: TextStyle(fontWeight: FontWeight.w600),
-                ),
-              ),
-            ],
+            ),
           ),
         );
       },
@@ -904,11 +898,11 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (modalContext) => ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
           child: Container(
-            height: MediaQuery.of(modalContext).size.height * 0.85,
+            height: MediaQuery.of(modalContext).size.height * 0.75,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
@@ -918,7 +912,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
                   const Color(0xFF0F1923).withOpacity(0.98),
                 ],
               ),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
               border: Border.all(
                 color: Colors.white.withOpacity(0.1),
                 width: 1,
@@ -928,16 +922,16 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
               children: [
                 // Header Glass
                 ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                     child: Container(
-                      padding: const EdgeInsets.all(24),
+                      padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Colors.cyan[400]!.withOpacity(0.2),
-                            Colors.blue[600]!.withOpacity(0.2),
+                            Colors.cyan[400]!.withOpacity(0.15),
+                            Colors.blue[600]!.withOpacity(0.15),
                           ],
                         ),
                         border: Border(
@@ -953,48 +947,50 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
                           Row(
                             children: [
                               Container(
-                                padding: const EdgeInsets.all(10),
+                                padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     colors: [Colors.cyan[400]!, Colors.blue[600]!],
                                   ),
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(10),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.cyan.withOpacity(0.4),
-                                      blurRadius: 15,
-                                      offset: const Offset(0, 6),
+                                      color: Colors.cyan.withOpacity(0.3),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4),
                                     ),
                                   ],
                                 ),
-                                child: const Icon(Icons.edit_rounded, color: Colors.white, size: 24),
+                                child: const Icon(Icons.edit_rounded, color: Colors.white, size: 18),
                               ),
-                              const SizedBox(width: 16),
+                              const SizedBox(width: 12),
                               const Expanded(
                                 child: Text(
                                   'Editar Perfil',
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w800,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ),
                               ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(10),
                                 child: BackdropFilter(
                                   filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colors.white.withOpacity(0.08),
+                                      borderRadius: BorderRadius.circular(10),
                                       border: Border.all(
-                                        color: Colors.white.withOpacity(0.2),
+                                        color: Colors.white.withOpacity(0.15),
                                         width: 1,
                                       ),
                                     ),
                                     child: IconButton(
-                                      icon: const Icon(Icons.close, color: Colors.white),
+                                      icon: const Icon(Icons.close, color: Colors.white, size: 20),
+                                      padding: const EdgeInsets.all(8),
+                                      constraints: const BoxConstraints(),
                                       onPressed: () => Navigator.pop(modalContext),
                                     ),
                                   ),
@@ -1002,12 +998,12 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
                               ),
                             ],
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 8),
                           Text(
                             'Modifica tu información personal',
                             style: TextStyle(
                               color: Colors.white.withOpacity(0.7),
-                              fontSize: 14,
+                              fontSize: 12,
                             ),
                           ),
                         ],
@@ -1019,7 +1015,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
                 Expanded(
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -1030,14 +1026,14 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
                           icon: Icons.person,
                           required: true,
                         ),
-                        const SizedBox(height: 18),
+                        const SizedBox(height: 14),
                         _buildGlassTextField(
                           controller: apellidoController,
                           label: 'Apellido',
                           hint: 'Ej: Pérez',
                           icon: Icons.badge,
                         ),
-                        const SizedBox(height: 18),
+                        const SizedBox(height: 14),
                         _buildGlassTextField(
                           controller: telefonoController,
                           label: 'Teléfono',
@@ -1045,34 +1041,34 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
                           icon: Icons.phone,
                           keyboardType: TextInputType.phone,
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: 24),
                         // Botones
                         Row(
                           children: [
                             Expanded(
                               child: ClipRRect(
-                                borderRadius: BorderRadius.circular(16),
+                                borderRadius: BorderRadius.circular(12),
                                 child: BackdropFilter(
                                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(16),
+                                      color: Colors.white.withOpacity(0.08),
+                                      borderRadius: BorderRadius.circular(12),
                                       border: Border.all(
-                                        color: Colors.white.withOpacity(0.2),
-                                        width: 1.5,
+                                        color: Colors.white.withOpacity(0.15),
+                                        width: 1,
                                       ),
                                     ),
                                     child: TextButton(
                                       onPressed: () => Navigator.pop(modalContext),
                                       style: TextButton.styleFrom(
-                                        padding: const EdgeInsets.symmetric(vertical: 18),
+                                        padding: const EdgeInsets.symmetric(vertical: 14),
                                       ),
                                       child: const Text(
                                         'Cancelar',
                                         style: TextStyle(
                                           color: Colors.white,
-                                          fontSize: 16,
+                                          fontSize: 14,
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
@@ -1081,19 +1077,22 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 14),
+                            const SizedBox(width: 12),
                             Expanded(
                               child: Container(
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
-                                    colors: [Colors.cyan[400]!, Colors.blue[600]!],
+                                    colors: [
+                                      Colors.cyan[300]!.withOpacity(0.8),
+                                      Colors.blue[500]!.withOpacity(0.8),
+                                    ],
                                   ),
-                                  borderRadius: BorderRadius.circular(16),
+                                  borderRadius: BorderRadius.circular(12),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.cyan.withOpacity(0.4),
-                                      blurRadius: 20,
-                                      offset: const Offset(0, 8),
+                                      color: Colors.cyan.withOpacity(0.25),
+                                      blurRadius: 12,
+                                      offset: const Offset(0, 5),
                                     ),
                                   ],
                                 ),
@@ -1203,17 +1202,17 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.transparent,
                                     shadowColor: Colors.transparent,
-                                    padding: const EdgeInsets.symmetric(vertical: 18),
+                                    padding: const EdgeInsets.symmetric(vertical: 14),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
+                                      borderRadius: BorderRadius.circular(12),
                                     ),
                                   ),
                                   child: const Text(
                                     'Guardar',
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ),

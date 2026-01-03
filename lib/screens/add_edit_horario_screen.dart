@@ -67,11 +67,11 @@ class _AddEditHorarioScreenState extends State<AddEditHorarioScreen> {
               _buildAppBar(context, isEditing),
               Expanded(
                 child: ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
                     child: Container(
-                      margin: const EdgeInsets.only(top: 8),
+                      margin: const EdgeInsets.only(top: 6),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topLeft,
@@ -81,23 +81,23 @@ class _AddEditHorarioScreenState extends State<AddEditHorarioScreen> {
                             Colors.white.withOpacity(0.1),
                           ],
                         ),
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
                         border: Border(
                           top: BorderSide(
                             color: Colors.white.withOpacity(0.2),
-                            width: 1.5,
+                            width: 1,
                           ),
                         ),
                       ),
                       child: SingleChildScrollView(
-                        padding: const EdgeInsets.all(24),
+                        padding: const EdgeInsets.all(12),
                         child: Form(
                           key: _formKey,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               _buildSectionTitle('Información del Horario', Icons.info_outline_rounded),
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 10),
                               
                               _buildTextField(
                                 controller: _nombrehorController,
@@ -112,7 +112,7 @@ class _AddEditHorarioScreenState extends State<AddEditHorarioScreen> {
                                 },
                               ),
                               
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 10),
                               
                               _buildTextField(
                                 controller: _descripcionhorController,
@@ -128,9 +128,9 @@ class _AddEditHorarioScreenState extends State<AddEditHorarioScreen> {
                                 },
                               ),
                               
-                              const SizedBox(height: 32),
+                              const SizedBox(height: 14),
                               _buildSectionTitle('Periodo Académico', Icons.calendar_month_rounded),
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 10),
                               
                               _buildDateField(
                                 controller: _fechainiciosemestreController,
@@ -140,7 +140,7 @@ class _AddEditHorarioScreenState extends State<AddEditHorarioScreen> {
                                 endDateController: _fechafinsemestreController,
                               ),
                               
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 10),
                               
                               _buildDateField(
                                 controller: _fechafinsemestreController,
@@ -149,9 +149,9 @@ class _AddEditHorarioScreenState extends State<AddEditHorarioScreen> {
                                 startDateController: _fechainiciosemestreController,
                               ),
                               
-                              const SizedBox(height: 40),
+                              const SizedBox(height: 16),
                               _buildSaveButton(isEditing),
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 10),
                             ],
                           ),
                         ),
@@ -169,57 +169,57 @@ class _AddEditHorarioScreenState extends State<AddEditHorarioScreen> {
 
   Widget _buildAppBar(BuildContext context, bool isEditing) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       child: Row(
         children: [
           ClipOval(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
-                width: 36,
-                height: 36,
+                width: 32,
+                height: 32,
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.1),
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: Colors.white.withOpacity(0.2),
-                    width: 1.5,
+                    width: 1,
                   ),
                 ),
                 child: IconButton(
                   padding: EdgeInsets.zero,
-                  icon: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 18),
+                  icon: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 16),
                   onPressed: () => Navigator.pop(context),
                 ),
               ),
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 12),
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
+              gradient: const LinearGradient(
                 colors: [
-                  AppColors.celeste,
-                  AppColors.verdeAzulado,
+                  Color(0xFF6366F1),
+                  Color(0xFF4F46E5),
                 ],
               ),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.celeste.withOpacity(0.4),
-                  blurRadius: 15,
-                  offset: const Offset(0, 6),
+                  color: const Color(0xFF6366F1).withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
                 ),
               ],
             ),
             child: Icon(
               isEditing ? Icons.edit_rounded : Icons.add_rounded,
               color: Colors.white,
-              size: 24,
+              size: 18,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -228,16 +228,16 @@ class _AddEditHorarioScreenState extends State<AddEditHorarioScreen> {
                   isEditing ? 'Editar Horario' : 'Nuevo Horario',
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 26,
+                    fontSize: 18,
                     fontWeight: FontWeight.w800,
-                    letterSpacing: 0.5,
+                    letterSpacing: 0.3,
                   ),
                 ),
                 Text(
                   isEditing ? 'Modifica los detalles' : 'Configura tu semestre',
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.8),
-                    fontSize: 14,
+                    color: Colors.white.withOpacity(0.7),
+                    fontSize: 11,
                   ),
                 ),
               ],
@@ -245,20 +245,23 @@ class _AddEditHorarioScreenState extends State<AddEditHorarioScreen> {
           ),
           if (isEditing)
             ClipRRect(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(10),
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                 child: Container(
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
                     color: Colors.red.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(10),
                     border: Border.all(
                       color: Colors.red.withOpacity(0.3),
-                      width: 1.5,
+                      width: 1,
                     ),
                   ),
                   child: IconButton(
-                    icon: const Icon(Icons.delete_rounded, color: Colors.white),
+                    padding: EdgeInsets.zero,
+                    icon: const Icon(Icons.delete_rounded, color: Colors.white, size: 18),
                     onPressed: _showDeleteConfirmation,
                   ),
                 ),
@@ -273,29 +276,29 @@ class _AddEditHorarioScreenState extends State<AddEditHorarioScreen> {
     return Row(
       children: [
         Container(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(5),
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [AppColors.azulOscuro, AppColors.verdeAzulado],
+              colors: [Color(0xFF6366F1), Color(0xFF4F46E5)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(6),
             boxShadow: [
               BoxShadow(
-                color: AppColors.azulOscuro.withOpacity(0.3),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
+                color: const Color(0xFF6366F1).withOpacity(0.3),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
               ),
             ],
           ),
-          child: Icon(icon, color: Colors.white, size: 22),
+          child: Icon(icon, color: Colors.white, size: 14),
         ),
-        const SizedBox(width: 14),
+        const SizedBox(width: 8),
         Text(
           title,
           style: const TextStyle(
-            fontSize: 19,
+            fontSize: 12,
             fontWeight: FontWeight.w700,
             color: Colors.white,
             letterSpacing: 0.3,
@@ -311,19 +314,19 @@ class _AddEditHorarioScreenState extends State<AddEditHorarioScreen> {
         Text(
           label,
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 11,
             fontWeight: FontWeight.w600,
             color: Colors.white.withOpacity(0.9),
-            letterSpacing: 0.3,
+            letterSpacing: 0.2,
           ),
         ),
         if (isRequired) ...[
-          const SizedBox(width: 4),
+          const SizedBox(width: 3),
           const Text(
             '*',
             style: TextStyle(
               color: Colors.red,
-              fontSize: 14,
+              fontSize: 11,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -345,73 +348,73 @@ class _AddEditHorarioScreenState extends State<AddEditHorarioScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildFieldLabel(label, isRequired: isRequired),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         ClipRRect(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: Colors.white.withOpacity(0.2),
-                  width: 1.5,
+                  width: 1,
                 ),
               ),
               child: TextFormField(
                 controller: controller,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ),
                 decoration: InputDecoration(
                   hintText: hint,
                   hintStyle: TextStyle(
                     color: Colors.white.withOpacity(0.5),
-                    fontSize: 16,
+                    fontSize: 12,
                   ),
                   prefixIcon: icon != null
-                      ? Icon(icon, color: Colors.cyan[300], size: 20)
+                      ? Icon(icon, color: const Color(0xFF6366F1), size: 14)
                       : null,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide.none,
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide.none,
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide(
-                      color: AppColors.celeste.withOpacity(0.5),
-                      width: 2,
+                      color: const Color(0xFF6366F1).withOpacity(0.5),
+                      width: 1.5,
                     ),
                   ),
                   errorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(
+                      color: Colors.red,
+                      width: 1,
+                    ),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
                     borderSide: const BorderSide(
                       color: Colors.red,
                       width: 1.5,
                     ),
                   ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: const BorderSide(
-                      color: Colors.red,
-                      width: 2,
-                    ),
-                  ),
                   filled: false,
                   contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 18,
+                    horizontal: 10,
+                    vertical: 10,
                   ),
                   errorStyle: const TextStyle(
                     color: Colors.red,
-                    fontSize: 12,
+                    fontSize: 10,
                   ),
                 ),
                 maxLines: maxLines,
@@ -436,79 +439,80 @@ class _AddEditHorarioScreenState extends State<AddEditHorarioScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildFieldLabel(label, isRequired: isRequired),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
         ClipRRect(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(8),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: Colors.white.withOpacity(0.2),
-                  width: 1.5,
+                  width: 1,
                 ),
               ),
               child: TextFormField(
                 controller: controller,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ),
                 decoration: InputDecoration(
                   hintText: 'Seleccionar fecha (YYYY-MM-DD)',
                   hintStyle: TextStyle(
                     color: Colors.white.withOpacity(0.5),
-                    fontSize: 16,
+                    fontSize: 12,
                   ),
-                  prefixIcon: Icon(
+                  prefixIcon: const Icon(
                     Icons.calendar_today_rounded,
-                    color: Colors.cyan[300],
-                    size: 20,
+                    color: Color(0xFF6366F1),
+                    size: 14,
                   ),
                   suffixIcon: Icon(
                     Icons.arrow_drop_down_rounded,
                     color: Colors.white.withOpacity(0.6),
+                    size: 20,
                   ),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide.none,
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide.none,
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide(
-                      color: AppColors.celeste.withOpacity(0.5),
-                      width: 2,
+                      color: const Color(0xFF6366F1).withOpacity(0.5),
+                      width: 1.5,
                     ),
                   ),
                   errorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(
+                      color: Colors.red,
+                      width: 1,
+                    ),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
                     borderSide: const BorderSide(
                       color: Colors.red,
                       width: 1.5,
                     ),
                   ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: const BorderSide(
-                      color: Colors.red,
-                      width: 2,
-                    ),
-                  ),
                   filled: false,
                   contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 18,
+                    horizontal: 10,
+                    vertical: 10,
                   ),
                   errorStyle: const TextStyle(
                     color: Colors.red,
-                    fontSize: 12,
+                    fontSize: 10,
                   ),
                 ),
                 readOnly: true,
@@ -649,12 +653,12 @@ class _AddEditHorarioScreenState extends State<AddEditHorarioScreen> {
         final isLoading = _isSaving || horariosProvider.isLoading;
         
         return ClipRRect(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(12),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
               width: double.infinity,
-              height: 58,
+              height: 40,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: isLoading
@@ -663,24 +667,24 @@ class _AddEditHorarioScreenState extends State<AddEditHorarioScreen> {
                           Colors.white.withOpacity(0.05),
                         ]
                       : [
-                          Colors.white.withOpacity(0.2),
-                          Colors.white.withOpacity(0.1),
+                          const Color(0xFF6366F1),
+                          const Color(0xFF4F46E5),
                         ],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                 ),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: Colors.white.withOpacity(isLoading ? 0.2 : 0.3),
-                  width: 1.5,
+                  width: 1,
                 ),
                 boxShadow: isLoading
                     ? []
                     : [
                         BoxShadow(
-                          color: AppColors.celeste.withOpacity(0.3),
-                          blurRadius: 20,
-                          offset: const Offset(0, 8),
+                          color: const Color(0xFF6366F1).withOpacity(0.4),
+                          blurRadius: 8,
+                          offset: const Offset(0, 3),
                         ),
                       ],
               ),
@@ -688,10 +692,10 @@ class _AddEditHorarioScreenState extends State<AddEditHorarioScreen> {
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: isLoading ? null : _handleSave,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(12),
                   splashColor: Colors.white.withOpacity(0.1),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 9),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -699,8 +703,8 @@ class _AddEditHorarioScreenState extends State<AddEditHorarioScreen> {
                       children: [
                         if (isLoading)
                           const SizedBox(
-                            width: 20,
-                            height: 20,
+                            width: 14,
+                            height: 14,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
                               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
@@ -710,17 +714,17 @@ class _AddEditHorarioScreenState extends State<AddEditHorarioScreen> {
                           Icon(
                             isEditing ? Icons.check_circle_rounded : Icons.add_circle_rounded,
                             color: Colors.white,
-                            size: 22,
+                            size: 16,
                           ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 6),
                         Text(
                           isLoading
                               ? (isEditing ? 'Actualizando...' : 'Creando...')
                               : (isEditing ? 'Actualizar Horario' : 'Crear Horario'),
                           style: TextStyle(
-                            fontSize: 17,
+                            fontSize: 13,
                             fontWeight: FontWeight.w700,
-                            letterSpacing: 0.5,
+                            letterSpacing: 0.3,
                             color: Colors.white.withOpacity(isLoading ? 0.7 : 1.0),
                             height: 1.2,
                           ),
@@ -835,42 +839,43 @@ class _AddEditHorarioScreenState extends State<AddEditHorarioScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        contentPadding: const EdgeInsets.all(18),
         title: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: Colors.red.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(Icons.delete_rounded, color: Colors.red, size: 24),
+              child: const Icon(Icons.delete_rounded, color: Colors.red, size: 20),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
             const Text(
               'Eliminar Horario',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
             ),
           ],
         ),
         content: const Padding(
-          padding: EdgeInsets.only(top: 8),
+          padding: EdgeInsets.only(top: 6),
           child: Text(
             '¿Estás seguro de que quieres eliminar este horario? Esta acción no se puede deshacer.',
-            style: TextStyle(fontSize: 15, height: 1.5),
+            style: TextStyle(fontSize: 14, height: 1.4),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             style: TextButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             ),
             child: Text(
               'Cancelar',
               style: TextStyle(
                 color: Colors.grey[700],
-                fontSize: 15,
+                fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -883,15 +888,15 @@ class _AddEditHorarioScreenState extends State<AddEditHorarioScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(10),
               ),
               elevation: 0,
             ),
             child: const Text(
               'Eliminar',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
             ),
           ),
         ],
@@ -922,7 +927,7 @@ class _AddEditHorarioScreenState extends State<AddEditHorarioScreen> {
                 color: Colors.white,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.check_rounded, color: AppColors.verdeAzulado, size: 18),
+              child: const Icon(Icons.check_rounded, color: AppColors.horarioPrimary, size: 18),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -933,7 +938,7 @@ class _AddEditHorarioScreenState extends State<AddEditHorarioScreen> {
             ),
           ],
         ),
-        backgroundColor: AppColors.verdeAzulado,
+        backgroundColor: AppColors.horarioPrimary,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         margin: const EdgeInsets.all(16),

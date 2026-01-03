@@ -4,6 +4,7 @@ import '../providers/kora_ia_provider.dart';
 import '../providers/auth_provider.dart';
 import '../models/kora_ia.dart';
 import '../utils/profile_helper.dart';
+import '../config/app_colors.dart';
 import 'dart:ui';
 
 class KoraIAScreen extends StatefulWidget {
@@ -117,20 +118,20 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
       color: Colors.transparent,
       child: InkWell(
         onTap: _scrollToBottom,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(18),
         child: Container(
-          width: 44,
-          height: 44,
+          width: 36,
+          height: 36,
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [Colors.purple, Colors.deepPurple],
+              colors: [AppColors.koraPrimary, AppColors.koraSecondary],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: Colors.purple.withOpacity(0.4),
+                color: AppColors.koraPrimary.withOpacity(0.4),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -139,7 +140,7 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
           child: const Icon(
             Icons.keyboard_arrow_down_rounded,
             color: Colors.white,
-            size: 22,
+            size: 18,
           ),
         ),
       ),
@@ -222,7 +223,7 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
                       if (isLoading && mensajes.isEmpty) {
                       return const Center(
                         child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.purple),
+                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.koraPrimary),
                         ),
                       );
                     }
@@ -249,7 +250,7 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
                       children: [
                         ListView.builder(
                           controller: _scrollController,
-                          padding: const EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(12),
                           itemCount: mensajes.length,
                           itemBuilder: (context, index) {
                             final mensaje = mensajes[index];
@@ -319,7 +320,7 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
 
   Widget _buildAppBar(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.1),
         border: Border(
@@ -335,19 +336,19 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
-                width: 36,
-                height: 36,
+                width: 32,
+                height: 32,
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.1),
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: Colors.white.withOpacity(0.2),
-                    width: 1.5,
+                    width: 1,
                   ),
                 ),
                 child: IconButton(
                   padding: EdgeInsets.zero,
-                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 18),
+                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 16),
                   onPressed: () => Navigator.pop(context),
                 ),
               ),
@@ -355,20 +356,20 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
           ),
           const SizedBox(width: 8),
           Container(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Colors.purple, Colors.deepPurple],
+                colors: [AppColors.koraPrimary, AppColors.koraSecondary],
               ),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(
               Icons.school_rounded,
               color: Colors.white,
-              size: 24,
+              size: 18,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 10),
           const Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -377,7 +378,7 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
                   'Kora AI',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -385,7 +386,7 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
                   'Tu asistente de carrera',
                   style: TextStyle(
                     color: Colors.white70,
-                    fontSize: 12,
+                    fontSize: 11,
                   ),
                 ),
               ],
@@ -437,7 +438,7 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
     final tipoMensaje = mensaje.tipoMensaje;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         mainAxisAlignment:
             isUsuario ? MainAxisAlignment.end : MainAxisAlignment.start,
@@ -445,18 +446,18 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
         children: [
           if (!isUsuario) ...[
             Container(
-              width: 36,
-              height: 36,
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Colors.purple, Colors.deepPurple],
+                  colors: [AppColors.koraPrimary, AppColors.koraSecondary],
                 ),
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(16),
               ),
               child: const Icon(
                 Icons.school_rounded,
                 color: Colors.white,
-                size: 20,
+                size: 18,
               ),
             ),
             const SizedBox(width: 8),
@@ -502,13 +503,13 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
                   const SizedBox(height: 4),
                 ],
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     gradient: isUsuario
                         ? LinearGradient(
                             colors: [
-                              Colors.purple.withOpacity(0.4),
-                              Colors.deepPurple.withOpacity(0.3),
+                              AppColors.koraPrimary.withOpacity(0.4),
+                              AppColors.koraSecondary.withOpacity(0.3),
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -518,16 +519,16 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
                         ? null
                         : Colors.white.withOpacity(0.15),
                     borderRadius: BorderRadius.only(
-                      topLeft: const Radius.circular(20),
-                      topRight: const Radius.circular(20),
-                      bottomLeft: Radius.circular(isUsuario ? 20 : 4),
-                      bottomRight: Radius.circular(isUsuario ? 4 : 20),
+                      topLeft: const Radius.circular(16),
+                      topRight: const Radius.circular(16),
+                      bottomLeft: Radius.circular(isUsuario ? 16 : 4),
+                      bottomRight: Radius.circular(isUsuario ? 4 : 16),
                     ),
                     border: Border.all(
                       color: isUsuario
-                          ? Colors.purple.withOpacity(0.5)
+                          ? AppColors.koraPrimary.withOpacity(0.5)
                           : Colors.white.withOpacity(0.2),
-                      width: 1.5,
+                      width: 1,
                     ),
                     boxShadow: [
                       BoxShadow(
@@ -546,15 +547,15 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
                             Row(
                               children: [
                                 Container(
-                                  padding: const EdgeInsets.all(6),
+                                  padding: const EdgeInsets.all(5),
                                   decoration: BoxDecoration(
                                     gradient: const LinearGradient(
-                                      colors: [Colors.purple, Colors.deepPurple],
+                                      colors: [AppColors.koraPrimary, AppColors.koraSecondary],
                                     ),
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(6),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.purple.withOpacity(0.3),
+                                        color: AppColors.koraPrimary.withOpacity(0.3),
                                         blurRadius: 4,
                                         offset: const Offset(0, 2),
                                       ),
@@ -562,7 +563,7 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
                   ),
                   child: Text(
                                     _obtenerEmojiContextual(mensaje.texto),
-                                    style: const TextStyle(fontSize: 18),
+                                    style: const TextStyle(fontSize: 16),
                                   ),
                                 ),
                                 const SizedBox(width: 8),
@@ -572,7 +573,7 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
                                         colors: [
-                                          Colors.purple.withOpacity(0.5),
+                                          AppColors.koraPrimary.withOpacity(0.5),
                                           Colors.transparent,
                                         ],
                                       ),
@@ -581,7 +582,7 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
                   ),
                               ],
                             ),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: 10),
                             _buildTextoConFormato(mensaje.texto),
                           ],
                         )
@@ -593,16 +594,16 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
           if (isUsuario) ...[
             const SizedBox(width: 8),
             Container(
-              width: 36,
-              height: 36,
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
                 color: Colors.blue.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(16),
               ),
               child: const Icon(
                 Icons.person,
                 color: Colors.blue,
-                size: 20,
+                size: 18,
               ),
             ),
           ],
@@ -613,7 +614,7 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
 
   Widget _buildInputArea(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.1),
         border: Border(
@@ -627,27 +628,27 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
         children: [
           Expanded(
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(20),
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: Colors.white.withOpacity(0.3),
                     ),
                   ),
                   child: TextField(
                     controller: _messageController,
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white, fontSize: 13),
                     decoration: const InputDecoration(
                       hintText: 'Pregunta sobre tu carrera, estudios, organización...',
-                      hintStyle: TextStyle(color: Colors.white60),
+                      hintStyle: TextStyle(color: Colors.white60, fontSize: 13),
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 12,
+                        horizontal: 14,
+                        vertical: 10,
                       ),
                     ),
                     maxLines: null,
@@ -658,25 +659,25 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 10),
           Container(
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Colors.purple, Colors.deepPurple],
+                colors: [AppColors.koraPrimary, AppColors.koraSecondary],
               ),
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(20),
             ),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
                 onTap: _enviarMensaje,
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(20),
                 child: Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(10),
                   child: const Icon(
                     Icons.send_rounded,
                     color: Colors.white,
-                    size: 24,
+                    size: 20,
                   ),
                 ),
               ),
@@ -700,7 +701,7 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
           texto,
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 15,
+            fontSize: 13,
             height: 1.4,
           ),
           textAlign: TextAlign.start,
@@ -712,10 +713,10 @@ class _KoraIAScreenState extends State<KoraIAScreen> {
 
     final List<TextSpan> spans = [];
     final lineas = texto.split('\n');
-    final defaultStyle = const TextStyle(color: Colors.white, fontSize: 15, height: 1.4);
+    final defaultStyle = const TextStyle(color: Colors.white, fontSize: 13, height: 1.4);
     final boldStyle = const TextStyle(
       color: Colors.white,
-      fontSize: 15,
+      fontSize: 13,
       height: 1.4,
       fontWeight: FontWeight.bold,
     );

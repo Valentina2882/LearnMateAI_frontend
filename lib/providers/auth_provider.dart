@@ -45,11 +45,32 @@ class AuthProvider with ChangeNotifier {
         notifyListeners();
         return true;
       } else {
-        _setError(response.error ?? 'Error en el login');
+        // Mejorar mensajes de error
+        String errorMsg = response.error ?? 'Error en el login';
+        
+        // Detectar errores comunes y dar mensajes más amigables
+        if (errorMsg.toLowerCase().contains('invalid login credentials') ||
+            errorMsg.toLowerCase().contains('invalid email or password')) {
+          errorMsg = 'Email o contraseña incorrectos';
+        } else if (errorMsg.toLowerCase().contains('email not confirmed')) {
+          errorMsg = 'Por favor, confirma tu email antes de iniciar sesión';
+        }
+        
+        _setError(errorMsg);
         return false;
       }
     } catch (e) {
-      _setError('Error de conexión: ${e.toString()}');
+      final errorStr = e.toString().toLowerCase();
+      String errorMsg = 'Error de conexión';
+      
+      if (errorStr.contains('failed host lookup') || 
+          errorStr.contains('no address associated with hostname')) {
+        errorMsg = 'No hay conexión a internet';
+      } else if (errorStr.contains('timeout')) {
+        errorMsg = 'La conexión tardó demasiado';
+      }
+      
+      _setError(errorMsg);
       return false;
     } finally {
       _setLoading(false);
@@ -87,11 +108,22 @@ class AuthProvider with ChangeNotifier {
         notifyListeners();
         return true;
       } else {
+        // El error ya viene procesado desde el servicio
         _setError(response.error ?? 'Error en el registro');
         return false;
       }
     } catch (e) {
-      _setError('Error de conexión: ${e.toString()}');
+      final errorStr = e.toString().toLowerCase();
+      String errorMsg = 'Error de conexión';
+      
+      if (errorStr.contains('failed host lookup') || 
+          errorStr.contains('no address associated with hostname')) {
+        errorMsg = 'No hay conexión a internet';
+      } else if (errorStr.contains('timeout')) {
+        errorMsg = 'La conexión tardó demasiado';
+      }
+      
+      _setError(errorMsg);
       return false;
     } finally {
       _setLoading(false);

@@ -112,21 +112,21 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   // Contenido scrollable
                   Expanded(
                     child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      child: FadeTransition(
-                        opacity: _fadeAnimation,
-                        child: SlideTransition(
-                          position: _slideAnimation,
-                          child: Column(
+                physics: const BouncingScrollPhysics(),
+                    child: FadeTransition(
+                      opacity: _fadeAnimation,
+                      child: SlideTransition(
+                        position: _slideAnimation,
+                        child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
+                          children: [
                               _buildUserGreeting(context, user),
                               _buildSmartInsightsSection(context, horariosProvider, examenesProvider, user),
                               const SizedBox(height: 20),
                               _buildAiAlertsSection(context, examenesProvider),
                               const SizedBox(height: 20),
                               _buildTodayActivitiesSection(context, horariosProvider),
-                            ],
+                          ],
                           ),
                         ),
                       ),
@@ -146,48 +146,48 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 11),
-      decoration: BoxDecoration(
+                decoration: BoxDecoration(
         gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
             Color(0xFF6366F1),
             Color(0xFF4F46E5),
-          ],
-        ),
+                    ],
+                  ),
         boxShadow: [
           BoxShadow(
             color: const Color(0xFF6366F1).withOpacity(0.25),
             blurRadius: 8,
             offset: const Offset(0, 2),
             spreadRadius: 0,
-          ),
+                    ),
         ],
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Row(
-          children: [
+                ),
+                child: SafeArea(
+                  bottom: false,
+                    child: Row(
+                      children: [
             // Icono sutil
-            Container(
+                            Container(
               padding: const EdgeInsets.all(7),
-              decoration: BoxDecoration(
+                              decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(9),
               ),
               child: const Icon(
-                Icons.school_rounded,
-                color: Colors.white,
+                                Icons.school_rounded,
+                                color: Colors.white,
                 size: 18,
-              ),
-            ),
+                              ),
+                            ),
             const SizedBox(width: 11),
             // Texto sutil
             const Text(
-              'LearnMate',
-              style: TextStyle(
+                                'LearnMate',
+                                style: TextStyle(
                 fontSize: 19,
-                fontWeight: FontWeight.w800,
+                                  fontWeight: FontWeight.w800,
                 color: Colors.white,
                 letterSpacing: 0.4,
               ),
@@ -220,43 +220,43 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       fontWeight: FontWeight.w700,
                       color: Colors.white.withOpacity(0.9),
                       letterSpacing: 0.4,
-                    ),
-                  ),
-                ],
-              ),
+                              ),
+                            ),
+                          ],
+                        ),
             ),
             const SizedBox(width: 8),
             // Menú de tres puntos sutil
             PopupMenuButton<String>(
               icon: Container(
                 padding: const EdgeInsets.all(7),
-                decoration: BoxDecoration(
+                              decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(9),
-                  border: Border.all(
-                    color: Colors.white.withOpacity(0.2),
-                    width: 1,
-                  ),
-                ),
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.2),
+                                  width: 1,
+                                ),
+                              ),
                 child: const Icon(
                   Icons.more_vert_rounded,
                   color: Colors.white,
                   size: 17,
                 ),
               ),
-              shape: RoundedRectangleBorder(
+                                shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
-              ),
+                                ),
               color: const Color(0xFF1E1E1E),
-              onSelected: (value) async {
+                                onSelected: (value) async {
                 if (value == 'profile') {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ProfileSettingsScreen(),
-                    ),
-                  );
-                } else if (value == 'logout') {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const ProfileSettingsScreen(),
+                                      ),
+                                    );
+                                  } else if (value == 'logout') {
                   final authProvider = Provider.of<AuthProvider>(context, listen: false);
                   await authProvider.logout();
                   if (context.mounted) {
@@ -272,8 +272,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               itemBuilder: (BuildContext context) => [
                 PopupMenuItem<String>(
                   value: 'profile',
-                  child: Row(
-                    children: [
+                                    child: Row(
+                                      children: [
                       Icon(
                         Icons.person_rounded,
                         color: Colors.white.withOpacity(0.8),
@@ -287,14 +287,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                         ),
-                      ),
-                    ],
-                  ),
-                ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                 PopupMenuItem<String>(
-                  value: 'logout',
-                  child: Row(
-                    children: [
+                                    value: 'logout',
+                                    child: Row(
+                                      children: [
                       Icon(
                         Icons.logout_rounded,
                         color: Colors.red.withOpacity(0.8),
@@ -307,15 +307,15 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           color: Colors.red.withOpacity(0.9),
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
               ],
-            ),
-          ],
-        ),
+                        ),
+                      ],
+              ),
       ),
     );
   }
@@ -375,19 +375,19 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                         color: const Color(0xFF6366F1).withOpacity(0.3),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
-                      ),
+                  ),
                     ],
                   ),
                   child: Center(
-                    child: Text(
+                  child: Text(
                       firstName.isNotEmpty ? firstName[0].toUpperCase() : 'E',
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                      ),
+                      color: Colors.white,
                     ),
                   ),
+                ),
                 ),
                 const SizedBox(width: 14),
                 // Información del usuario
@@ -397,8 +397,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       // Saludo con emoji
-                      Row(
-                        children: [
+                Row(
+                  children: [
                           Flexible(
                             child: Text(
                               _getGreeting(),
@@ -410,14 +410,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
-                          ),
+                      ),
                           const SizedBox(width: 6),
                           const Text(
                             '👋',
                             style: TextStyle(fontSize: 16),
-                          ),
-                        ],
                       ),
+                        ],
+                    ),
                       const SizedBox(height: 4),
                       // Nombre del usuario con gradiente
                       ShaderMask(
@@ -427,17 +427,17 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                             Color(0xFF8B5CF6),
                           ],
                         ).createShader(bounds),
-                        child: Text(
+                      child: Text(
                           firstName,
                           style: const TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w900,
-                            color: Colors.white,
+                          color: Colors.white,
                             letterSpacing: 0.4,
-                          ),
                         ),
                       ),
-                    ],
+                    ),
+                  ],
                   ),
                 ),
               ],
@@ -467,12 +467,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           ],
           onTap: () {
             Navigator.push(
-              context,
+            context,
               MaterialPageRoute(
                 builder: (context) => const HorariosScreen(),
               ),
             );
-          },
+                },
         ),
       );
     } else {
@@ -490,13 +490,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             Color(0xFF4F46E5),
           ],
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
                 builder: (context) => const HorariosScreen(),
-              ),
-            );
-          },
+                    ),
+                  );
+                    },
         ),
       );
     }
@@ -518,14 +518,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               Color(0xFFE64A19),
             ],
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ExamenesScreen(),
-                ),
-              );
-            },
-          ),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ExamenesScreen(),
+                      ),
+                    );
+                },
+              ),
         );
       } else {
         // Hay exámenes pero no próximos
@@ -541,13 +541,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               Color(0xFFE64A19),
             ],
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
                   builder: (context) => const ExamenesScreen(),
-                ),
-              );
-            },
+                        ),
+                      );
+                    },
           ),
         );
       }
@@ -584,14 +584,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             Color(0xFFE64A19),
           ],
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
                 builder: (context) => const ExamenesScreen(),
+                      ),
+                  );
+                },
               ),
-            );
-          },
-        ),
       );
     }
     
@@ -610,14 +610,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             Color(0xFFE53935),
           ],
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
                 builder: (context) => const KoraIAScreen(),
+                    ),
+                  );
+                },
               ),
-            );
-          },
-        ),
       );
     } else {
       cards.add(
@@ -632,13 +632,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             Color(0xFFE53935),
           ],
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
                 builder: (context) => const KoraIAScreen(),
-              ),
-            );
-          },
+                        ),
+                      );
+                    },
         ),
       );
     }
@@ -656,12 +656,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           Color(0xFF43A047),
         ],
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const BienestarScreen(),
-            ),
-          );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const BienestarScreen(),
+                      ),
+                  );
         },
       ),
     );
@@ -696,14 +696,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           gradientColors: const [
             Color(0xFF26C6DA),
             Color(0xFF00ACC1),
-          ],
+              ],
           onTap: () {
             showDialog(
               context: context,
               builder: (context) => const CompleteProfileScreen(),
             );
           },
-        ),
+            ),
       );
     } else {
       cards.add(
@@ -717,7 +717,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           gradientColors: const [
             Color(0xFF26C6DA),
             Color(0xFF00ACC1),
-          ],
+            ],
           onTap: () {
             Navigator.push(
               context,
@@ -739,35 +739,35 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            children: [
-              Container(
+                child: Row(
+                  children: [
+                    Container(
                 padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
+                      decoration: BoxDecoration(
                   gradient: const LinearGradient(
                     colors: [Color(0xFFFFB74D), Color(0xFFFF9800)],
-                  ),
+                        ),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
                   Icons.auto_awesome,
-                  color: Colors.white,
+                              color: Colors.white,
                   size: 16,
-                ),
-              ),
+                            ),
+                          ),
               const SizedBox(width: 8),
               const Text(
                 'Insights Inteligentes',
-                style: TextStyle(
+                            style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w800,
                   color: Colors.white,
                   letterSpacing: 0.2,
-                ),
-              ),
-            ],
-          ),
-        ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
         const SizedBox(height: 12),
         SizedBox(
           height: 220,
@@ -799,20 +799,20 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           children: [
             Row(
               children: [
-                Container(
+                    Container(
                   padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
+                      decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [Color(0xFF66BB6A), Color(0xFF43A047)],
                     ),
                     borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(
+                      ),
+                      child: const Icon(
                     Icons.check_circle_rounded,
-                    color: Colors.white,
+                        color: Colors.white,
                     size: 16,
-                  ),
-                ),
+                      ),
+                    ),
                 const SizedBox(width: 8),
                 const Text(
                   'Alertas IA',
@@ -828,35 +828,35 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             const SizedBox(height: 12),
             ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: BackdropFilter(
+      child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                child: Container(
+        child: Container(
                   padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
                         Colors.green.withOpacity(0.15),
                         Colors.green.withOpacity(0.08),
-                      ],
-                    ),
+              ],
+            ),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
+            border: Border.all(
                       color: Colors.green.withOpacity(0.3),
                       width: 1,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
+            ),
+            boxShadow: [
+              BoxShadow(
                         color: Colors.green.withOpacity(0.2),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
+              ),
+            ],
+          ),
                   child: Row(
-                    children: [
+                  children: [
                       Container(
                         padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
+                      decoration: BoxDecoration(
                           color: const Color(0xFF66BB6A).withOpacity(0.2),
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -864,29 +864,29 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           Icons.check_circle_rounded,
                           color: Color(0xFF66BB6A),
                           size: 16,
-                        ),
                       ),
+                    ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: Text(
+                      child: Text(
                           'No se detectan riesgos hoy. Buena suerte 💚',
                           style: TextStyle(
                             fontSize: 11,
                             color: Colors.white.withOpacity(0.9),
                             fontWeight: FontWeight.w500,
                           ),
-                        ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
+          ),
           ],
-        ),
-      );
-    }
-    
+      ),
+    );
+  }
+
     // Hay alertas
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -962,85 +962,85 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       actividades.add(
         ClipRRect(
           borderRadius: BorderRadius.circular(20),
-          child: BackdropFilter(
+        child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(
+          child: Container(
               padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
                     Colors.white.withOpacity(0.15),
                     Colors.white.withOpacity(0.08),
-                  ],
-                ),
+                ],
+              ),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(
+              border: Border.all(
                   color: Colors.white.withOpacity(0.2),
-                  width: 1,
-                ),
+                width: 1,
+              ),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.1),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
-                  ),
+                        ),
                 ],
-              ),
+                    ),
               child: Column(
-                children: [
-                  Container(
+                      children: [
+                        Container(
                     padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
+                          decoration: BoxDecoration(
                       gradient: const LinearGradient(
                         colors: [Color(0xFF6366F1), Color(0xFF4F46E5)],
-                      ),
+                            ),
                       borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
+                            boxShadow: [
+                              BoxShadow(
                           color: const Color(0xFF6366F1).withOpacity(0.3),
                           blurRadius: 4,
                           offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
+                              ),
+                            ],
+                          ),
                     child: Icon(
-                      Icons.calendar_today_rounded,
-                      color: Colors.white,
+                            Icons.calendar_today_rounded,
+                            color: Colors.white,
                       size: 20,
-                    ),
-                  ),
+                          ),
+                        ),
                   const SizedBox(height: 10),
                   Text(
                     'Aún no tenemos tu horario.',
-                    style: TextStyle(
+                                style: TextStyle(
                       fontSize: 15,
                       color: Colors.white.withOpacity(0.9),
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.2,
                     ),
                     textAlign: TextAlign.center,
-                  ),
+                                ),
                   const SizedBox(height: 3),
-                  Text(
+                              Text(
                     'Agrega tus clases para comenzar.',
-                    style: TextStyle(
+                                style: TextStyle(
                       fontSize: 11,
-                      color: Colors.white.withOpacity(0.6),
-                    ),
+                                  color: Colors.white.withOpacity(0.6),
+                                ),
                     textAlign: TextAlign.center,
-                  ),
+                    ),
                   const SizedBox(height: 10),
                   Material(
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HorariosScreen(),
-                          ),
-                        );
-                      },
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HorariosScreen(),
+                            ),
+                          );
+                            },
                       borderRadius: BorderRadius.circular(10),
                       child: Container(
                         width: double.infinity,
@@ -1055,7 +1055,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                               color: const Color(0xFF6366F1).withOpacity(0.3),
                               blurRadius: 4,
                               offset: const Offset(0, 2),
-                            ),
+                          ),
                           ],
                         ),
                         child: const Text(
@@ -1066,39 +1066,39 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
                             letterSpacing: 0.2,
-                          ),
+                            ),
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
+                  ],
             ),
           ),
         ),
-      );
+      ),
+    );
     } else {
       // TODO: Implementar lógica para obtener clases de hoy usando HorariosMaterialsService
       // Por ahora mostrar mensaje de que no hay clases hoy
       actividades.add(
         ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(
+      borderRadius: BorderRadius.circular(20),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
               padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.white.withOpacity(0.15),
-                    Colors.white.withOpacity(0.08),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: Colors.white.withOpacity(0.2),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.white.withOpacity(0.15),
+                Colors.white.withOpacity(0.08),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.2),
                   width: 1,
-                ),
+            ),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.1),
@@ -1107,23 +1107,23 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   ),
                 ],
               ),
-              child: Row(
-                children: [
-                  Container(
+                child: Row(
+                  children: [
+                    Container(
                     padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
+                      decoration: BoxDecoration(
                       gradient: const LinearGradient(
                         colors: [Color(0xFF6366F1), Color(0xFF4F46E5)],
-                      ),
+                        ),
                       borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
+                        boxShadow: [
+                          BoxShadow(
                           color: const Color(0xFF6366F1).withOpacity(0.3),
                           blurRadius: 4,
                           offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
+                          ),
+                        ],
+                      ),
                     child: Icon(
                       Icons.event_available_rounded,
                       color: Colors.white,
@@ -1131,38 +1131,38 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     ),
                   ),
                   const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
                           'Hoy no tienes clases programadas.',
                           style: TextStyle(
                             fontSize: 15,
                             color: Colors.white.withOpacity(0.9),
-                            fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w700,
                             letterSpacing: 0.2,
+                            ),
                           ),
-                        ),
                         const SizedBox(height: 3),
-                        Text(
+                          Text(
                           'Buen día para adelantar materias 😉',
-                          style: TextStyle(
+                            style: TextStyle(
                             fontSize: 11,
-                            color: Colors.white.withOpacity(0.6),
+                              color: Colors.white.withOpacity(0.6),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
                 ],
-              ),
             ),
           ),
         ),
-      );
-    }
-    
+      ),
+    );
+  }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -1192,13 +1192,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   fontWeight: FontWeight.w800,
                   color: Colors.white,
                   letterSpacing: 0.2,
-                ),
               ),
+            ),
             ],
           ),
           const SizedBox(height: 12),
           ...actividades,
-        ],
+          ],
       ),
     );
   }

@@ -161,7 +161,7 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.celeste.withOpacity(0.2),
+                              color: AppColors.horarioPrimary.withOpacity(0.2),
                               blurRadius: 20,
                               offset: const Offset(0, 10),
                             ),
@@ -206,12 +206,12 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
       floatingActionButton: Container(
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [AppColors.celeste, AppColors.verdeAzulado],
+            colors: [AppColors.horarioPrimary, AppColors.horarioSecondary],
           ),
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: AppColors.celeste.withOpacity(0.4),
+              color: AppColors.horarioPrimary.withOpacity(0.4),
               blurRadius: 20,
               offset: const Offset(0, 8),
             ),
@@ -231,57 +231,57 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
 
   Widget _buildAppBar(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
       child: Row(
         children: [
           ClipOval(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
-                width: 36,
-                height: 36,
+                width: 32,
+                height: 32,
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.1),
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: Colors.white.withOpacity(0.2),
-                    width: 1.5,
+                    width: 1,
                   ),
                 ),
                 child: IconButton(
                   padding: EdgeInsets.zero,
-                  icon: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 18),
+                  icon: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 16),
                   onPressed: () => Navigator.pop(context),
                 ),
               ),
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 12),
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.celeste,
-                  AppColors.verdeAzulado,
+                  AppColors.horarioPrimary,
+                  AppColors.horarioSecondary,
                 ],
               ),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.celeste.withOpacity(0.4),
-                  blurRadius: 15,
-                  offset: const Offset(0, 6),
+                  color: AppColors.horarioPrimary.withOpacity(0.4),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
             child: const Icon(
               Icons.calendar_today_rounded,
               color: Colors.white,
-              size: 24,
+              size: 18,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -290,16 +290,16 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                   widget.horario.nombrehor ?? 'Horario',
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 26,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.5,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.3,
                   ),
                 ),
                 Text(
                   'Gestión de materias',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.8),
-                    fontSize: 14,
+                    fontSize: 12,
                   ),
                 ),
               ],
@@ -312,7 +312,7 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
 
   Widget _buildWeekHeader() {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
           const SizedBox(width: 56), // Espacio para columna de horas
@@ -323,26 +323,26 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
             
             return Expanded(
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(vertical: 6),
                 decoration: isToday
                     ? BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            AppColors.celeste.withOpacity(0.3),
-                            AppColors.verdeAzulado.withOpacity(0.3),
+                            AppColors.horarioPrimary.withOpacity(0.3),
+                            AppColors.horarioSecondary.withOpacity(0.3),
                           ],
                         ),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(8),
                       )
                     : null,
                 child: Text(
                   dia,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
                     color: isToday ? Colors.white : Colors.white.withOpacity(0.7),
-                    letterSpacing: 0.5,
+                    letterSpacing: 0.3,
                   ),
                 ),
               ),
@@ -635,14 +635,14 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      width: 40,
-                      height: 4,
-                      margin: const EdgeInsets.only(bottom: 24),
+                      width: 28,
+                      height: 2.5,
+                      margin: const EdgeInsets.only(bottom: 12),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.5),
                         borderRadius: BorderRadius.circular(2),
@@ -651,13 +651,13 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                     const Text(
                       'Opciones',
                       style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w800,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
                         color: Colors.white,
-                        letterSpacing: 0.5,
+                        letterSpacing: 0.3,
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 14),
                     // Botón para agregar materia
                     ClipRRect(
                       borderRadius: BorderRadius.circular(20),
@@ -667,12 +667,12 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                           width: double.infinity,
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
-                              colors: [AppColors.celeste, AppColors.verdeAzulado],
+                              colors: [AppColors.horarioPrimary, AppColors.horarioSecondary],
                             ),
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.celeste.withOpacity(0.4),
+                                color: AppColors.horarioPrimary.withOpacity(0.4),
                                 blurRadius: 15,
                                 offset: const Offset(0, 8),
                               ),
@@ -685,33 +685,33 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                 Navigator.pop(context);
                                 _showSelectTimeModal();
                               },
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: BorderRadius.circular(12),
                               splashColor: Colors.white.withOpacity(0.2),
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 18),
+                                padding: const EdgeInsets.symmetric(vertical: 10),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Container(
-                                      padding: const EdgeInsets.all(8),
+                                      padding: const EdgeInsets.all(5),
                                       decoration: BoxDecoration(
                                         color: Colors.white.withOpacity(0.2),
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: const Icon(
                                         Icons.add_circle_outline,
                                         color: Colors.white,
-                                        size: 22,
+                                        size: 16,
                                       ),
                                     ),
-                                    const SizedBox(width: 12),
+                                    const SizedBox(width: 8),
                                     const Text(
                                       'Agregar Materia',
                                       style: TextStyle(
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w700,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
                                         color: Colors.white,
-                                        letterSpacing: 0.5,
+                                        letterSpacing: 0.2,
                                       ),
                                     ),
                                   ],
@@ -722,10 +722,10 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 10),
                     // Botón para gestionar materias
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(12),
                       child: BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                         child: Container(
@@ -737,10 +737,10 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                 Colors.white.withOpacity(0.1),
                               ],
                             ),
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: Colors.white.withOpacity(0.3),
-                              width: 1.5,
+                              width: 1,
                             ),
                           ),
                           child: Material(
@@ -750,35 +750,35 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                 Navigator.pop(context);
                                 _showManageMateriasModal();
                               },
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: BorderRadius.circular(12),
                               splashColor: Colors.white.withOpacity(0.1),
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 18),
+                                padding: const EdgeInsets.symmetric(vertical: 10),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Container(
-                                      padding: const EdgeInsets.all(8),
+                                      padding: const EdgeInsets.all(5),
                                       decoration: BoxDecoration(
                                         gradient: const LinearGradient(
-                                          colors: [AppColors.celeste, AppColors.verdeAzulado],
+                                          colors: [AppColors.horarioPrimary, AppColors.horarioSecondary],
                                         ),
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: const Icon(
                                         Icons.settings,
                                         color: Colors.white,
-                                        size: 20,
+                                        size: 14,
                                       ),
                                     ),
-                                    const SizedBox(width: 12),
+                                    const SizedBox(width: 8),
                                     const Text(
                                       'Gestionar Materias',
                                       style: TextStyle(
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w700,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
                                         color: Colors.white,
-                                        letterSpacing: 0.5,
+                                        letterSpacing: 0.2,
                                       ),
                                     ),
                                   ],
@@ -789,14 +789,14 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 10),
                     // Botón cancelar
                     TextButton(
                       onPressed: () => Navigator.pop(context),
                       child: Text(
                         'Cancelar',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 13,
                           color: Colors.white.withOpacity(0.8),
                           fontWeight: FontWeight.w600,
                         ),
@@ -840,14 +840,14 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      width: 40,
-                      height: 4,
-                      margin: const EdgeInsets.only(bottom: 20),
+                      width: 28,
+                      height: 2.5,
+                      margin: const EdgeInsets.only(bottom: 12),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.3),
                         borderRadius: BorderRadius.circular(2),
@@ -856,51 +856,51 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                     const Text(
                       'Seleccionar Horario',
                       style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
                         color: Colors.white,
-                        letterSpacing: 0.3,
+                        letterSpacing: 0.2,
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 10),
                     Text(
                       'Toca una celda del horario para agregar una materia en ese horario.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 11,
                         color: Colors.white.withOpacity(0.8),
-                        height: 1.5,
+                        height: 1.3,
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 14),
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(12),
                       child: BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                         child: Container(
                           width: double.infinity,
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: Colors.white.withOpacity(0.2),
-                              width: 1.5,
+                              width: 1,
                             ),
                           ),
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
                               onTap: () => Navigator.pop(context),
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(12),
                               splashColor: Colors.white.withOpacity(0.1),
                               child: const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 16),
+                                padding: EdgeInsets.symmetric(vertical: 10),
                                 child: Center(
                                   child: Text(
                                     'Cerrar',
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 16,
+                                      fontSize: 13,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -953,17 +953,24 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
               child: Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [AppColors.celeste, AppColors.verdeAzulado],
+                        colors: [AppColors.horarioPrimary, AppColors.horarioSecondary],
                       ),
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.settings, color: Colors.white, size: 28),
-                        const SizedBox(width: 12),
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Icon(Icons.settings, color: Colors.white, size: 16),
+                        ),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -972,37 +979,38 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                 'Gestionar Materias',
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 0.3,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.2,
                                 ),
                               ),
                               Text(
                                 '${_materiasHorario.length} materia${_materiasHorario.length != 1 ? 's' : ''} en este horario',
                                 style: TextStyle(
                                   color: Colors.white.withOpacity(0.9),
-                                  fontSize: 12,
+                                  fontSize: 10,
                                 ),
                               ),
                             ],
                           ),
                         ),
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(8),
                           child: BackdropFilter(
                             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                             child: Container(
                               decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(8),
                                 border: Border.all(
                                   color: Colors.white.withOpacity(0.2),
-                                  width: 1.5,
+                                  width: 1,
                                 ),
                               ),
                               child: IconButton(
-                                icon: const Icon(Icons.close, color: Colors.white),
+                                icon: const Icon(Icons.close, color: Colors.white, size: 16),
                                 onPressed: () => Navigator.pop(context),
+                                padding: EdgeInsets.zero,
                               ),
                             ),
                           ),
@@ -1038,14 +1046,14 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
           children: [
             Icon(
               Icons.inbox,
-              size: 64,
+              size: 48,
               color: Colors.white.withOpacity(0.5),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             Text(
               'No hay materias en este horario',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 14,
                 color: Colors.white.withOpacity(0.8),
                 fontWeight: FontWeight.w500,
               ),
@@ -1071,7 +1079,7 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       itemCount: materiasAgrupadas.length,
       itemBuilder: (context, index) {
         final materiaId = materiasAgrupadas.keys.elementAt(index);
@@ -1093,42 +1101,43 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
         }).join('\n');
         
         return Container(
-          margin: const EdgeInsets.only(bottom: 12),
+          margin: const EdgeInsets.only(bottom: 8),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(12),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: Colors.white.withOpacity(0.2),
-                    width: 1.5,
+                    width: 1,
                   ),
                 ),
               child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 leading: Container(
-                  width: 50,
-                  height: 50,
+                  width: 40,
+                  height: 40,
                   decoration: BoxDecoration(
                     color: color.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(Icons.school, color: color, size: 28),
+                  child: Icon(Icons.school, color: color, size: 22),
                 ),
                 title: Text(
                   nombre,
                   style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
                     color: Colors.white,
                   ),
                 ),
                 subtitle: Text(
                   horariosTexto,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 12,
                     color: Colors.white.withOpacity(0.7),
                   ),
                   maxLines: 3,
@@ -1138,13 +1147,14 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                   icon: Icon(
                     Icons.more_vert,
                     color: Colors.white.withOpacity(0.8),
+                    size: 18,
                   ),
                   color: const Color(0xFF1A2634),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(12),
                     side: BorderSide(
                       color: Colors.white.withOpacity(0.2),
-                      width: 1.5,
+                      width: 1,
                     ),
                   ),
                   elevation: 8,
@@ -1153,11 +1163,11 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                       value: 'edit',
                       child: Row(
                         children: [
-                          Icon(Icons.edit, color: AppColors.celeste, size: 20),
+                          Icon(Icons.edit, color: AppColors.horarioPrimary, size: 18),
                           const SizedBox(width: 8),
                           const Text(
                             'Editar',
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(color: Colors.white, fontSize: 14),
                           ),
                         ],
                       ),
@@ -1166,11 +1176,11 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                       value: 'delete',
                       child: Row(
                         children: [
-                          const Icon(Icons.delete, color: Colors.redAccent, size: 20),
+                          const Icon(Icons.delete, color: Colors.redAccent, size: 18),
                           const SizedBox(width: 8),
                           const Text(
                             'Eliminar',
-                            style: TextStyle(color: Colors.redAccent),
+                            style: TextStyle(color: Colors.redAccent, fontSize: 14),
                           ),
                         ],
                       ),
@@ -1326,27 +1336,27 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                     children: [
                       // Header
                       Container(
-                        padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
                         child: Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.all(12),
+                              padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
-                                  colors: [AppColors.celeste, AppColors.verdeAzulado],
+                                  colors: [AppColors.horarioPrimary, AppColors.horarioSecondary],
                                 ),
-                                borderRadius: BorderRadius.circular(14),
+                                borderRadius: BorderRadius.circular(10),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppColors.celeste.withOpacity(0.4),
-                                    blurRadius: 15,
-                                    offset: const Offset(0, 6),
+                                    color: AppColors.horarioPrimary.withOpacity(0.4),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
                                   ),
                                 ],
                               ),
-                              child: const Icon(Icons.edit, color: Colors.white, size: 24),
+                              child: const Icon(Icons.edit, color: Colors.white, size: 18),
                             ),
-                            const SizedBox(width: 16),
+                            const SizedBox(width: 12),
                             const Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1355,38 +1365,39 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                     'Editar Materia',
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 26,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 0.5,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 0.3,
                                     ),
                                   ),
-                                  SizedBox(height: 4),
+                                  SizedBox(height: 2),
                                   Text(
                                     'Modifica la información de la materia',
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 14,
+                                      fontSize: 12,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
                             ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(10),
                               child: BackdropFilter(
                                 filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: Colors.white.withOpacity(0.1),
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(10),
                                     border: Border.all(
                                       color: Colors.white.withOpacity(0.2),
-                                      width: 1.5,
+                                      width: 1,
                                     ),
                                   ),
                                   child: IconButton(
-                                    icon: const Icon(Icons.close, color: Colors.white),
+                                    icon: const Icon(Icons.close, color: Colors.white, size: 18),
                                     onPressed: () => Navigator.pop(context),
+                                    padding: EdgeInsets.zero,
                                   ),
                                 ),
                               ),
@@ -1397,7 +1408,7 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                       // Form
                       Expanded(
                         child: SingleChildScrollView(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -1408,14 +1419,14 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                               icon: Icons.book,
                               required: true,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
                             _buildTextField(
                               controller: codigoController,
                               label: 'Código',
                               hint: 'Ej: MAT101',
                               icon: Icons.tag,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
                             _buildTextField(
                               controller: creditosController,
                               label: 'Créditos',
@@ -1424,14 +1435,14 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                               required: true,
                               keyboardType: TextInputType.number,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
                             _buildTextField(
                               controller: profesorController,
                               label: 'Profesor',
                               hint: 'Ej: Dr. Juan Pérez',
                               icon: Icons.person,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
                             _buildColorPickerField(
                               selectedColor,
                               (color) {
@@ -1440,38 +1451,38 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                 });
                               },
                             ),
-                            const SizedBox(height: 24),
+                            const SizedBox(height: 16),
                             // Botones
                             Row(
                               children: [
                                 Expanded(
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(16),
+                                    borderRadius: BorderRadius.circular(12),
                                     child: BackdropFilter(
                                       filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                                       child: Container(
                                         decoration: BoxDecoration(
                                           color: Colors.white.withOpacity(0.1),
-                                          borderRadius: BorderRadius.circular(16),
+                                          borderRadius: BorderRadius.circular(12),
                                           border: Border.all(
                                             color: Colors.white.withOpacity(0.2),
-                                            width: 1.5,
+                                            width: 1,
                                           ),
                                         ),
                                         child: Material(
                                           color: Colors.transparent,
                                           child: InkWell(
                                             onTap: () => Navigator.pop(context),
-                                            borderRadius: BorderRadius.circular(16),
+                                            borderRadius: BorderRadius.circular(12),
                                             splashColor: Colors.white.withOpacity(0.1),
                                             child: const Padding(
-                                              padding: EdgeInsets.symmetric(vertical: 16),
+                                              padding: EdgeInsets.symmetric(vertical: 12),
                                               child: Center(
                                                 child: Text(
                                                   'Cancelar',
                                                   style: TextStyle(
                                                     color: Colors.white,
-                                                    fontSize: 16,
+                                                    fontSize: 14,
                                                     fontWeight: FontWeight.w600,
                                                   ),
                                                 ),
@@ -1483,23 +1494,23 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                     ),
                                   ),
                                 ),
-                            const SizedBox(width: 12),
+                            const SizedBox(width: 10),
                             Expanded(
                               child: ClipRRect(
-                                borderRadius: BorderRadius.circular(16),
+                                borderRadius: BorderRadius.circular(12),
                                 child: BackdropFilter(
                                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                                   child: Container(
                                     decoration: BoxDecoration(
                                       gradient: const LinearGradient(
-                                        colors: [AppColors.celeste, AppColors.verdeAzulado],
+                                        colors: [AppColors.horarioPrimary, AppColors.horarioSecondary],
                                       ),
-                                      borderRadius: BorderRadius.circular(16),
+                                      borderRadius: BorderRadius.circular(12),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: AppColors.celeste.withOpacity(0.4),
-                                          blurRadius: 15,
-                                          offset: const Offset(0, 8),
+                                          color: AppColors.horarioPrimary.withOpacity(0.4),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 4),
                                         ),
                                       ],
                                     ),
@@ -1565,10 +1576,10 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                             }
                                           }
                                         },
-                                        borderRadius: BorderRadius.circular(16),
+                                        borderRadius: BorderRadius.circular(12),
                                         splashColor: Colors.white.withOpacity(0.2),
                                         child: Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             mainAxisSize: MainAxisSize.min,
@@ -1576,16 +1587,16 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                               const Icon(
                                                 Icons.check_circle_rounded,
                                                 color: Colors.white,
-                                                size: 20,
+                                                size: 18,
                                               ),
-                                              const SizedBox(width: 10),
+                                              const SizedBox(width: 8),
                                               const Text(
                                                 'Guardar',
                                                 style: TextStyle(
                                                   color: Colors.white,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w700,
-                                                  letterSpacing: 0.5,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w600,
+                                                  letterSpacing: 0.3,
                                                 ),
                                               ),
                                             ],
@@ -1675,27 +1686,27 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                 children: [
                   // Header
                   Container(
-                    padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
                     child: Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [color.withOpacity(0.8), color],
                             ),
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(10),
                             boxShadow: [
                               BoxShadow(
                                 color: color.withOpacity(0.3),
-                                blurRadius: 15,
-                                offset: const Offset(0, 6),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
                               ),
                             ],
                           ),
-                          child: const Icon(Icons.school, color: Colors.white, size: 28),
+                          child: const Icon(Icons.school, color: Colors.white, size: 18),
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1704,8 +1715,8 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                 nombre,
                                 style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: 26,
-                                  fontWeight: FontWeight.w800,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
                                   letterSpacing: 0.3,
                                 ),
                               ),
@@ -1714,28 +1725,29 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                   codigo,
                                   style: TextStyle(
                                     color: Colors.white.withOpacity(0.9),
-                                    fontSize: 14,
+                                    fontSize: 12,
                                   ),
                                 ),
                             ],
                           ),
                         ),
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(10),
                           child: BackdropFilter(
                             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                             child: Container(
                               decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(10),
                                 border: Border.all(
                                   color: Colors.white.withOpacity(0.2),
-                                  width: 1.5,
+                                  width: 1,
                                 ),
                               ),
                               child: IconButton(
-                                icon: const Icon(Icons.close, color: Colors.white),
+                                icon: const Icon(Icons.close, color: Colors.white, size: 18),
                                 onPressed: () => Navigator.pop(modalContext),
+                                padding: EdgeInsets.zero,
                               ),
                             ),
                           ),
@@ -1749,30 +1761,30 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                       children: [
                         Expanded(
                           child: SingleChildScrollView(
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // Horario
                             _buildDetailRow(Icons.access_time, 'Horario', '$dia, $horaInicio - $horaFin'),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
                             // Créditos
                             _buildDetailRow(Icons.star, 'Créditos', '$creditos créditos'),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
                             // Profesor
                             if (profesor.isNotEmpty) ...[
                               _buildDetailRow(Icons.person, 'Profesor', profesor),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 12),
                             ],
                             // Aula
                             if (aula.isNotEmpty) ...[
                               _buildDetailRow(Icons.meeting_room, 'Aula', aula),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 12),
                             ],
                             // Notas
                             if (notas.isNotEmpty) ...[
                               _buildDetailRow(Icons.note, 'Notas', notas),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 12),
                             ],
                           ],
                         ),
@@ -1780,7 +1792,7 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                     ),
                     // Botones de acción
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       decoration: BoxDecoration(
                         border: Border(
                           top: BorderSide(
@@ -1792,16 +1804,16 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                         children: [
                           Expanded(
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(12),
                               child: BackdropFilter(
                                 filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: Colors.white.withOpacity(0.1),
-                                    borderRadius: BorderRadius.circular(16),
+                                    borderRadius: BorderRadius.circular(12),
                                     border: Border.all(
                                       color: Colors.white.withOpacity(0.2),
-                                      width: 1.5,
+                                      width: 1,
                                     ),
                                   ),
                                   child: Material(
@@ -1828,20 +1840,20 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                           }
                                         }
                                       },
-                                      borderRadius: BorderRadius.circular(16),
+                                      borderRadius: BorderRadius.circular(12),
                                       splashColor: Colors.white.withOpacity(0.1),
                                       child: const Padding(
-                                        padding: EdgeInsets.symmetric(vertical: 14),
+                                        padding: EdgeInsets.symmetric(vertical: 10),
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
-                                            Icon(Icons.edit, color: Colors.white, size: 20),
-                                            SizedBox(width: 8),
+                                            Icon(Icons.edit, color: Colors.white, size: 16),
+                                            SizedBox(width: 6),
                                             Text(
                                               'Editar',
                                               style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: 16,
+                                                fontSize: 14,
                                                 fontWeight: FontWeight.w600,
                                               ),
                                             ),
@@ -1854,10 +1866,10 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(12),
                               child: BackdropFilter(
                                 filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                                 child: Container(
@@ -1868,12 +1880,12 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                         Colors.red[700]!.withOpacity(0.9),
                                       ],
                                     ),
-                                    borderRadius: BorderRadius.circular(16),
+                                    borderRadius: BorderRadius.circular(12),
                                     boxShadow: [
                                       BoxShadow(
                                         color: Colors.red.withOpacity(0.4),
-                                        blurRadius: 15,
-                                        offset: const Offset(0, 8),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 4),
                                       ),
                                     ],
                                   ),
@@ -1956,20 +1968,20 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                           }
                                         }
                                       },
-                                      borderRadius: BorderRadius.circular(16),
+                                      borderRadius: BorderRadius.circular(12),
                                       splashColor: Colors.white.withOpacity(0.2),
                                       child: const Padding(
-                                        padding: EdgeInsets.symmetric(vertical: 14),
+                                        padding: EdgeInsets.symmetric(vertical: 10),
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
-                                            Icon(Icons.delete, color: Colors.white, size: 20),
-                                            SizedBox(width: 8),
+                                            Icon(Icons.delete, color: Colors.white, size: 16),
+                                            SizedBox(width: 6),
                                             Text(
                                               'Eliminar',
                                               style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: 16,
+                                                fontSize: 14,
                                                 fontWeight: FontWeight.w600,
                                               ),
                                             ),
@@ -2003,10 +2015,10 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
       children: [
         Icon(
           icon,
-          color: isDark ? Colors.white.withOpacity(0.8) : AppColors.celeste,
-          size: 24,
+          color: isDark ? Colors.white.withOpacity(0.8) : AppColors.horarioPrimary,
+          size: 18,
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 10),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -2014,16 +2026,16 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 11,
                   color: isDark ? Colors.white.withOpacity(0.7) : Colors.grey,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 3),
               Text(
                 value,
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                   color: isDark ? Colors.white : Colors.black87,
                   fontWeight: FontWeight.w500,
                 ),
@@ -2123,14 +2135,14 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      width: 40,
-                      height: 4,
-                      margin: const EdgeInsets.only(bottom: 24),
+                      width: 28,
+                      height: 2.5,
+                      margin: const EdgeInsets.only(bottom: 12),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.5),
                         borderRadius: BorderRadius.circular(2),
@@ -2139,38 +2151,38 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                     const Text(
                       'Agregar Clase',
                       style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w800,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
                         color: Colors.white,
-                        letterSpacing: 0.5,
+                        letterSpacing: 0.3,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 4),
                     Text(
                       '$dia, $hora',
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 12,
                         color: Colors.white.withOpacity(0.8),
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 16),
                     // Botón para agregar nueva materia
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(12),
                       child: BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                         child: Container(
                           width: double.infinity,
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
-                              colors: [AppColors.celeste, AppColors.verdeAzulado],
+                              colors: [AppColors.horarioPrimary, AppColors.horarioSecondary],
                             ),
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(12),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.celeste.withOpacity(0.4),
-                                blurRadius: 15,
-                                offset: const Offset(0, 8),
+                                color: AppColors.horarioPrimary.withOpacity(0.4),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
                               ),
                             ],
                           ),
@@ -2181,33 +2193,33 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                 Navigator.pop(context);
                                 _showAddMateriaModal(dia, hora);
                               },
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: BorderRadius.circular(12),
                               splashColor: Colors.white.withOpacity(0.2),
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 18),
+                                padding: const EdgeInsets.symmetric(vertical: 10),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Container(
-                                      padding: const EdgeInsets.all(8),
+                                      padding: const EdgeInsets.all(5),
                                       decoration: BoxDecoration(
                                         color: Colors.white.withOpacity(0.2),
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: const Icon(
                                         Icons.add_circle_outline,
                                         color: Colors.white,
-                                        size: 22,
+                                        size: 16,
                                       ),
                                     ),
-                                    const SizedBox(width: 12),
+                                    const SizedBox(width: 8),
                                     const Text(
                                       'Nueva Materia',
                                       style: TextStyle(
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w700,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
                                         color: Colors.white,
-                                        letterSpacing: 0.5,
+                                        letterSpacing: 0.2,
                                       ),
                                     ),
                                   ],
@@ -2218,10 +2230,10 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 10),
                     // Botón para agregar materia existente
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(12),
                       child: BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                         child: Container(
@@ -2233,10 +2245,10 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                 Colors.white.withOpacity(0.1),
                               ],
                             ),
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: Colors.white.withOpacity(0.3),
-                              width: 1.5,
+                              width: 1,
                             ),
                           ),
                           child: Material(
@@ -2246,35 +2258,35 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                 Navigator.pop(context);
                                 _showAddExistingMateriaModal(dia, hora);
                               },
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: BorderRadius.circular(12),
                               splashColor: Colors.white.withOpacity(0.1),
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 18),
+                                padding: const EdgeInsets.symmetric(vertical: 10),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Container(
-                                      padding: const EdgeInsets.all(8),
+                                      padding: const EdgeInsets.all(5),
                                       decoration: BoxDecoration(
                                         gradient: const LinearGradient(
-                                          colors: [AppColors.celeste, AppColors.verdeAzulado],
+                                          colors: [AppColors.horarioPrimary, AppColors.horarioSecondary],
                                         ),
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: const Icon(
                                         Icons.list_alt,
                                         color: Colors.white,
-                                        size: 20,
+                                        size: 14,
                                       ),
                                     ),
-                                    const SizedBox(width: 12),
+                                    const SizedBox(width: 8),
                                     const Text(
                                       'Materia Existente',
                                       style: TextStyle(
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w700,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
                                         color: Colors.white,
-                                        letterSpacing: 0.5,
+                                        letterSpacing: 0.2,
                                       ),
                                     ),
                                   ],
@@ -2285,14 +2297,14 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 10),
                     // Botón cancelar
                     TextButton(
                       onPressed: () => Navigator.pop(context),
                       child: Text(
                         'Cancelar',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 13,
                           color: Colors.white.withOpacity(0.8),
                           fontWeight: FontWeight.w600,
                         ),
@@ -2347,12 +2359,12 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
-                              colors: [AppColors.celeste, AppColors.verdeAzulado],
+                              colors: [AppColors.horarioPrimary, AppColors.horarioSecondary],
                             ),
                             borderRadius: BorderRadius.circular(14),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.celeste.withOpacity(0.4),
+                                color: AppColors.horarioPrimary.withOpacity(0.4),
                                 blurRadius: 15,
                                 offset: const Offset(0, 6),
                               ),
@@ -2437,7 +2449,7 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.celeste.withOpacity(0.3),
+                      color: AppColors.horarioPrimary.withOpacity(0.3),
                       blurRadius: 30,
                       offset: const Offset(0, 15),
                     ),
@@ -2455,12 +2467,12 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
-                                colors: [AppColors.celeste, AppColors.verdeAzulado],
+                                colors: [AppColors.horarioPrimary, AppColors.horarioSecondary],
                               ),
                               borderRadius: BorderRadius.circular(14),
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.celeste.withOpacity(0.4),
+                                  color: AppColors.horarioPrimary.withOpacity(0.4),
                                   blurRadius: 15,
                                   offset: const Offset(0, 6),
                                 ),
@@ -2520,7 +2532,7 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                               return Theme(
                                 data: Theme.of(context).copyWith(
                                   colorScheme: const ColorScheme.dark(
-                                    primary: AppColors.celeste,
+                                    primary: AppColors.horarioPrimary,
                                     onPrimary: Colors.white,
                                     surface: Color(0xFF1A2634),
                                     onSurface: Colors.white,
@@ -2529,7 +2541,7 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                   dialogBackgroundColor: const Color(0xFF1A2634),
                                   textButtonTheme: TextButtonThemeData(
                                     style: TextButton.styleFrom(
-                                      foregroundColor: AppColors.celeste,
+                                      foregroundColor: AppColors.horarioPrimary,
                                     ),
                                   ),
                                 ),
@@ -2566,12 +2578,12 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                               child: Container(
                                 decoration: BoxDecoration(
                                   gradient: const LinearGradient(
-                                    colors: [AppColors.celeste, AppColors.verdeAzulado],
+                                    colors: [AppColors.horarioPrimary, AppColors.horarioSecondary],
                                   ),
                                   borderRadius: BorderRadius.circular(16),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: AppColors.celeste.withOpacity(0.4),
+                                      color: AppColors.horarioPrimary.withOpacity(0.4),
                                       blurRadius: 15,
                                       offset: const Offset(0, 8),
                                     ),
@@ -2706,7 +2718,7 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
             child: CircularProgressIndicator(
-              color: AppColors.celeste,
+              color: AppColors.horarioPrimary,
             ),
           );
         }
@@ -2810,7 +2822,7 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
         }
         
         return ListView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           itemCount: materias.length,
           itemBuilder: (context, index) {
             final materia = materias[index];
@@ -2818,11 +2830,11 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
             final color = Color(int.parse(colorHex.substring(1, 7), radix: 16) + 0xFF000000);
             
             return Container(
-              margin: const EdgeInsets.only(bottom: 16),
+              margin: const EdgeInsets.only(bottom: 8),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(12),
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                   child: Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -2833,16 +2845,16 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                           Colors.white.withOpacity(0.1),
                         ],
                       ),
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: Colors.white.withOpacity(0.2),
-                        width: 1.5,
+                        width: 1,
                       ),
                       boxShadow: [
                         BoxShadow(
                           color: color.withOpacity(0.2),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
                         ),
                       ],
                     ),
@@ -2852,15 +2864,15 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                         onTap: () {
                           _showHoraFinDialog(materia, dia, hora);
                         },
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(12),
                         splashColor: Colors.white.withOpacity(0.1),
                         child: Padding(
-                          padding: const EdgeInsets.all(20),
+                          padding: const EdgeInsets.all(12),
                           child: Row(
                             children: [
                               Container(
-                                width: 56,
-                                height: 56,
+                                width: 40,
+                                height: 40,
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     colors: [
@@ -2868,22 +2880,22 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                       color,
                                     ],
                                   ),
-                                  borderRadius: BorderRadius.circular(16),
+                                  borderRadius: BorderRadius.circular(10),
                                   boxShadow: [
                                     BoxShadow(
                                       color: color.withOpacity(0.3),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 4),
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 2),
                                     ),
                                   ],
                                 ),
                                 child: const Icon(
                                   Icons.school,
                                   color: Colors.white,
-                                  size: 28,
+                                  size: 20,
                                 ),
                               ),
-                              const SizedBox(width: 16),
+                              const SizedBox(width: 10),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -2891,17 +2903,17 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                     Text(
                                       materia.nombre,
                                       style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w700,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
                                         color: Colors.white,
-                                        letterSpacing: 0.3,
+                                        letterSpacing: 0.2,
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
+                                    const SizedBox(height: 2),
                                     Text(
                                       materia.codigo,
                                       style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 12,
                                         color: Colors.white.withOpacity(0.8),
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -2910,15 +2922,15 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                 ),
                               ),
                               Container(
-                                padding: const EdgeInsets.all(8),
+                                padding: const EdgeInsets.all(6),
                                 decoration: BoxDecoration(
                                   color: Colors.white.withOpacity(0.15),
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Icon(
                                   Icons.arrow_forward_ios,
                                   color: Colors.white.withOpacity(0.9),
-                                  size: 18,
+                                  size: 14,
                                 ),
                               ),
                             ],
@@ -2960,8 +2972,8 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
               borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                child: Container(
-                  height: MediaQuery.of(context).size.height * 0.85,
+                  child: Container(
+                  height: MediaQuery.of(context).size.height * 0.65,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
@@ -2971,11 +2983,11 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                         Colors.white.withOpacity(0.1),
                       ],
                     ),
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
                     border: Border(
                       top: BorderSide(
                         color: Colors.white.withOpacity(0.3),
-                        width: 1.5,
+                        width: 1,
                       ),
                     ),
                   ),
@@ -2983,27 +2995,27 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                     children: [
                     // Header
                     Container(
-                      padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                      padding: const EdgeInsets.fromLTRB(12, 8, 12, 6),
                       child: Row(
                         children: [
                           Container(
-                            padding: const EdgeInsets.all(12),
+                            padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
-                                colors: [AppColors.celeste, AppColors.verdeAzulado],
+                                colors: [AppColors.horarioPrimary, AppColors.horarioSecondary],
                               ),
-                              borderRadius: BorderRadius.circular(14),
+                              borderRadius: BorderRadius.circular(6),
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.celeste.withOpacity(0.4),
-                                  blurRadius: 15,
-                                  offset: const Offset(0, 6),
+                                  color: AppColors.horarioPrimary.withOpacity(0.4),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 1),
                                 ),
                               ],
                             ),
-                            child: const Icon(Icons.school, color: Colors.white, size: 24),
+                            child: const Icon(Icons.school, color: Colors.white, size: 12),
                           ),
-                          const SizedBox(width: 16),
+                          const SizedBox(width: 6),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -3012,38 +3024,39 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                   'Agregar Materia',
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 26,
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: 0.5,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.1,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
                                 Text(
                                   '$dia, $hora',
                                   style: TextStyle(
                                     color: Colors.white.withOpacity(0.9),
-                                    fontSize: 14,
+                                    fontSize: 9,
                                   ),
                                 ),
                               ],
                             ),
                           ),
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(6),
                             child: BackdropFilter(
                               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: Colors.white.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(6),
                                   border: Border.all(
                                     color: Colors.white.withOpacity(0.2),
-                                    width: 1.5,
+                                    width: 1,
                                   ),
                                 ),
                                 child: IconButton(
-                                  icon: const Icon(Icons.close, color: Colors.white),
+                                  icon: const Icon(Icons.close, color: Colors.white, size: 12),
                                   onPressed: () => Navigator.pop(context),
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(),
                                 ),
                               ),
                             ),
@@ -3054,7 +3067,7 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                     // Form
                     Expanded(
                       child: SingleChildScrollView(
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -3065,14 +3078,14 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                               icon: Icons.book,
                               required: true,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 4),
                             _buildTextField(
                               controller: codigoController,
                               label: 'Código',
                               hint: 'Ej: MAT101',
                               icon: Icons.tag,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 4),
                             _buildTextField(
                               controller: creditosController,
                               label: 'Créditos',
@@ -3081,14 +3094,14 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                               required: true,
                               keyboardType: TextInputType.number,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 4),
                             _buildTextField(
                               controller: profesorController,
                               label: 'Profesor',
                               hint: 'Ej: Dr. Juan Pérez',
                               icon: Icons.person,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 4),
                             Row(
                               children: [
                                 Expanded(
@@ -3099,7 +3112,7 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                     icon: Icons.meeting_room,
                                   ),
                                 ),
-                                const SizedBox(width: 12),
+                                const SizedBox(width: 6),
                                 Expanded(
                                   child: _buildTimePickerField(
                                     controller: horaFinController,
@@ -3116,7 +3129,7 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                           return Theme(
                                             data: Theme.of(context).copyWith(
                                               colorScheme: const ColorScheme.dark(
-                                                primary: AppColors.celeste,
+                                                primary: AppColors.horarioPrimary,
                                                 onPrimary: Colors.white,
                                                 surface: Color(0xFF1A2634),
                                                 onSurface: Colors.white,
@@ -3125,7 +3138,7 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                               dialogBackgroundColor: const Color(0xFF1A2634),
                                               textButtonTheme: TextButtonThemeData(
                                                 style: TextButton.styleFrom(
-                                                  foregroundColor: AppColors.celeste,
+                                                  foregroundColor: AppColors.horarioPrimary,
                                                 ),
                                               ),
                                             ),
@@ -3142,15 +3155,15 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 4),
                             _buildTextField(
                               controller: notasController,
                               label: 'Notas',
                               hint: 'Ej: Traer calculadora',
                               icon: Icons.note,
-                              maxLines: 3,
+                              maxLines: 2,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 4),
                             _buildColorPickerField(
                               selectedColor,
                               (color) {
@@ -3159,38 +3172,38 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                 });
                               },
                             ),
-                            const SizedBox(height: 24),
+                            const SizedBox(height: 8),
                             // Botones
                             Row(
                               children: [
                                 Expanded(
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(16),
+                                    borderRadius: BorderRadius.circular(8),
                                     child: BackdropFilter(
                                       filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                                       child: Container(
                                         decoration: BoxDecoration(
                                           color: Colors.white.withOpacity(0.1),
-                                          borderRadius: BorderRadius.circular(16),
+                                          borderRadius: BorderRadius.circular(8),
                                           border: Border.all(
                                             color: Colors.white.withOpacity(0.2),
-                                            width: 1.5,
+                                            width: 1,
                                           ),
                                         ),
                                         child: Material(
                                           color: Colors.transparent,
                                           child: InkWell(
                                             onTap: () => Navigator.pop(context),
-                                            borderRadius: BorderRadius.circular(16),
+                                            borderRadius: BorderRadius.circular(8),
                                             splashColor: Colors.white.withOpacity(0.1),
                                             child: const Padding(
-                                              padding: EdgeInsets.symmetric(vertical: 16),
+                                              padding: EdgeInsets.symmetric(vertical: 8),
                                               child: Center(
                                                 child: Text(
                                                   'Cancelar',
                                                   style: TextStyle(
                                                     color: Colors.white,
-                                                    fontSize: 16,
+                                                    fontSize: 12,
                                                     fontWeight: FontWeight.w600,
                                                   ),
                                                 ),
@@ -3202,23 +3215,23 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 12),
+                                const SizedBox(width: 8),
                                 Expanded(
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(16),
+                                    borderRadius: BorderRadius.circular(8),
                                     child: BackdropFilter(
                                       filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                                       child: Container(
                                         decoration: BoxDecoration(
                                           gradient: const LinearGradient(
-                                            colors: [AppColors.celeste, AppColors.verdeAzulado],
+                                            colors: [AppColors.horarioPrimary, AppColors.horarioSecondary],
                                           ),
-                                          borderRadius: BorderRadius.circular(16),
+                                          borderRadius: BorderRadius.circular(8),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: AppColors.celeste.withOpacity(0.4),
-                                              blurRadius: 15,
-                                              offset: const Offset(0, 8),
+                                              color: AppColors.horarioPrimary.withOpacity(0.4),
+                                              blurRadius: 6,
+                                              offset: const Offset(0, 2),
                                             ),
                                           ],
                                         ),
@@ -3358,10 +3371,10 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                                 }
                                               }
                                             },
-                                            borderRadius: BorderRadius.circular(16),
+                                            borderRadius: BorderRadius.circular(10),
                                             splashColor: Colors.white.withOpacity(0.2),
                                             child: Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                                               child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 mainAxisSize: MainAxisSize.min,
@@ -3369,16 +3382,16 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                                                   const Icon(
                                                     Icons.check_circle_rounded,
                                                     color: Colors.white,
-                                                    size: 20,
+                                                    size: 14,
                                                   ),
-                                                  const SizedBox(width: 10),
+                                                  const SizedBox(width: 5),
                                                   const Text(
                                                     'Guardar',
                                                     style: TextStyle(
                                                       color: Colors.white,
-                                                      fontSize: 16,
-                                                      fontWeight: FontWeight.w700,
-                                                      letterSpacing: 0.5,
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.w600,
+                                                      letterSpacing: 0.1,
                                                     ),
                                                   ),
                                                 ],
@@ -3425,7 +3438,7 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
             Text(
               label,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 10,
                 fontWeight: FontWeight.w600,
                 color: isDark ? Colors.white : Colors.black87,
               ),
@@ -3435,18 +3448,22 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                 ' *',
                 style: TextStyle(
                   color: isDark ? Colors.red[300] : Colors.red,
-                  fontSize: 14,
+                  fontSize: 10,
                   fontWeight: FontWeight.w600,
                 ),
               ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 2),
         ClipRRect(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(6),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
+              constraints: const BoxConstraints(
+                minHeight: 32,
+                maxHeight: 40,
+              ),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -3461,19 +3478,20 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                           Colors.white.withOpacity(0.15),
                         ],
                 ),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(6),
                 border: Border.all(
                   color: Colors.white.withOpacity(0.2),
-                  width: 1.5,
+                  width: 1,
                 ),
               ),
               child: TextField(
                 controller: controller,
                 maxLines: maxLines,
                 keyboardType: keyboardType,
+                textAlignVertical: TextAlignVertical.center,
                 style: TextStyle(
                   color: isDark ? Colors.white : Colors.black87,
-                  fontSize: 16,
+                  fontSize: 11,
                 ),
                 decoration: InputDecoration(
                   hintText: hint,
@@ -3481,15 +3499,18 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                     color: isDark
                         ? Colors.white.withOpacity(0.6)
                         : Colors.grey[600],
+                    fontSize: 11,
                   ),
                   prefixIcon: Icon(
                     icon,
-                    color: isDark ? Colors.white : AppColors.celeste,
+                    color: isDark ? Colors.white : AppColors.horarioPrimary,
+                    size: 14,
                   ),
                   border: InputBorder.none,
+                  isDense: true,
                   contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 16,
+                    horizontal: 6,
+                    vertical: 4,
                   ),
                 ),
               ),
@@ -3517,28 +3538,32 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
             Text(
               label,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 10,
                 fontWeight: FontWeight.w600,
                 color: isDialog ? Colors.white.withOpacity(0.9) : Colors.black87,
               ),
             ),
             if (required)
-              const Text(
+              Text(
                 ' *',
                 style: TextStyle(
                   color: Colors.red,
-                  fontSize: 14,
+                  fontSize: 10,
                   fontWeight: FontWeight.w600,
                 ),
               ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 2),
         ClipRRect(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(6),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
+              constraints: const BoxConstraints(
+                minHeight: 32,
+                maxHeight: 40,
+              ),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -3553,19 +3578,20 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                           Colors.white.withOpacity(0.15),
                         ],
                 ),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(6),
                 border: Border.all(
                   color: Colors.white.withOpacity(0.2),
-                  width: 1.5,
+                  width: 1,
                 ),
               ),
               child: TextField(
                 controller: controller,
                 readOnly: true,
                 onTap: onTap,
+                textAlignVertical: TextAlignVertical.center,
                 style: TextStyle(
                   color: isDialog ? Colors.white : Colors.black87,
-                  fontSize: 16,
+                  fontSize: 11,
                 ),
                 decoration: InputDecoration(
                   hintText: hint,
@@ -3573,19 +3599,23 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                     color: isDialog
                         ? Colors.white.withOpacity(0.6)
                         : Colors.grey[600],
+                    fontSize: 11,
                   ),
                   prefixIcon: Icon(
                     icon,
-                    color: isDialog ? Colors.white : AppColors.celeste,
+                    color: isDialog ? Colors.white : AppColors.horarioPrimary,
+                    size: 14,
                   ),
                   suffixIcon: Icon(
                     Icons.arrow_drop_down,
-                    color: isDialog ? Colors.white.withOpacity(0.8) : AppColors.celeste,
+                    color: isDialog ? Colors.white.withOpacity(0.8) : AppColors.horarioPrimary,
+                    size: 14,
                   ),
                   border: InputBorder.none,
+                  isDense: true,
                   contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 16,
+                    horizontal: 6,
+                    vertical: 4,
                   ),
                 ),
               ),
@@ -3603,15 +3633,15 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
         const Text(
           'Color de la materia',
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 10,
             fontWeight: FontWeight.w600,
             color: Color.fromARGB(255, 255, 255, 255),
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 4),
         Wrap(
-          spacing: 12,
-          runSpacing: 12,
+          spacing: 6,
+          runSpacing: 6,
           children: _colores.map((color) {
             final colorHex = '#${color.value.toRadixString(16).substring(2).toUpperCase()}';
             final isSelected = selectedColor == colorHex;
@@ -3621,21 +3651,21 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                 onColorSelected(colorHex);
               },
               child: Container(
-                width: 48,
-                height: 48,
+                width: 28,
+                height: 28,
                 decoration: BoxDecoration(
                   color: color,
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: isSelected ? const Color.fromARGB(255, 255, 255, 255) : const Color.fromARGB(0, 255, 255, 255),
-                    width: 3,
+                    width: 2,
                   ),
                   boxShadow: isSelected
                       ? [
                           BoxShadow(
                             color: color.withOpacity(0.4),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
+                            blurRadius: 4,
+                            offset: const Offset(0, 1),
                           ),
                         ]
                       : null,
@@ -3644,7 +3674,7 @@ class _MateriasDeHorarioScreenState extends State<MateriasDeHorarioScreen> {
                     ? const Icon(
                         Icons.check,
                         color: Colors.white,
-                        size: 24,
+                        size: 14,
                       )
                     : null,
               ),

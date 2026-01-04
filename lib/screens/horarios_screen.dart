@@ -242,8 +242,8 @@ class _HorariosScreenState extends State<HorariosScreen> {
                             const SizedBox(width: 6),
                             Flexible(
                               child: Text(
-                                '${horario.fechainiciosemestre ?? 'N/A'} - ${horario.fechafinsemestre ?? 'N/A'}',
-                                style: TextStyle(
+                              '${horario.fechainiciosemestre ?? 'N/A'} - ${horario.fechafinsemestre ?? 'N/A'}',
+                              style: TextStyle(
                                   fontSize: 12,
                                   color: Colors.white.withOpacity(0.7),
                                 ),
@@ -312,69 +312,69 @@ class _HorariosScreenState extends State<HorariosScreen> {
                 Flexible(
                   child: ListView(
                     shrinkWrap: true,
-                    children: [
-                      ...horarios.map((horario) => ClipRRect(
+              children: [
+                ...horarios.map((horario) => ClipRRect(
                         borderRadius: BorderRadius.circular(12),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                          child: Container(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                    child: Container(
                             margin: const EdgeInsets.only(bottom: 8),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
                                   Colors.white.withOpacity(0.15),
                                   Colors.white.withOpacity(0.08),
-                                ],
-                              ),
+                          ],
+                        ),
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
+                        border: Border.all(
                                 color: Colors.white.withOpacity(0.15),
                                 width: 1,
-                              ),
-                            ),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: ListTile(
+                        ),
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: ListTile(
                                 dense: true,
                                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                                leading: Container(
+                          leading: Container(
                                   padding: const EdgeInsets.all(6),
-                                  decoration: BoxDecoration(
-                                gradient: const LinearGradient(
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
                                   colors: [AppColors.horarioPrimary, AppColors.horarioSecondary],
-                                ),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: const Icon(
-                                    Icons.calendar_today_rounded,
-                                    color: Colors.white,
-                                    size: 16,
-                                  ),
-                                ),
-                                title: Text(
-                                  horario.nombrehor ?? 'Sin nombre',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => AddEditHorarioScreen(horario: horario),
-                                    ),
-                                  );
-                                },
                               ),
+                                    borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(
+                              Icons.calendar_today_rounded,
+                              color: Colors.white,
+                                    size: 16,
                             ),
                           ),
+                          title: Text(
+                            horario.nombrehor ?? 'Sin nombre',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => AddEditHorarioScreen(horario: horario),
+                              ),
+                            );
+                          },
                         ),
-                      )),
+                      ),
+                    ),
+                  ),
+                )),
                     ],
                   ),
                 ),
@@ -834,7 +834,7 @@ class _HorariosScreenState extends State<HorariosScreen> {
           padding: const EdgeInsets.all(20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [
+          children: [
               Row(
                 children: [
                   Container(
@@ -852,8 +852,8 @@ class _HorariosScreenState extends State<HorariosScreen> {
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                     ),
                   ),
-                ],
-              ),
+          ],
+        ),
               const SizedBox(height: 16),
               const Text(
                 '¿Estás seguro de eliminar este horario?',
@@ -863,30 +863,30 @@ class _HorariosScreenState extends State<HorariosScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
                     style: TextButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    ),
+          ),
                     child: const Text('Cancelar', style: TextStyle(fontSize: 13)),
                   ),
                   const SizedBox(width: 8),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Provider.of<HorariosProvider>(context, listen: false)
-                          .deleteHorario(horario.id);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        _buildCustomSnackBar('Horario eliminado'),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Provider.of<HorariosProvider>(context, listen: false)
+                  .deleteHorario(horario.id);
+              ScaffoldMessenger.of(context).showSnackBar(
+                _buildCustomSnackBar('Horario eliminado'),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    ),
+            ),
                     child: const Text('Eliminar', style: TextStyle(fontSize: 13)),
-                  ),
-                ],
+          ),
+        ],
               ),
             ],
           ),

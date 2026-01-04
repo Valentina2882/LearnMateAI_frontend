@@ -92,7 +92,7 @@ class _BienestarScreenState extends State<BienestarScreen>
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: [
+          children: [
                   Padding(
                     padding: const EdgeInsets.all(14),
                     child: Row(
@@ -107,89 +107,89 @@ class _BienestarScreenState extends State<BienestarScreen>
                         ),
                         const SizedBox(width: 10),
                         const Expanded(
-                          child: Text(
-                            'Cuestionarios Mensuales',
+              child: Text(
+                'Cuestionarios Mensuales',
                             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
-                          ),
+              ),
                         ),
                         IconButton(
                           icon: const Icon(Icons.close_rounded, color: Colors.white70, size: 18),
                           onPressed: () => Navigator.pop(dialogContext),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
-                        ),
-                      ],
-                    ),
+            ),
+          ],
+        ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 14),
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Para un mejor seguimiento de tu bienestar, te recomendamos completar los cuestionarios mensualmente.',
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Para un mejor seguimiento de tu bienestar, te recomendamos completar los cuestionarios mensualmente.',
                           style: TextStyle(color: Colors.white70, fontSize: 11),
-                        ),
+            ),
                         const SizedBox(height: 12),
-                        ...TipoCuestionario.values.map((tipo) {
-                          final estaCompletado = completados[tipo] ?? false;
-                          final estaSeleccionado = cuestionarioSeleccionado == tipo;
-                          return Padding(
+            ...TipoCuestionario.values.map((tipo) {
+              final estaCompletado = completados[tipo] ?? false;
+                final estaSeleccionado = cuestionarioSeleccionado == tipo;
+              return Padding(
                             padding: const EdgeInsets.only(bottom: 8),
-                            child: InkWell(
-                              onTap: () {
-                                if (!estaCompletado) {
-                                  setState(() {
-                                    cuestionarioSeleccionado = tipo;
-                                  });
-                                }
-                              },
-                              borderRadius: BorderRadius.circular(8),
-                              child: Container(
+                  child: InkWell(
+                    onTap: () {
+                      if (!estaCompletado) {
+                        setState(() {
+                          cuestionarioSeleccionado = tipo;
+                        });
+                      }
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
                                 padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                                decoration: BoxDecoration(
+                      decoration: BoxDecoration(
                                   color: estaSeleccionado ? AppColors.bienestarPrimary.withOpacity(0.2) : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
                                     color: estaSeleccionado ? AppColors.bienestarPrimary : Colors.transparent,
                                     width: 1,
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      estaCompletado 
-                                          ? Icons.check_circle 
-                                          : (estaSeleccionado ? Icons.radio_button_checked : Icons.radio_button_unchecked),
-                                      color: estaCompletado 
+                        ),
+                      ),
+                child: Row(
+                  children: [
+                    Icon(
+                            estaCompletado 
+                                ? Icons.check_circle 
+                                : (estaSeleccionado ? Icons.radio_button_checked : Icons.radio_button_unchecked),
+                            color: estaCompletado 
                                           ? AppColors.bienestarPrimary 
                                           : (estaSeleccionado ? AppColors.bienestarPrimary : Colors.grey),
                                       size: 16,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: Text(
-                                        tipo.nombre,
-                                        style: TextStyle(
-                                          color: estaCompletado 
-                                              ? Colors.white 
-                                              : (estaSeleccionado ? Colors.white : Colors.white70),
-                                          fontWeight: estaCompletado || estaSeleccionado 
-                                              ? FontWeight.bold 
-                                              : FontWeight.normal,
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        }),
-                      ],
                     ),
+                                    const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                      tipo.nombre,
+                      style: TextStyle(
+                                color: estaCompletado 
+                                    ? Colors.white 
+                                    : (estaSeleccionado ? Colors.white : Colors.white70),
+                                fontWeight: estaCompletado || estaSeleccionado 
+                                    ? FontWeight.bold 
+                                    : FontWeight.normal,
+                                          fontSize: 11,
+                              ),
+                      ),
+                    ),
+                  ],
+                      ),
+                    ),
+                ),
+              );
+            }),
+          ],
+        ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(14),
@@ -212,52 +212,52 @@ class _BienestarScreenState extends State<BienestarScreen>
                                 border: Border.all(
                                   color: AppColors.bienestarPrimary.withOpacity(0.4),
                                   width: 1,
-                                ),
-                              ),
+              ),
+          ),
                               child: Material(
                                 color: Colors.transparent,
                                 child: InkWell(
                                   onTap: () async {
-                                    Navigator.pop(dialogContext);
-                                    
-                                    // Si hay un cuestionario seleccionado, abrirlo directamente
-                                    if (cuestionarioSeleccionado != null) {
-                                      final canAccess = await ProfileHelper.checkAndShowCompleteProfile(
-                                        context,
-                                        onComplete: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => CuestionarioScreen(tipo: cuestionarioSeleccionado!),
-                                            ),
-                                          );
-                                        },
-                                      );
-                                      
-                                      if (canAccess) {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => CuestionarioScreen(tipo: cuestionarioSeleccionado!),
-                                          ),
-                                        );
-                                      }
-                                    } else {
-                                      // Si no hay selección, ir a la pestaña y hacer scroll
-                                      _tabController.animateTo(0);
-                                      
-                                      // Esperar a que la pestaña cambie y luego hacer scroll
-                                      await Future.delayed(const Duration(milliseconds: 300));
-                                      
-                                      if (_cuestionariosKey.currentContext != null) {
-                                        Scrollable.ensureVisible(
-                                          _cuestionariosKey.currentContext!,
-                                          duration: const Duration(milliseconds: 500),
-                                          curve: Curves.easeInOut,
-                                        );
-                                      }
-                                    }
-                                  },
+                Navigator.pop(dialogContext);
+                
+                // Si hay un cuestionario seleccionado, abrirlo directamente
+                if (cuestionarioSeleccionado != null) {
+                  final canAccess = await ProfileHelper.checkAndShowCompleteProfile(
+                    context,
+                    onComplete: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CuestionarioScreen(tipo: cuestionarioSeleccionado!),
+                        ),
+                      );
+                    },
+                  );
+                  
+                  if (canAccess) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CuestionarioScreen(tipo: cuestionarioSeleccionado!),
+                      ),
+                    );
+                  }
+                } else {
+                  // Si no hay selección, ir a la pestaña y hacer scroll
+                  _tabController.animateTo(0);
+                  
+                  // Esperar a que la pestaña cambie y luego hacer scroll
+                  await Future.delayed(const Duration(milliseconds: 300));
+                  
+                  if (_cuestionariosKey.currentContext != null) {
+                    Scrollable.ensureVisible(
+                      _cuestionariosKey.currentContext!,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeInOut,
+                    );
+                  }
+                }
+            },
                                   borderRadius: BorderRadius.circular(10),
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
@@ -287,7 +287,7 @@ class _BienestarScreenState extends State<BienestarScreen>
                                   color: Colors.white.withOpacity(0.2),
                                   width: 1,
                                 ),
-                              ),
+            ),
                               child: Material(
                                 color: Colors.transparent,
                                 child: InkWell(
@@ -306,8 +306,8 @@ class _BienestarScreenState extends State<BienestarScreen>
                               ),
                             ),
                           ),
-                        ),
-                      ],
+          ),
+        ],
                     ),
                   ),
                 ],
@@ -539,7 +539,7 @@ class _BienestarScreenState extends State<BienestarScreen>
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                ),
+              ),
               ],
             ),
           ),
@@ -576,7 +576,7 @@ class _BienestarScreenState extends State<BienestarScreen>
                         Colors.red.withOpacity(0.3),
                         Colors.red.withOpacity(0.2),
                       ],
-                    ),
+                ),
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
                 color: isSelected
@@ -590,7 +590,7 @@ class _BienestarScreenState extends State<BienestarScreen>
                         color: Colors.red.withOpacity(0.3),
                         blurRadius: 6,
                         offset: const Offset(0, 2),
-                      ),
+                ),
                     ]
                   : null,
             ),
@@ -1202,8 +1202,8 @@ class _BienestarScreenState extends State<BienestarScreen>
                                   color: Colors.white,
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
-                                ),
-                              ),
+                    ),
+                  ),
                             ],
                     ),
                   ),
@@ -1273,8 +1273,8 @@ class _BienestarScreenState extends State<BienestarScreen>
                                   color: Colors.white,
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
-                                ),
-                              ),
+                    ),
+                  ),
                             ],
                           ),
                         ),
@@ -1396,8 +1396,8 @@ class _BienestarScreenState extends State<BienestarScreen>
                               color: Colors.white,
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                ),
+              ),
                         ],
                 ),
               ),
@@ -1548,8 +1548,8 @@ class _BienestarScreenState extends State<BienestarScreen>
                                       colors: [
                                         Colors.white.withOpacity(0.2),
                                         Colors.white.withOpacity(0.1),
-                                      ],
-                                    ),
+            ],
+          ),
                                     borderRadius: BorderRadius.circular(20),
                                     border: Border.all(
                                       color: Colors.red.withOpacity(0.3),

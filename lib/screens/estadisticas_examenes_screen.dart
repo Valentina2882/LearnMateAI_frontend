@@ -354,11 +354,11 @@ class _EstadisticasExamenesScreenState extends State<EstadisticasExamenesScreen>
               const SizedBox(width: 8),
               const Expanded(
                 child: Text(
-                  'Resumen General',
-                  style: TextStyle(
+                'Resumen General',
+                style: TextStyle(
                     fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
                     letterSpacing: 0.2,
                   ),
                   maxLines: 1,
@@ -563,11 +563,11 @@ class _EstadisticasExamenesScreenState extends State<EstadisticasExamenesScreen>
               const SizedBox(width: 8),
               const Expanded(
                 child: Text(
-                        'Gráfica de Rendimiento',
-                  style: TextStyle(
+                      'Gráfica de Rendimiento',
+                style: TextStyle(
                     fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
                     letterSpacing: 0.2,
                   ),
                   maxLines: 1,

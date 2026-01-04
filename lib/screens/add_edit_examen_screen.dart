@@ -477,11 +477,11 @@ class _AddEditExamenScreenState extends State<AddEditExamenScreen>
               const SizedBox(width: 6),
               const Expanded(
                 child: Text(
-                  'Información del Examen',
-                  style: TextStyle(
+                'Información del Examen',
+                style: TextStyle(
                     fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
                     letterSpacing: 0.2,
                   ),
                   maxLines: 1,
@@ -1012,7 +1012,7 @@ class _AddEditExamenScreenState extends State<AddEditExamenScreen>
                               fontSize: 12,
                             ),
                               overflow: TextOverflow.ellipsis,
-                          ),
+                            ),
                           ),
                   ],
                 ),
@@ -1033,7 +1033,7 @@ class _AddEditExamenScreenState extends State<AddEditExamenScreen>
                               fontWeight: FontWeight.w500,
                             ),
                               overflow: TextOverflow.ellipsis,
-                          ),
+                            ),
                           ),
                         ],
                       );
